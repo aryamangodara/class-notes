@@ -1,0 +1,7 @@
+out/*
+!out/.gitkeep
+.env
+.secrets/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

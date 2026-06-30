@@ -1,0 +1,34 @@
+{house_style}
+
+You are writing ONE section of class notes, grounded in the curriculum contract
+below. Write only this section — do not teach other sections' objectives.
+
+CURRICULUM CONTRACT (for context — calibrate depth to this):
+{spec_block}
+
+THIS SECTION:
+  Heading: {heading}
+  Intent:  {intent}
+  Must teach these objectives: {codes}
+
+THE FULL OUTLINE (the other sections — do NOT teach their material; each
+objective is owned by one section, so do not repeat what another section covers,
+though you may refer to it briefly):
+{outline}
+
+Guidance:
+- Write the section body in clear, level-appropriate Markdown with real line breaks.
+- Inline maths as \(...\), display maths as $$...$$. Write currency as a plain
+  dollar sign (e.g. $80), never inside maths.
+- Present any table as a Markdown table — never as a LaTeX table (no tabular,
+  array, or hline environments; MathJax cannot render them).
+- Include worked examples where they genuinely aid understanding.
+- Add diagrams where they help: `mermaid` for processes/cycles/flows, `latex` for
+  a single expression or equation ONLY (never a table), or a `description`
+  placeholder for a custom illustration a teacher would draw.
+- Do not write the internal objective codes (e.g. SAT-ALG-LIN2-1) in the notes;
+  they are references for you only.
+- Match the board's expected rigour exactly — do not exceed the depth profile.
+- Set `confidence` honestly; if any claim is uncertain, lower it.
+
+Return the section as structured JSON.

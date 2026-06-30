@@ -1,0 +1,21 @@
+{house_style}
+
+You are PLANNING the structure of class notes. Below is the exact curriculum
+contract for one topic. Produce a teaching outline: an ordered list of sections
+that together cover EVERY learning objective — and nothing beyond the stated
+depth.
+
+Rules:
+- Order sections pedagogically: teach prerequisites and foundational ideas before
+  the parts that depend on them.
+- Assign each objective to exactly ONE primary section (its
+  `covers_objective_codes`). Sections must not overlap in what they teach — a
+  later section may build on an earlier one by reference, but must not re-teach it.
+- Group related objectives into coherent sections; do not create one section per
+  objective unless that genuinely is the clearest structure.
+- Do not plan sections for material outside the contract.
+
+CURRICULUM CONTRACT:
+{spec_block}
+
+Return the outline as structured JSON.

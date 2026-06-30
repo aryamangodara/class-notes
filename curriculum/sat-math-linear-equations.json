@@ -1,0 +1,49 @@
+{
+  "topic_id": "sat-math-linear-equations",
+  "board": "SAT (College Board)",
+  "subject": "Mathematics",
+  "level": "SAT",
+  "unit": "Algebra (content domain)",
+  "topic": "Linear equations in two variables",
+  "prerequisites": [
+    "Plotting points on the coordinate plane",
+    "Solving a linear equation in one variable",
+    "Evaluating algebraic expressions",
+    "Slope as rise over run"
+  ],
+  "learning_objectives": [
+    {
+      "code": "SAT-ALG-LIN2-1",
+      "statement": "Create a linear equation in two variables to represent a relationship between quantities described in words, or shown in a table or graph.",
+      "tier": null,
+      "command_words": ["create", "model"]
+    },
+    {
+      "code": "SAT-ALG-LIN2-2",
+      "statement": "Identify and interpret the slope and the x- and y-intercepts of a line from its equation, graph, table, or context, including slope as a constant rate of change.",
+      "tier": null,
+      "command_words": ["interpret"]
+    },
+    {
+      "code": "SAT-ALG-LIN2-3",
+      "statement": "Determine the equation of a line given two points, a point and a slope, or a graph, and convert between slope-intercept, point-slope, and standard form.",
+      "tier": null,
+      "command_words": ["determine"]
+    },
+    {
+      "code": "SAT-ALG-LIN2-4",
+      "statement": "Relate the algebraic and graphical representations of a line, including the slopes of parallel and perpendicular lines.",
+      "tier": null,
+      "command_words": ["relate"]
+    },
+    {
+      "code": "SAT-ALG-LIN2-5",
+      "statement": "Find values that satisfy a linear equation in two variables, including solving for one variable in terms of the other.",
+      "tier": null,
+      "command_words": ["solve"]
+    }
+  ],
+  "depth_profile": "Digital SAT depth: procedural fluency and interpretation under time pressure (about 75 seconds per question), with NO calculus and NO formal proof. Students must move fluently between four representations — context (words), table, graph, and equation — and interpret slope and intercept IN CONTEXT (units and meaning). A calculator is permitted throughout the digital SAT. Emphasis is on speed, avoiding sign and intercept traps, and recognising the most efficient representation, not on derivations.",
+  "assessment_notes": "Digital SAT Math (Algebra domain): multiple-choice and student-produced response. High-value skills are translating a word problem into y = mx + b, interpreting the slope or intercept of a real-world model, and matching equations to graphs or tables. Common traps the wrong answer choices are built around: confusing the slope with the y-intercept, sign errors, and misreading which quantity is the independent variable. Teach students to label units on slope and intercept.",
+  "source": "Hand-seeded for POC — validate against the College Board Digital SAT Suite specifications, Math section, Algebra content domain (linear equations in two variables)."
+}

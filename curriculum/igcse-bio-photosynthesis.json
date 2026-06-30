@@ -1,0 +1,61 @@
+{
+  "topic_id": "igcse-bio-photosynthesis",
+  "board": "Cambridge IGCSE",
+  "subject": "Biology",
+  "level": "IGCSE",
+  "unit": "Topic 6: Plant nutrition",
+  "topic": "Photosynthesis",
+  "prerequisites": [
+    "Plant cell structure including chloroplasts",
+    "The leaf as the organ of photosynthesis",
+    "The difference between a word equation and a balanced symbol equation",
+    "The starch-iodine (blue-black) test"
+  ],
+  "learning_objectives": [
+    {
+      "code": "6.1C",
+      "statement": "Define photosynthesis as the process by which plants manufacture carbohydrates from raw materials (carbon dioxide and water) using energy from light.",
+      "tier": "Core",
+      "command_words": ["define"]
+    },
+    {
+      "code": "6.2C",
+      "statement": "State the word equation for photosynthesis: carbon dioxide + water -> glucose + oxygen, in the presence of light and chlorophyll.",
+      "tier": "Core",
+      "command_words": ["state"]
+    },
+    {
+      "code": "6.3C",
+      "statement": "State that chlorophyll is a green pigment found in chloroplasts, and that it transfers light energy into chemical energy for the formation of carbohydrates.",
+      "tier": "Core",
+      "command_words": ["state"]
+    },
+    {
+      "code": "6.4C",
+      "statement": "Investigate the need for chlorophyll, light and carbon dioxide for photosynthesis, using appropriate controls and the iodine test for starch.",
+      "tier": "Core",
+      "command_words": ["investigate"]
+    },
+    {
+      "code": "6.5S",
+      "statement": "State the balanced symbol equation for photosynthesis: 6CO2 + 6H2O -> C6H12O6 + 6O2, in the presence of light and chlorophyll.",
+      "tier": "Supplement",
+      "command_words": ["state"]
+    },
+    {
+      "code": "6.6S",
+      "statement": "Identify and explain the limiting factors of photosynthesis (light intensity, carbon dioxide concentration and temperature) and interpret data and graphs showing their effects.",
+      "tier": "Supplement",
+      "command_words": ["identify", "explain", "interpret"]
+    },
+    {
+      "code": "6.7S",
+      "statement": "Explain how knowledge of limiting factors is used to increase crop yields in protected environments such as greenhouses.",
+      "tier": "Supplement",
+      "command_words": ["explain"]
+    }
+  ],
+  "depth_profile": "IGCSE depth: students recall the word equation (Core) and the balanced symbol equation (Supplement), the role of chlorophyll, and can design and interpret simple experiments with controls (destarching a plant, the starch-iodine test, variegated leaves, removing carbon dioxide with sodium hydroxide). Supplement students handle limiting factors and graph interpretation, and greenhouse applications. Students are NOT required to know the biochemical detail of the light-dependent and light-independent (Calvin cycle) reactions — that is A-Level. Keep strictly to inputs/outputs, conditions, experiments, and limiting factors. Clearly separate Core from Supplement content.",
+  "assessment_notes": "Cambridge 0610 Paper 4 (Theory) uses structured questions. Recall the equations exactly — marks are lost for omitting 'light' and 'chlorophyll' as conditions over the arrow. Describe experiments INCLUDING the control and how each variable is removed or varied. Interpret limiting-factor graphs by identifying which factor is limiting in each region of the curve. A very common error is confusing photosynthesis with respiration. Flag Supplement-only material so Core students are not over-taught.",
+  "source": "Hand-seeded for POC — validate against the Cambridge IGCSE Biology 0610 syllabus (2023-2025), Topic 6 Plant nutrition / Photosynthesis."
+}
