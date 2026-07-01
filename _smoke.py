@@ -31,7 +31,7 @@ sys.modules.update({"google": g, "google.genai": gg, "google.genai.types": ggt})
 import config  # noqa: E402
 import helpers  # noqa: E402
 from schemas import (  # noqa: E402
-    ClassNotes, Diagram, KeyTerm, LOCoverage, NoteSection, PracticeQuestion, WorkedExample,
+    Callout, ClassNotes, Diagram, KeyTerm, LOCoverage, NoteSection, PracticeQuestion, WorkedExample,
 )
 
 # 1. curriculum loads
@@ -73,6 +73,10 @@ notes = ClassNotes(
             Diagram(caption="forms", kind="latex",
                     content="\\begin{array}{|c|c|}\\hline a & b \\\\ \\hline\\end{array}"),
         ],
+        callouts=[
+            Callout(kind="tip", body="Read the axis labels before computing slope."),
+            Callout(kind="mistake", body="Don't confuse the slope with the \\(y\\)-intercept."),
+        ],
     )],
     common_misconceptions=["Respiration is not the same as breathing."],
     exam_tips=["'Explain' needs a mechanism, not just a conclusion."],
@@ -96,10 +100,15 @@ assert "$$\ny = mx + b\n$$" in md
 assert "\\begin{array}" in md and "$$\n\\begin{array}" not in md
 # inline \(...\) math survives _clean_md intact
 assert "\\(\\Delta G < 0\\)" in md and "\\(2\\,\\text{ATP}\\)" in md
+# callouts render as labelled blockquote boxes; math inside a callout survives
+assert "> 💡 **Quick Tip** —" in md and "> ⚠️ **Common Mistake** —" in md
+assert "\\(y\\)-intercept" in md
 assert "<html" in html and "__MD_JSON__" not in html and "__TITLE__" not in html
 # D: HTML uses \(...\) inline delimiters + the protect-math step; old single-$ inline gone
 assert "marked.parse" in html and "mermaid" in html and "@@MATH" in html
 assert "inlineMath" in html and "[['$','$']]" not in html
+# callout box styling + emoji colouriser present in the HTML
+assert ".callout" in html and "classList.add('callout'" in html
 print(f"render OK: markdown={len(md)} chars, html={len(html)} chars")
 
 # 4. ClassNotes round-trips through JSON

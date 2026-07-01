@@ -230,10 +230,14 @@ def finalize_notes(client: genai.Client, spec: TopicSpec, sections: list[NoteSec
 
 
 def verify_coverage(client: genai.Client, spec: TopicSpec, sections: list[NoteSection]) -> CoverageReport:
-    joined = "\n\n".join(
-        f"## {s.heading} (claims: {', '.join(s.covers_objective_codes) or 'none'})\n{s.body}"
-        for s in sections
-    )
+    def _sec_text(s: NoteSection) -> str:
+        calls = "".join(f"\n[{c.kind}] {c.title} {c.body}".rstrip() for c in s.callouts)
+        return (
+            f"## {s.heading} (claims: {', '.join(s.covers_objective_codes) or 'none'})\n"
+            f"{s.body}{calls}"
+        )
+
+    joined = "\n\n".join(_sec_text(s) for s in sections)
     prompt = load_prompt("verify.txt").format(spec_block=_spec_block(spec), notes=joined)
     return call_model(client, label=f"verify:{spec.topic_id}", contents=prompt,
                       **_gen_config("model_verify", "temperature_verify", CoverageReport))
@@ -306,6 +310,16 @@ def _clean_md(s: str) -> str:
     return re.sub(r"\x00(\d+)\x00", lambda m: spans[int(m.group(1))], protected)
 
 
+# Callout kinds -> (emoji, default label). The leading emoji is also how the HTML
+# colourises each callout box (see _HTML_SHELL).
+_CALLOUT = {
+    "tip": ("💡", "Quick Tip"),
+    "mistake": ("⚠️", "Common Mistake"),
+    "formula": ("📐", "Key Formula / Fact"),
+    "remember": ("🧠", "Remember"),
+}
+
+
 def render_markdown(n: ClassNotes) -> str:
     L: list[str] = []
     L.append(f"# {n.topic}")
@@ -329,6 +343,12 @@ def render_markdown(n: ClassNotes) -> str:
     for s in n.sections:
         L.append(f"## {s.heading}")
         L.append(_clean_md(s.body))
+        for c in s.callouts:
+            emoji, label = _CALLOUT.get(c.kind, ("📌", "Note"))
+            heading = c.title.strip() or label
+            # Prefix every line so a multi-line callout body stays inside the blockquote box.
+            body = _clean_md(c.body).replace("\n", "\n> ")
+            L.append(f"\n> {emoji} **{heading}** — {body}")
         for d in s.diagrams:
             if d.kind == "mermaid":
                 L.append(f"\n```mermaid\n{d.content}\n```")
@@ -394,6 +414,11 @@ _HTML_SHELL = r"""<!doctype html>
  details{margin:.4rem 0;background:#fafafa;border:1px solid #eee;border-radius:8px;padding:.4rem .8rem}
  summary{cursor:pointer;font-weight:600} blockquote{border-left:3px solid #d0d7de;margin:.6rem 0;padding:.2rem 1rem;color:#555}
  em{color:#666} .mermaid{margin:1rem 0;text-align:center}
+ blockquote.callout{border-left-width:5px;border-radius:8px;padding:.6rem 1rem;background:#f6f8fa;color:#24292f}
+ blockquote.callout.tip{border-left-color:#0969da;background:#ddf4ff}
+ blockquote.callout.mistake{border-left-color:#bf8700;background:#fff8c5}
+ blockquote.callout.formula{border-left-color:#1a7f37;background:#dafbe1}
+ blockquote.callout.remember{border-left-color:#8250df;background:#faf0ff}
 </style></head>
 <body><div id="content">Rendering…</div>
 <script type="module">
@@ -409,6 +434,12 @@ const src = md.replace(/\$\$[\s\S]*?\$\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/g,
   m=>{MATH.push(m); return `@@MATH${MATH.length-1}@@`;});
 const html = marked.parse(src).replace(/@@MATH(\d+)@@/g,(_,i)=>esc(MATH[i]));
 document.getElementById('content').innerHTML = html;
+// Colourise callout blockquotes by their leading emoji.
+const CT={'💡':'tip','⚠':'mistake','📐':'formula','🧠':'remember'};
+document.querySelectorAll('#content blockquote').forEach(bq=>{
+  const t=bq.textContent.replace(/^\s+/,'');
+  for(const e in CT){ if(t.indexOf(e)===0){ bq.classList.add('callout',CT[e]); break; } }
+});
 document.querySelectorAll('code.language-mermaid').forEach((c)=>{
   const d=document.createElement('div'); d.className='mermaid'; d.textContent=c.textContent;
   (c.closest('pre')||c).replaceWith(d);

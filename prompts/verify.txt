@@ -3,7 +3,8 @@ contract, decide whether the notes below genuinely TEACH it to the required
 depth — not merely mention it. Be strict: partial or surface-level coverage is
 `covered: false` with a `gap_note` explaining what is missing.
 
-Also raise `review_flags` for any statement in the notes that looks factually
+Also raise `review_flags` for any statement, callout (Quick Tip / Common Mistake /
+Key Formula / Remember), or worked example in the notes that looks factually
 doubtful, or that goes above or below the depth the contract specifies.
 
 CURRICULUM CONTRACT:

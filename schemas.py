@@ -134,6 +134,21 @@ class Diagram(BaseModel):
     )
 
 
+class Callout(BaseModel):
+    kind: Literal["tip", "mistake", "formula", "remember"] = Field(
+        description="'tip' = a Quick Tip (an exam technique or shortcut); 'mistake' = a Common "
+        "Mistake (a frequent student error AND its correction); 'formula' = a Key Formula or "
+        "must-know fact (a formula for maths/science, a key fact for humanities); 'remember' = a "
+        "memory aid or mnemonic. Only include a callout that is accurate and grounded in the "
+        "objectives/assessment notes — omit rather than invent."
+    )
+    title: str = Field(default="", description="Optional short custom title; a default label is used if empty.")
+    body: str = Field(
+        description="1-3 sentences, Markdown. Inline maths as \\(...\\). Grounded in the "
+        "material — no invented facts."
+    )
+
+
 class NoteSection(BaseModel):
     heading: str
     covers_objective_codes: list[str] = Field(
@@ -147,6 +162,12 @@ class NoteSection(BaseModel):
     )
     worked_examples: list[WorkedExample] = Field(default_factory=list)
     diagrams: list[Diagram] = Field(default_factory=list)
+    callouts: list[Callout] = Field(
+        default_factory=list,
+        description="Contextual callout boxes for THIS section (Quick Tips, Common Mistakes, "
+        "Key Formulas/Facts, Remember/mnemonics) — include only where they genuinely help and "
+        "are grounded; do not force one of every kind.",
+    )
     confidence: Literal["high", "medium", "low"] = Field(
         description="Honest self-reported confidence in the factual accuracy of this section."
     )

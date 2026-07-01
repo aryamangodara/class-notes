@@ -29,6 +29,11 @@ Guidance:
 - Do not write the internal objective codes (e.g. SAT-ALG-LIN2-1) in the notes;
   they are references for you only.
 - Match the board's expected rigour exactly — do not exceed the depth profile.
+- Add `callouts` where they genuinely help: a Quick Tip (`tip`), a Common Mistake
+  (`mistake` — the error AND its fix), a Key Formula or key fact (`formula`), or a
+  Remember/mnemonic (`remember`). Keep each to 1-3 sentences, make them
+  subject-appropriate, and include one ONLY when it is accurate and grounded —
+  omit rather than invent. Do not force one of every kind or just repeat the body.
 - Set `confidence` honestly; if any claim is uncertain, lower it.
 
 Return the section as structured JSON.

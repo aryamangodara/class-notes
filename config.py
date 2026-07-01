@@ -15,7 +15,7 @@ CONFIG = {
     "model_plan":   "gemini-3.5-flash",         # outline
     "model_verify": "gemini-3.5-flash",         # coverage audit
     # Temperatures — a little warmth for readable prose, deterministic checking.
-    "temperature_write":  0.4,
+    "temperature_write":  0.3,
     "temperature_plan":   0.2,
     "temperature_verify": 0.0,
     # IO
@@ -40,6 +40,8 @@ high-stakes exams. Non-negotiables:
 - Present tables as Markdown tables, never as LaTeX (no tabular, array, or hline).
 - These notes are read by students: never write internal objective codes
   (e.g. SAT-ALG-LIN2-1 or ENE-1.J) in the notes themselves.
+- Be careful and accurate: every claim, worked step, and callout must be grounded
+  in the objectives and depth profile. When in doubt, omit it rather than guess.
 - Never invent facts to fill a gap. If unsure, lower your confidence and flag it.
 - Teach toward how the topic is assessed, not just the content.
 """
