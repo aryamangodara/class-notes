@@ -377,11 +377,12 @@ def _select_image(client: genai.Client, query: str, caption: str, candidates: li
     from PIL import Image
 
     prompt = (
-        "These study notes need ONE illustration for:\n"
+        "These study notes would benefit from an illustration for:\n"
         f"Caption: {caption}\nSearch query: {query}\n\n"
-        f"{len(candidates)} candidate images follow, numbered 1..{len(candidates)}. Choose the "
-        "single clearest, most accurate, on-topic educational image. Reject anything irrelevant, "
-        "low quality, a joke, heavily watermarked, or misleading. If none are suitable, choose 0."
+        f"{len(candidates)} candidate images follow, numbered 1..{len(candidates)}. Pick the one "
+        "that fits best — a reasonably relevant, clear educational image is better than none, so "
+        "lean towards choosing one. Only choose 0 if EVERY candidate is clearly off-topic, "
+        "inappropriate, a joke, or misleading."
     )
     contents: list = [prompt]
     for i, c in enumerate(candidates, 1):
@@ -407,7 +408,7 @@ def fetch_images_for_sections(client: genai.Client, sections: list[NoteSection],
         if not query:
             continue
         try:
-            cands = _search_images(query, n=6, width=width)[:4]
+            cands = _search_images(query, n=8, width=width)[:6]
             for c in cands:
                 try:
                     c["_bytes"] = _http_get(c["thumb"])
