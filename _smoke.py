@@ -68,10 +68,14 @@ notes = ClassNotes(
         worked_examples=[WorkedExample(prompt="Cost of $80 of glucose?",
                                        solution="Yield \\(2\\,\\text{ATP}\\); fee $5.")],
         diagrams=[
-            Diagram(caption="overview", kind="mermaid", content="graph TD; Glucose-->Pyruvate"),
+            Diagram(caption="overview", kind="mermaid", content="graph TD\n A[Glucose (6C)] --> B[Pyruvate]"),
             Diagram(caption="formula", kind="latex", content="y = mx + b"),
             Diagram(caption="forms", kind="latex",
                     content="\\begin{array}{|c|c|}\\hline a & b \\\\ \\hline\\end{array}"),
+            Diagram(caption="A leaf cross-section", kind="image",
+                    content="labelled leaf cross section",
+                    image_src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+                    attribution="Leaf cross-section, CC BY-SA (via Wikimedia Commons)"),
         ],
         callouts=[
             Callout(kind="tip", body="Read the axis labels before computing slope."),
@@ -103,12 +107,18 @@ assert "\\(\\Delta G < 0\\)" in md and "\\(2\\,\\text{ATP}\\)" in md
 # callouts render as labelled blockquote boxes; math inside a callout survives
 assert "> **💡 Quick Tip**" in md and "> **⚠️ Common Mistake**" in md
 assert "\\(y\\)-intercept" in md
+# mermaid node labels with parens are quoted so Mermaid can parse them
+assert 'A["Glucose (6C)"]' in md
+# image diagram renders as a <figure> with the embedded data URI + attribution
+assert '<figure class="note-img">' in md and "data:image/png;base64" in md
+assert "<figcaption>A leaf cross-section" in md and "CC BY-SA" in md
 assert "<html" in html and "__MD_JSON__" not in html and "__TITLE__" not in html
 # D: HTML uses \(...\) inline delimiters + the protect-math step; old single-$ inline gone
 assert "marked.parse" in html and "mermaid" in html and "@@MATH" in html
 assert "inlineMath" in html and "[['$','$']]" not in html
 # callout box styling + emoji colouriser present in the HTML
 assert ".callout" in html and "classList.add('callout'" in html
+assert "figure.note-img" in html
 print(f"render OK: markdown={len(md)} chars, html={len(html)} chars")
 
 # 4. ClassNotes round-trips through JSON

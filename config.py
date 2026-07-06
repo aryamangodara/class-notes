@@ -23,6 +23,12 @@ CONFIG = {
     "out_dir": "out",
     # Concurrency for per-section drafting (mirrors grade_questions_parallel).
     "max_parallel_sections": 4,
+    # Images — Wikimedia Commons (primary) + Openverse (fallback), embedded as base64.
+    "image_search": True,
+    "image_vision_select": True,     # let Gemini vision pick the best/appropriate candidate
+    "max_images_per_topic": 6,
+    "image_width": 640,              # px; keeps each embedded image modest
+    "model_vision": "gemini-3.5-flash",
 }
 
 # Injected verbatim into every generation prompt. The single place to set the

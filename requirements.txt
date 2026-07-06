@@ -1,6 +1,7 @@
 google-genai>=2.0.0
 pydantic>=2.7.0
 python-dotenv>=1.0.0
+pillow>=10.0.0                # vision-based selection of embedded diagram images
 # Future: parse official spec PDFs into curriculum maps (see prompts/spec_extract.txt)
 pymupdf>=1.24.0
 # Notes render with MathJax + Mermaid + marked loaded from CDN in the HTML,

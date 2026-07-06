@@ -122,16 +122,33 @@ class WorkedExample(BaseModel):
 
 class Diagram(BaseModel):
     caption: str
-    kind: Literal["mermaid", "latex", "description"] = Field(
+    kind: Literal["mermaid", "latex", "image", "description"] = Field(
         description="'mermaid' for flow/cycle/process diagrams; 'latex' for a SINGLE "
         "mathematical expression or equation ONLY (never a table — MathJax cannot render "
-        "tabular/array/hline; put tables as Markdown tables in the section body); "
-        "'description' for a prose placeholder a teacher or illustrator fills in."
+        "tabular/array/hline; put tables as Markdown tables in the section body); 'image' to "
+        "fetch a real labelled diagram, photo, micrograph, or map from a free image library "
+        "(set content to a precise search query); 'description' for a prose placeholder a "
+        "teacher or illustrator fills in."
     )
     content: str = Field(
-        description="The Mermaid source, a single LaTeX expression, or a prose description per "
-        "`kind`. For 'latex': one expression only, no tabular/array/hline."
+        description="The Mermaid source, a single LaTeX expression, an image SEARCH QUERY (for "
+        "kind 'image', e.g. 'labelled diagram of chloroplast structure'), or a prose "
+        "description per `kind`. For 'latex': one expression only, no tabular/array/hline."
     )
+    image_src: str = Field(
+        default="",
+        description="Populated automatically after image search (base64 data URI) — leave empty.",
+    )
+    attribution: str = Field(
+        default="",
+        description="Populated automatically (image credit and licence) — leave empty.",
+    )
+
+
+class ImageChoice(BaseModel):
+    """Gemini's pick among candidate images for one image slot."""
+    choice: int = Field(description="1-based index of the best image, or 0 if none are suitable.")
+    reason: str = Field(default="", description="Brief reason for the choice.")
 
 
 class Callout(BaseModel):

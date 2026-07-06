@@ -23,9 +23,17 @@ Guidance:
 - Present any table as a Markdown table — never as a LaTeX table (no tabular,
   array, or hline environments; MathJax cannot render them).
 - Include worked examples where they genuinely aid understanding.
-- Add diagrams where they help: `mermaid` for processes/cycles/flows, `latex` for
-  a single expression or equation ONLY (never a table), or a `description`
-  placeholder for a custom illustration a teacher would draw.
+- Add diagrams where they help: `mermaid` for processes/cycles/flows; `latex` for
+  a single expression or equation ONLY (never a table); `image` to pull a real
+  labelled diagram, photo, micrograph, or map from a free image library — set
+  `content` to a SHORT keyword query of 2-4 words naming the thing itself (e.g.
+  "chloroplast diagram", "mitochondrion structure", "palisade cell"), NOT a full
+  sentence, and give a caption; or `description` for a bespoke illustration a
+  teacher would draw. Prefer `image` for real biological/physical structures,
+  apparatus, and standard textbook diagrams — use it where a real visual genuinely
+  helps, not decoratively.
+- In `mermaid` diagrams, wrap any node label containing parentheses, `+`, or
+  punctuation in double quotes (e.g. `A["Glucose (6C)"]`) or Mermaid fails to parse.
 - Do not write the internal objective codes (e.g. SAT-ALG-LIN2-1) in the notes;
   they are references for you only.
 - Match the board's expected rigour exactly — do not exceed the depth profile.

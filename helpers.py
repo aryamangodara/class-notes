@@ -16,11 +16,14 @@ Pipeline (per topic):
 """
 from __future__ import annotations
 
+import base64
 import json
 import os
 import random
 import re
 import time
+import urllib.parse
+import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
@@ -32,6 +35,7 @@ from config import CONFIG, HOUSE_STYLE
 from schemas import (
     ClassNotes,
     CoverageReport,
+    ImageChoice,
     NoteSection,
     NotesExtras,
     NotesOutline,
@@ -243,6 +247,190 @@ def verify_coverage(client: genai.Client, spec: TopicSpec, sections: list[NoteSe
                       **_gen_config("model_verify", "temperature_verify", CoverageReport))
 
 
+# ---------------------------------------------------------------------------
+# Image search — Wikimedia Commons (primary) + Openverse (fallback), embedded as
+# base64 so the HTML stays self-contained. Only freely/CC-licensed results.
+# ---------------------------------------------------------------------------
+
+_UA = "APGuru-ClassNotes/0.1 (https://apguru.com; info@apguru.com)"
+_IMG_MIME_OK = ("image/png", "image/jpeg", "image/svg+xml", "image/gif")
+
+
+def _http_get(url: str, timeout: int = 30) -> bytes:
+    req = urllib.request.Request(url, headers={"User-Agent": _UA})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read()
+
+
+def _strip_tags(s: str) -> str:
+    return re.sub(r"<[^>]+>", "", s or "").strip()
+
+
+def _wikimedia_candidates(query: str, n: int, width: int) -> list[dict]:
+    params = {
+        "action": "query", "format": "json", "generator": "search",
+        "gsrsearch": query, "gsrnamespace": "6", "gsrlimit": str(n),
+        "prop": "imageinfo", "iiprop": "url|extmetadata|mime", "iiurlwidth": str(width),
+    }
+    url = "https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode(params)
+    data = json.loads(_http_get(url))
+    out: list[dict] = []
+    for p in ((data.get("query") or {}).get("pages") or {}).values():
+        ii = (p.get("imageinfo") or [{}])[0]
+        mime, thumb = ii.get("mime") or "", ii.get("thumburl")
+        if not thumb or mime not in _IMG_MIME_OK:
+            continue
+        em = ii.get("extmetadata") or {}
+        out.append({
+            "thumb": thumb,
+            # SVG/GIF thumbnails are rasterised to PNG by Commons.
+            "mime": "image/png" if mime in ("image/svg+xml", "image/gif") else mime,
+            "license": (em.get("LicenseShortName") or {}).get("value") or "see source",
+            "artist": _strip_tags((em.get("Artist") or {}).get("value") or ""),
+            "source": ii.get("descriptionurl") or "",
+            "title": (p.get("title") or "").replace("File:", "").rsplit(".", 1)[0],
+            "via": "Wikimedia Commons",
+        })
+    return out
+
+
+def _openverse_candidates(query: str, n: int) -> list[dict]:
+    params = {"q": query, "license_type": "commercial", "page_size": str(n)}
+    url = "https://api.openverse.org/v1/images/?" + urllib.parse.urlencode(params)
+    try:
+        data = json.loads(_http_get(url))
+    except Exception:
+        return []
+    out: list[dict] = []
+    for x in data.get("results", []):
+        thumb = x.get("thumbnail") or x.get("url")
+        if not thumb:
+            continue
+        out.append({
+            "thumb": thumb, "mime": "image/jpeg",
+            "license": (x.get("license") or "cc").upper(),
+            "artist": x.get("creator") or "",
+            "source": x.get("foreign_landing_url") or x.get("url") or "",
+            "title": x.get("title") or query, "via": "Openverse",
+        })
+    return out
+
+
+_STOP = {
+    "a", "an", "the", "of", "with", "and", "or", "for", "to", "in", "on", "showing",
+    "show", "labelled", "labeled", "diagram", "image", "picture", "photo", "photograph",
+    "before", "after", "example", "typical", "cross", "section", "process", "effect",
+    "between", "detailed", "simple", "clear",
+}
+
+
+def _simplify(query: str) -> list[str]:
+    """Progressively simpler search variants (most specific first). Wikimedia's
+    file-name search matches short keyword queries far better than long phrases."""
+    words = re.findall(r"[A-Za-z0-9']+", query.lower())
+    kw = [w for w in words if w not in _STOP]
+    variants = [query.strip()]
+    if kw:
+        variants += [" ".join(kw), " ".join(kw[:3]), " ".join(kw[:2])]
+    seen: set[str] = set()
+    out: list[str] = []
+    for v in variants:
+        v = v.strip()
+        if v and v.lower() not in seen:
+            seen.add(v.lower())
+            out.append(v)
+    return out
+
+
+def _search_images(query: str, n: int, width: int) -> list[dict]:
+    """Wikimedia (with query simplification) augmented by Openverse when thin."""
+    cands: list[dict] = []
+    for variant in _simplify(query):
+        try:
+            cands = _wikimedia_candidates(variant, n=n, width=width)
+        except Exception as exc:
+            print(f"    wikimedia error for '{variant[:32]}': {exc}")
+            cands = []
+        if cands:
+            break
+    if len(cands) < 2:
+        cands = cands + _openverse_candidates(query, n=n)
+    return cands
+
+
+def _data_uri(b: bytes, mime: str) -> str:
+    return f"data:{mime};base64,{base64.b64encode(b).decode('ascii')}"
+
+
+def _attribution(c: dict) -> str:
+    who = f" by {c['artist']}" if c.get("artist") else ""
+    lic = f", {c['license']}" if c.get("license") else ""
+    title = c.get("title") or "Image"
+    if c.get("source"):
+        title = f'<a href="{c["source"]}" target="_blank" rel="noopener">{title}</a>'
+    return f'{title}{who}{lic} (via {c.get("via", "the web")})'
+
+
+def _select_image(client: genai.Client, query: str, caption: str, candidates: list[dict]) -> int:
+    """Gemini vision picks the best candidate; returns 0-based index, or -1 for none."""
+    import io
+    from PIL import Image
+
+    prompt = (
+        "These study notes need ONE illustration for:\n"
+        f"Caption: {caption}\nSearch query: {query}\n\n"
+        f"{len(candidates)} candidate images follow, numbered 1..{len(candidates)}. Choose the "
+        "single clearest, most accurate, on-topic educational image. Reject anything irrelevant, "
+        "low quality, a joke, heavily watermarked, or misleading. If none are suitable, choose 0."
+    )
+    contents: list = [prompt]
+    for i, c in enumerate(candidates, 1):
+        contents.append(f"Image {i}:")
+        try:
+            contents.append(Image.open(io.BytesIO(c["_bytes"])))
+        except Exception:
+            contents.append(f"(image {i} could not be read)")
+    choice = call_model(client, label="img-select", contents=contents,
+                        **_gen_config("model_vision", "temperature_verify", ImageChoice))
+    return choice.choice - 1 if 1 <= choice.choice <= len(candidates) else -1
+
+
+def fetch_images_for_sections(client: genai.Client, sections: list[NoteSection], *,
+                              max_images: int, width: int) -> int:
+    """Search, select and embed images for `image` diagrams in place; returns count embedded."""
+    slots = [d for s in sections for d in s.diagrams if d.kind == "image" and not d.image_src]
+    embedded = 0
+    for d in slots:
+        if embedded >= max_images:
+            break
+        query = (d.content or d.caption or "").strip()
+        if not query:
+            continue
+        try:
+            cands = _search_images(query, n=6, width=width)[:4]
+            for c in cands:
+                try:
+                    c["_bytes"] = _http_get(c["thumb"])
+                except Exception:
+                    c["_bytes"] = b""
+            cands = [c for c in cands if c.get("_bytes")]
+            if not cands:
+                print(f"    image: nothing usable for '{query[:40]}'")
+                continue
+            idx = _select_image(client, query, d.caption, cands) if CONFIG.get("image_vision_select") else 0
+            if idx < 0:
+                print(f"    image: no suitable match for '{query[:40]}'")
+                continue
+            c = cands[idx]
+            d.image_src = _data_uri(c["_bytes"], c["mime"])
+            d.attribution = _attribution(c)
+            embedded += 1
+            print(f"    image: '{query[:38]}' -> {c['title'][:36]} ({c['license']})")
+        except Exception as exc:
+            print(f"    image fetch failed for '{query[:40]}': {exc}")
+    return embedded
+
+
 def generate_notes(client: genai.Client, spec: TopicSpec) -> ClassNotes:
     """Run the full pipeline for one topic and assemble the ClassNotes."""
     print(f"[1/4] outline   {spec.topic_id}")
@@ -251,6 +439,16 @@ def generate_notes(client: genai.Client, spec: TopicSpec) -> ClassNotes:
 
     print(f"[2/4] write     {len(outline.sections)} section(s) in parallel")
     sections = write_sections(client, spec, outline)
+
+    if CONFIG.get("image_search"):
+        print("[img]  fetching relevant images (Wikimedia Commons / Openverse)")
+        try:
+            k = fetch_images_for_sections(client, sections,
+                                          max_images=CONFIG["max_images_per_topic"],
+                                          width=CONFIG["image_width"])
+            print(f"       embedded {k} image(s)")
+        except Exception as exc:
+            print(f"       image stage skipped: {exc}")
 
     print("[3/4] finalize  overview, key terms, misconceptions, exam tips, practice")
     extras = finalize_notes(client, spec, sections)
@@ -320,6 +518,15 @@ _CALLOUT = {
 }
 
 
+_MERMAID_LABEL = re.compile(r'(?<!\[)\[([^\[\]"]+)\](?!\])')
+
+
+def _sanitize_mermaid(src: str) -> str:
+    """Quote square-bracket node labels so parentheses / '+' / punctuation don't
+    break Mermaid's parser (e.g. `A[Glucose (6C)]` -> `A["Glucose (6C)"]`)."""
+    return _MERMAID_LABEL.sub(lambda m: f'["{m.group(1).strip()}"]', src)
+
+
 def render_markdown(n: ClassNotes) -> str:
     L: list[str] = []
     L.append(f"# {n.topic}")
@@ -353,7 +560,7 @@ def render_markdown(n: ClassNotes) -> str:
             L.append(f"\n> **{emoji} {label}**\n>\n> {body}")
         for d in s.diagrams:
             if d.kind == "mermaid":
-                L.append(f"\n```mermaid\n{d.content}\n```")
+                L.append(f"\n```mermaid\n{_sanitize_mermaid(d.content)}\n```")
                 L.append(f"*{d.caption}*")
             elif d.kind == "latex" and not _LATEX_TABLE.search(d.content):
                 L.append(f"\n$$\n{d.content}\n$$")
@@ -361,6 +568,17 @@ def render_markdown(n: ClassNotes) -> str:
             elif d.kind == "latex":
                 # MathJax can't render tabular/\hline as math — show as code, not an error.
                 L.append(f"\n**{d.caption}:**\n\n```\n{d.content}\n```")
+            elif d.kind == "image" and d.image_src:
+                alt = (d.caption or "figure").replace('"', "'")
+                credit = f' <span class="credit">— {d.attribution}</span>' if d.attribution else ""
+                L.append(
+                    f'\n<figure class="note-img">'
+                    f'<img src="{d.image_src}" alt="{alt}" loading="lazy">'
+                    f'<figcaption>{_clean_md(d.caption)}{credit}</figcaption></figure>'
+                )
+            elif d.kind == "image":
+                # No suitable free image found — degrade to a placeholder for the teacher.
+                L.append(f"\n> **Suggested image — {d.caption}:** {_clean_md(d.content)}")
             else:
                 L.append(f"\n> **Diagram — {d.caption}:** {_clean_md(d.content)}")
         for ex in s.worked_examples:
@@ -416,6 +634,7 @@ _HTML_SHELL = r"""<!doctype html>
  details{margin:.4rem 0;background:#fafafa;border:1px solid #eee;border-radius:8px;padding:.4rem .8rem}
  summary{cursor:pointer;font-weight:600} blockquote{border-left:3px solid #d0d7de;margin:.6rem 0;padding:.2rem 1rem;color:#555}
  em{color:#666} .mermaid{margin:1rem 0;text-align:center}
+ pre.mermaid-fallback{background:#fff8f0;border:1px dashed #e0a030;border-radius:6px;color:#6a5a3a;font-size:.85em}
  blockquote.callout{border:1px solid #d0d7de;border-left-width:6px;border-radius:8px;padding:.5rem 1rem;margin:1rem 0;color:#1f2328}
  blockquote.callout p{margin:.45rem 0}
  blockquote.callout p:first-child{font-weight:700}
@@ -427,6 +646,10 @@ _HTML_SHELL = r"""<!doctype html>
  blockquote.callout.formula p:first-child{color:#1a7f37}
  blockquote.callout.remember{border-left-color:#8250df;background:#fbefff}
  blockquote.callout.remember p:first-child{color:#8250df}
+ figure.note-img{margin:1.3rem auto;text-align:center}
+ figure.note-img img{max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff}
+ figure.note-img figcaption{font-size:.9em;color:#57606a;margin-top:.45rem}
+ figure.note-img .credit{color:#8b949e}
 </style></head>
 <body><div id="content">Rendering…</div>
 <script type="module">
@@ -452,7 +675,20 @@ document.querySelectorAll('code.language-mermaid').forEach((c)=>{
   const d=document.createElement('div'); d.className='mermaid'; d.textContent=c.textContent;
   (c.closest('pre')||c).replaceWith(d);
 });
-mermaid.run().finally(()=>{ if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise();} });
+(async () => {
+  for (const el of document.querySelectorAll('.mermaid')) {
+    let ok = true;
+    try { ok = (await mermaid.parse(el.textContent, {suppressErrors:true})) !== false; }
+    catch (e) { ok = false; }
+    if (!ok) {  // invalid diagram -> show the source in a soft box, never the error bomb
+      const pre = document.createElement('pre');
+      pre.className = 'mermaid-fallback'; pre.textContent = el.textContent;
+      el.replaceWith(pre);
+    }
+  }
+  try { await mermaid.run(); } catch (e) {}
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+})();
 </script></body></html>"""
 
 
