@@ -101,7 +101,7 @@ assert "\\begin{array}" in md and "$$\n\\begin{array}" not in md
 # inline \(...\) math survives _clean_md intact
 assert "\\(\\Delta G < 0\\)" in md and "\\(2\\,\\text{ATP}\\)" in md
 # callouts render as labelled blockquote boxes; math inside a callout survives
-assert "> 💡 **Quick Tip** —" in md and "> ⚠️ **Common Mistake** —" in md
+assert "> **💡 Quick Tip**" in md and "> **⚠️ Common Mistake**" in md
 assert "\\(y\\)-intercept" in md
 assert "<html" in html and "__MD_JSON__" not in html and "__TITLE__" not in html
 # D: HTML uses \(...\) inline delimiters + the protect-math step; old single-$ inline gone
