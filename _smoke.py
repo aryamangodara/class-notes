@@ -92,7 +92,7 @@ notes = ClassNotes(
 )
 md = helpers.render_markdown(notes)
 html = helpers.render_html(notes)
-assert spec.topic in md and "## Learning objectives" in md
+assert spec.topic in md and "<summary>Learning objectives</summary>" in md
 # A: internal objective codes are NOT in the student-facing notes
 assert spec.learning_objectives[0].code not in md
 # C: literal \n was unescaped to a real newline
@@ -112,6 +112,12 @@ assert 'A["Glucose (6C)"]' in md
 # image diagram renders as a <figure> with the embedded data URI + attribution
 assert '<figure class="note-img">' in md and "data:image/png;base64" in md
 assert "<figcaption>A leaf cross-section" in md and "CC BY-SA" in md
+# exam strategy box merges curated board tips + topic exam_tips; no separate section
+assert "> **🎯 AP exam strategy**" in md and "published rubric" in md
+assert "<summary>Exam tips</summary>" not in md and "needs a mechanism" in md
+# sections render as collapsible <details class="topic"> with the heading as summary
+assert '<details class="topic">' in md
+assert "<summary>Glycolysis</summary>" in md and "<summary>Key terms</summary>" in md
 assert "<html" in html and "__MD_JSON__" not in html and "__TITLE__" not in html
 # D: HTML uses \(...\) inline delimiters + the protect-math step; old single-$ inline gone
 assert "marked.parse" in html and "mermaid" in html and "@@MATH" in html
@@ -119,6 +125,7 @@ assert "inlineMath" in html and "[['$','$']]" not in html
 # callout box styling + emoji colouriser present in the HTML
 assert ".callout" in html and "classList.add('callout'" in html
 assert "figure.note-img" in html
+assert "details.topic" in html
 print(f"render OK: markdown={len(md)} chars, html={len(html)} chars")
 
 # 4. ClassNotes round-trips through JSON

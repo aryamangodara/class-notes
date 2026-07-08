@@ -51,3 +51,59 @@ high-stakes exams. Non-negotiables:
 - Never invent facts to fill a gap. If unsure, lower your confidence and flag it.
 - Teach toward how the topic is assessed, not just the content.
 """
+
+# Curated, board-level exam strategy — rendered as a "🎯 <level> exam strategy"
+# section on every topic of that board (looked up by the note's `level`).
+# Hand-authored so exam-format facts stay accurate; these are board-general (true
+# across subjects). Validate against each board's official exam spec before
+# relying on specifics.
+BOARD_EXAM_TIPS: dict[str, list[str]] = {
+    "AP": [
+        "The exam has two parts — multiple-choice (Section I) and free-response (Section II). "
+        "There is no penalty for a wrong multiple-choice answer, so never leave one blank.",
+        "Free-response is point-scored against a published rubric: show every step and your "
+        "reasoning. A bare final answer usually earns little, and follow-through credit means "
+        "one early slip need not cost the later points.",
+        "Scores run 1–5, so you do not need everything right — pace the multiple-choice and bank "
+        "the marks you are sure of before the harder items.",
+        "Answer the exact task verb: Justify, Explain, Calculate and Describe each demand a "
+        "different response — do not just restate the content.",
+        "Check your subject's calculator and formula/reference-sheet policy in advance; it varies "
+        "by AP subject.",
+    ],
+    "IGCSE": [
+        "Papers are tiered — Core and Extended (Supplement). Extended is required to access the "
+        "highest grades, so make sure you are working to the tier you are entered for.",
+        "Command words set the depth expected: 'state/give' = brief recall, 'describe' = say what "
+        "happens, 'explain' = give reasons or a mechanism, 'suggest' = apply to an unfamiliar case.",
+        "The mark in brackets tells you how many creditable points to make — a [3] answer needs "
+        "three distinct points.",
+        "Give units, balanced equations and precise terms; examiners penalise missing units, "
+        "unbalanced equations and vague wording.",
+        "For the practical paper, practise reading apparatus, recording results, and describing "
+        "the controls and variables.",
+    ],
+    "SAT": [
+        "The digital SAT is section-adaptive: your first module sets the difficulty and score "
+        "ceiling of the second, so treat every question as counting.",
+        "There is no penalty for wrong answers — always enter something, even a guess.",
+        "A calculator (built-in Desmos) is allowed throughout the Math section; set up the algebra "
+        "first, then use it to check.",
+        "Time is tight (about 75 seconds per Math question), and the wrong options are built around "
+        "common errors like sign slips and swapped slope/intercept — watch for the trap.",
+        "For student-produced ('grid-in') responses, follow the entry rules and keep within the "
+        "character limit.",
+    ],
+    "A-Level": [
+        "Answers are marked against Assessment Objectives (AO1 recall, AO2 application, AO3 "
+        "analysis/evaluation) — 'explain' and 'evaluate' want reasoning, not just facts.",
+        "Show full working: method marks are awarded for correct steps even if the final answer is "
+        "wrong. Always state units and appropriate significant figures.",
+        "Papers are synoptic — questions can combine several topics, so revise the links between "
+        "topics, not just each in isolation.",
+        "Longer questions also assess the quality and logical structure of your written answer — "
+        "plan a coherent argument before writing.",
+        "Where the spec demands exact wording (a definition, or 'prove from first principles'), "
+        "learn and reproduce it precisely.",
+    ],
+}

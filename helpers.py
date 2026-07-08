@@ -31,7 +31,7 @@ from pathlib import Path
 from google import genai
 from google.genai import types
 
-from config import CONFIG, HOUSE_STYLE
+from config import BOARD_EXAM_TIPS, CONFIG, HOUSE_STYLE
 from schemas import (
     ClassNotes,
     CoverageReport,
@@ -528,6 +528,17 @@ def _sanitize_mermaid(src: str) -> str:
     return _MERMAID_LABEL.sub(lambda m: f'["{m.group(1).strip()}"]', src)
 
 
+def _fold_open(L: list[str], heading: str) -> None:
+    """Start a collapsible section. Content appended after this renders as Markdown
+    (the blank line the pattern creates resumes Markdown inside the <details>);
+    close it with _fold_close. Same trick the practice-solution <details> uses."""
+    L.append(f'\n<details class="topic">\n<summary>{_clean_md(heading)}</summary>\n')
+
+
+def _fold_close(L: list[str]) -> None:
+    L.append("\n</details>")
+
+
 def render_markdown(n: ClassNotes) -> str:
     L: list[str] = []
     L.append(f"# {n.topic}")
@@ -536,20 +547,20 @@ def render_markdown(n: ClassNotes) -> str:
 
     # Objective *codes* are internal grounding IDs — keep them in the JSON, not
     # in the student-facing notes. Tier (Core/Supplement) stays; it's pedagogical.
-    L.append("## Learning objectives")
+    _fold_open(L, "Learning objectives")
     for lo in n.learning_objectives:
         tier = f" _({lo.tier})_" if lo.tier else ""
         L.append(f"- {lo.statement}{tier}")
-    L.append("")
+    _fold_close(L)
 
     if n.key_terms:
-        L.append("## Key terms")
+        _fold_open(L, "Key terms")
         for t in n.key_terms:
             L.append(f"- **{t.term}** — {_clean_md(t.definition)}")
-        L.append("")
+        _fold_close(L)
 
     for s in n.sections:
-        L.append(f"## {s.heading}")
+        _fold_open(L, s.heading)
         L.append(_clean_md(s.body))
         for c in s.callouts:
             emoji, label = _CALLOUT.get(c.kind, ("📌", "Note"))
@@ -584,29 +595,34 @@ def render_markdown(n: ClassNotes) -> str:
                 L.append(f"\n> **Diagram — {d.caption}:** {_clean_md(d.content)}")
         for ex in s.worked_examples:
             L.append(f"\n**Worked example.** {_clean_md(ex.prompt)}\n\n{_clean_md(ex.solution)}")
-        L.append("")
+        _fold_close(L)
 
     if n.common_misconceptions:
-        L.append("## Common misconceptions")
+        _fold_open(L, "Common misconceptions")
         for m in n.common_misconceptions:
             L.append(f"- {_clean_md(m)}")
-        L.append("")
+        _fold_close(L)
 
-    if n.exam_tips:
-        L.append("## Exam tips")
-        for t in n.exam_tips:
-            L.append(f"- {_clean_md(t)}")
+    # The topic-level exam_tips overlapped with the curated per-board strategy, so they
+    # are consolidated into ONE "🎯 exam strategy" box (curated board tips first, then
+    # this topic's tips) rather than shown as a separate "Exam tips" section.
+    strategy = list(BOARD_EXAM_TIPS.get(n.level, [])) + list(n.exam_tips)
+    if strategy:
+        # Callout-style box (leading 🎯 title, then bullets) tinted by the HTML colouriser.
+        bullets = "\n".join(f"> - {_clean_md(t)}" for t in strategy)
+        L.append(f"\n> **🎯 {n.level} exam strategy**\n>\n{bullets}")
         L.append("")
 
     if n.practice_questions:
-        L.append("## Practice questions")
+        _fold_open(L, "Practice questions")
         for i, q in enumerate(n.practice_questions, 1):
             L.append(f"\n**Q{i}.** {_clean_md(q.question)}\n")
             L.append(f"<details><summary>Worked solution</summary>\n\n{_clean_md(q.worked_solution)}\n\n</details>")
-        L.append("")
+        _fold_close(L)
 
-    L.append("## Summary")
+    _fold_open(L, "Summary")
     L.append(_clean_md(n.summary))
+    _fold_close(L)
 
     covered = sum(1 for c in n.coverage_report if c.covered)
     total = len(n.coverage_report)
@@ -634,6 +650,12 @@ _HTML_SHELL = r"""<!doctype html>
  pre{background:#f7f7f8;padding:1rem;border-radius:8px;overflow:auto} pre code{background:none;padding:0}
  details{margin:.4rem 0;background:#fafafa;border:1px solid #eee;border-radius:8px;padding:.4rem .8rem}
  summary{cursor:pointer;font-weight:600} blockquote{border-left:3px solid #d0d7de;margin:.6rem 0;padding:.2rem 1rem;color:#555}
+ details.topic{background:none;border:none;border-top:1px solid #e5e7eb;border-radius:0;margin:0;padding:.15rem 0}
+ details.topic > summary{font-weight:700;font-size:1.25em;padding:.75rem 0;list-style:none;color:#111}
+ details.topic > summary::-webkit-details-marker{display:none}
+ details.topic > summary::before{content:"▸";color:#9aa0a6;display:inline-block;width:1.2em;font-size:.85em}
+ details.topic[open] > summary::before{content:"▾"}
+ details.topic[open]{padding-bottom:.7rem}
  em{color:#666} .mermaid{margin:1rem 0;text-align:center}
  pre.mermaid-fallback{background:#fff8f0;border:1px dashed #e0a030;border-radius:6px;color:#6a5a3a;font-size:.85em}
  blockquote.callout{border:1px solid #d0d7de;border-left-width:6px;border-radius:8px;padding:.5rem 1rem;margin:1rem 0;color:#1f2328}
@@ -647,6 +669,8 @@ _HTML_SHELL = r"""<!doctype html>
  blockquote.callout.formula p:first-child{color:#1a7f37}
  blockquote.callout.remember{border-left-color:#8250df;background:#fbefff}
  blockquote.callout.remember p:first-child{color:#8250df}
+ blockquote.callout.strategy{border-left-color:#0e7490;background:#cffafe}
+ blockquote.callout.strategy p:first-child{color:#0e7490}
  figure.note-img{margin:1.3rem auto;text-align:center}
  figure.note-img img{max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff}
  figure.note-img figcaption{font-size:.9em;color:#57606a;margin-top:.45rem}
@@ -667,7 +691,7 @@ const src = md.replace(/\$\$[\s\S]*?\$\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/g,
 const html = marked.parse(src).replace(/@@MATH(\d+)@@/g,(_,i)=>esc(MATH[i]));
 document.getElementById('content').innerHTML = html;
 // Colourise callout blockquotes by the emoji that starts their title line.
-const CT=[['💡','tip'],['⚠','mistake'],['📐','formula'],['🧠','remember']];
+const CT=[['💡','tip'],['⚠','mistake'],['📐','formula'],['🧠','remember'],['🎯','strategy']];
 document.querySelectorAll('#content blockquote').forEach(bq=>{
   const t=(bq.textContent||'').trim();
   for(const [e,k] of CT){ if(t.startsWith(e)){ bq.classList.add('callout',k); break; } }
@@ -687,7 +711,16 @@ document.querySelectorAll('code.language-mermaid').forEach((c)=>{
       el.replaceWith(pre);
     }
   }
-  try { await mermaid.run(); } catch (e) {}
+  // Sections start collapsed; a Mermaid diagram in a hidden <details> sizes to 0.
+  // Render only visible diagrams, and render a section's diagrams when it opens.
+  const runIn = (root) => {
+    const pending = [...root.querySelectorAll('.mermaid:not([data-processed])')]
+      .filter(el => el.offsetParent !== null);
+    if (pending.length) mermaid.run({nodes: pending}).catch(()=>{});
+  };
+  document.querySelectorAll('details.topic').forEach(d =>
+    d.addEventListener('toggle', () => { if (d.open) runIn(d); }));
+  runIn(document);
   if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
 })();
 </script></body></html>"""
