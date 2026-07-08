@@ -1,0 +1,43 @@
+{
+  "topic_id": "alevel-chem-enthalpy-changes",
+  "board": "Edexcel A-Level",
+  "subject": "Chemistry",
+  "level": "A-Level",
+  "unit": "Topic 8: Energetics I",
+  "topic": "Enthalpy Changes",
+  "prerequisites": [
+    "Exothermic and endothermic reactions and energy-level (reaction profile) diagrams",
+    "Bond breaking is endothermic and bond making is exothermic",
+    "Moles, molar mass and amount-of-substance calculations",
+    "Standard conditions and state symbols"
+  ],
+  "learning_objectives": [
+    {
+      "code": "8.1",
+      "statement": "Define enthalpy change (delta H) and the standard enthalpy changes of reaction, formation, combustion and neutralisation, including the standard conditions.",
+      "tier": "A-Level",
+      "command_words": ["define"]
+    },
+    {
+      "code": "8.2",
+      "statement": "Calculate an enthalpy change from calorimetry data using q = mc(delta T) and delta H = -q/n, applying the correct sign convention and units.",
+      "tier": "A-Level",
+      "command_words": ["calculate"]
+    },
+    {
+      "code": "8.3",
+      "statement": "Apply Hess's law, using enthalpy cycles built from formation or combustion data, to determine an enthalpy change indirectly.",
+      "tier": "A-Level",
+      "command_words": ["apply", "determine"]
+    },
+    {
+      "code": "8.4",
+      "statement": "Estimate the enthalpy change of a reaction from mean bond enthalpies (bonds broken minus bonds made) and explain why this differs from an experimentally determined value.",
+      "tier": "A-Level",
+      "command_words": ["calculate", "explain"]
+    }
+  ],
+  "depth_profile": "A-Level rigour: students give precise definitions with standard conditions (298 K, 100 kPa, solutions at 1 mol dm^-3), carry out calorimetry calculations confidently (q = mc(delta T), then per mole, with correct signs), construct and use Hess cycles (formation and combustion routes) with correct arrow directions, and use mean bond enthalpies while explaining their limitation (mean values, and bond enthalpies apply to gaseous species). Born-Haber cycles and lattice enthalpies are NOT part of this topic (they are Energetics II). Sign conventions, units (kJ mol^-1) and clear working carry marks.",
+  "assessment_notes": "Edexcel A-Level papers require the correct SIGN convention (exothermic is negative), units of kJ mol^-1, and full working. Hess's-law questions award method marks for a correct cycle with the right arrow directions; bond-enthalpy questions require 'bonds broken minus bonds made' and an explanation of why the estimate differs from a data-book value (mean bond enthalpies; not all species gaseous). Marks are commonly lost through a wrong sign, dividing by the wrong number of moles, or missing units.",
+  "source": "Hand-seeded for POC — validate against the Edexcel A-Level Chemistry specification (9CH0), Topic 8 Energetics I."
+}

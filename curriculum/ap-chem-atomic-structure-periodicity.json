@@ -1,0 +1,43 @@
+{
+  "topic_id": "ap-chem-atomic-structure-periodicity",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 1: Atomic Structure and Properties",
+  "topic": "Atomic Structure and Periodic Trends",
+  "prerequisites": [
+    "Subatomic particles (protons, neutrons, electrons) and isotopes",
+    "Moles, molar mass and Avogadro's number",
+    "The layout of the periodic table (periods and groups)",
+    "Coulomb's law as an idea (attraction increases with charge, decreases with distance)"
+  ],
+  "learning_objectives": [
+    {
+      "code": "SAP-1.A",
+      "statement": "Calculate the average atomic mass of an element from isotopic masses and relative abundances, and interpret an element's mass spectrum.",
+      "tier": null,
+      "command_words": ["calculate", "interpret"]
+    },
+    {
+      "code": "SAP-1.B",
+      "statement": "Write the electron configuration of an atom or ion (using the Aufbau shell/subshell model) and relate it to the element's position on the periodic table.",
+      "tier": null,
+      "command_words": ["represent", "explain"]
+    },
+    {
+      "code": "SAP-1.C",
+      "statement": "Explain how photoelectron spectroscopy (PES) data provide evidence for shells and subshells and for effective nuclear charge (Zeff).",
+      "tier": null,
+      "command_words": ["explain"]
+    },
+    {
+      "code": "SAP-2.A",
+      "statement": "Explain periodic trends in atomic radius, ionization energy and electronegativity using Coulomb's law, effective nuclear charge and electron shielding.",
+      "tier": null,
+      "command_words": ["explain", "justify"]
+    }
+  ],
+  "depth_profile": "AP conceptual depth: students reason with Coulomb's law and effective nuclear charge (Zeff) to EXPLAIN trends and data, write electron configurations (including the common Cr and Cu exceptions), and interpret PES and mass-spectrum data. Students are NOT required to know quantum numbers, orbital shapes beyond the s/p/d labels, or the Schrodinger equation. The emphasis is on causal explanation (Coulombic attraction, distance, shielding) and on interpreting experimental data, not on rote facts.",
+  "assessment_notes": "AP Chemistry MCQs and free-response require EXPLAINING a trend with a Coulomb's-law argument (Zeff and distance) — a bare statement of the trend earns no explanation credit. PES questions ask candidates to match peaks to subshells and reason that binding energy tracks Zeff. Quantitative parts include average atomic mass from isotopic abundances. Justify every claim with the atomic model; connect electron configuration to periodic position.",
+  "source": "Hand-seeded for POC — validate against the AP Chemistry Course and Exam Description (2020), Unit 1 Atomic Structure and Properties."
+}

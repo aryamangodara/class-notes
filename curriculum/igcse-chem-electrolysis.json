@@ -1,0 +1,55 @@
+{
+  "topic_id": "igcse-chem-electrolysis",
+  "board": "Cambridge IGCSE",
+  "subject": "Chemistry",
+  "level": "IGCSE",
+  "unit": "Topic 5: Electrochemistry",
+  "topic": "Electrolysis",
+  "prerequisites": [
+    "Ions and ionic bonding; the charges on common ions",
+    "That ionic compounds conduct electricity when molten or in solution",
+    "Elements, compounds and simple chemical formulae",
+    "The reactivity series of metals (for the aqueous cases)"
+  ],
+  "learning_objectives": [
+    {
+      "code": "5.1C",
+      "statement": "Define electrolysis as the decomposition of an ionic compound, when molten or in aqueous solution, by the passage of an electric current.",
+      "tier": "Core",
+      "command_words": ["define"]
+    },
+    {
+      "code": "5.2C",
+      "statement": "Identify the anode (positive), the cathode (negative) and the electrolyte, and describe the movement of ions to the electrodes during electrolysis.",
+      "tier": "Core",
+      "command_words": ["identify", "describe"]
+    },
+    {
+      "code": "5.3C",
+      "statement": "Predict the products of the electrolysis of a molten binary ionic compound (metal at the cathode, non-metal at the anode).",
+      "tier": "Core",
+      "command_words": ["predict", "state"]
+    },
+    {
+      "code": "5.4S",
+      "statement": "Predict the products of the electrolysis of aqueous solutions, taking account of concentration and the reactivity series (e.g. dilute vs concentrated sodium chloride).",
+      "tier": "Supplement",
+      "command_words": ["predict"]
+    },
+    {
+      "code": "5.5S",
+      "statement": "Write ionic half-equations for the reactions at the electrodes, e.g. cathode 2H+ + 2e- -> H2 and anode 4OH- -> O2 + 2H2O + 4e-.",
+      "tier": "Supplement",
+      "command_words": ["construct", "write"]
+    },
+    {
+      "code": "5.6S",
+      "statement": "Describe electroplating and the electrolytic purification of copper, identifying the electrodes and electrolyte used.",
+      "tier": "Supplement",
+      "command_words": ["describe"]
+    }
+  ],
+  "depth_profile": "IGCSE depth: students recall the definition and the anode/cathode/electrolyte set-up, describe ion movement, and predict products for molten compounds (Core) and simple aqueous solutions (Supplement). Supplement students write balanced electrode half-equations (with electrons) and describe electroplating and copper purification. Students are NOT required to know standard electrode potentials, Faraday's quantitative laws, or the thermodynamics of cells. Keep to ion movement, electrode products and simple half-equations, and separate Core from Supplement content.",
+  "assessment_notes": "Cambridge 0620 Paper 4 uses structured questions: label an electrolysis cell (anode, cathode, electrolyte), predict and state the products, and (Supplement) write balanced half-equations and reason about aqueous cases. A labelled diagram of the electrolysis cell is frequently required. Common errors: swapping anode and cathode, forgetting that positive ions (cations) move to the cathode, and half-equations with unbalanced electrons or charges.",
+  "source": "Hand-seeded for POC — validate against the Cambridge IGCSE Chemistry 0620 syllabus (2023-2025), Topic 5 Electrochemistry."
+}

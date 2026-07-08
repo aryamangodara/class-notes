@@ -29,9 +29,11 @@ Guidance:
   `content` to a SHORT keyword query of 2-4 words naming the thing itself (e.g.
   "chloroplast diagram", "mitochondrion structure", "palisade cell"), NOT a full
   sentence, and give a caption; or `description` for a bespoke illustration a
-  teacher would draw. Prefer `image` for real biological/physical structures,
-  apparatus, and standard textbook diagrams — use it where a real visual genuinely
-  helps, not decoratively.
+  teacher would draw. Prefer `image` for STANDARD, widely-depicted things that free
+  libraries reliably have — labelled organelles, cells, atomic/bonding diagrams,
+  standard apparatus (e.g. an electrolysis cell), periodic trends — and avoid
+  `image` for very specific experimental set-ups or one-off scenarios (use
+  `description` for those). Use it where a real visual genuinely helps, not decoratively.
 - In `mermaid` diagrams, wrap any node label containing parentheses, `+`, or
   punctuation in double quotes (e.g. `A["Glucose (6C)"]`) or Mermaid fails to parse.
 - Do not write the internal objective codes (e.g. SAT-ALG-LIN2-1) in the notes;
