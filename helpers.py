@@ -201,6 +201,7 @@ def write_section(client: genai.Client, spec: TopicSpec, section,
         f"  - {s.heading}: {s.intent} [{', '.join(s.covers_objective_codes) or 'none'}]"
         for s in outline.sections if s is not section
     ) or "  (this is the only section)"
+    exam_format = "\n".join(f"  - {t}" for t in BOARD_EXAM_TIPS.get(spec.level, [])) or "  (none)"
     prompt = load_prompt("write_section.txt").format(
         house_style=HOUSE_STYLE,
         spec_block=_spec_block(spec),
@@ -208,6 +209,7 @@ def write_section(client: genai.Client, spec: TopicSpec, section,
         intent=section.intent,
         codes=", ".join(section.covers_objective_codes) or "(none specified)",
         outline=others,
+        exam_format=exam_format,
     )
     return call_model(client, label=f"section:{section.heading[:24]}", contents=prompt,
                       **_gen_config("model_write", "temperature_write", NoteSection))
@@ -451,7 +453,7 @@ def generate_notes(client: genai.Client, spec: TopicSpec) -> ClassNotes:
         except Exception as exc:
             print(f"       image stage skipped: {exc}")
 
-    print("[3/4] finalize  overview, key terms, misconceptions, exam tips, practice")
+    print("[3/4] finalize  overview, key terms, misconceptions, practice, summary")
     extras = finalize_notes(client, spec, sections)
 
     print(f"[4/4] verify    coverage of {len(spec.learning_objectives)} objective(s)")
@@ -470,7 +472,7 @@ def generate_notes(client: genai.Client, spec: TopicSpec) -> ClassNotes:
         topic_id=spec.topic_id, board=spec.board, subject=spec.subject, level=spec.level,
         unit=spec.unit, topic=spec.topic, learning_objectives=spec.learning_objectives,
         overview=extras.overview, key_terms=extras.key_terms, sections=sections,
-        common_misconceptions=extras.common_misconceptions, exam_tips=extras.exam_tips,
+        common_misconceptions=extras.common_misconceptions,
         practice_questions=extras.practice_questions, summary=extras.summary,
         coverage_report=coverage.items, review_flags=flags,
         generated_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -595,6 +597,9 @@ def render_markdown(n: ClassNotes) -> str:
                 L.append(f"\n> **Diagram — {d.caption}:** {_clean_md(d.content)}")
         for ex in s.worked_examples:
             L.append(f"\n**Worked example.** {_clean_md(ex.prompt)}\n\n{_clean_md(ex.solution)}")
+        if s.exam_tips:
+            tips = "\n".join(f"> - {_clean_md(t)}" for t in s.exam_tips)
+            L.append(f"\n> **🎯 Exam strategy**\n>\n{tips}")
         _fold_close(L)
 
     if n.common_misconceptions:
@@ -602,16 +607,6 @@ def render_markdown(n: ClassNotes) -> str:
         for m in n.common_misconceptions:
             L.append(f"- {_clean_md(m)}")
         _fold_close(L)
-
-    # The topic-level exam_tips overlapped with the curated per-board strategy, so they
-    # are consolidated into ONE "🎯 exam strategy" box (curated board tips first, then
-    # this topic's tips) rather than shown as a separate "Exam tips" section.
-    strategy = list(BOARD_EXAM_TIPS.get(n.level, [])) + list(n.exam_tips)
-    if strategy:
-        # Callout-style box (leading 🎯 title, then bullets) tinted by the HTML colouriser.
-        bullets = "\n".join(f"> - {_clean_md(t)}" for t in strategy)
-        L.append(f"\n> **🎯 {n.level} exam strategy**\n>\n{bullets}")
-        L.append("")
 
     if n.practice_questions:
         _fold_open(L, "Practice questions")

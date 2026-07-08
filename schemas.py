@@ -185,6 +185,13 @@ class NoteSection(BaseModel):
         "Key Formulas/Facts, Remember/mnemonics) — include only where they genuinely help and "
         "are grounded; do not force one of every kind.",
     )
+    exam_tips: list[str] = Field(
+        default_factory=list,
+        description="1-3 exam-strategy pointers SPECIFIC to this section: how this part is "
+        "examined and where marks are won or lost (command words, mark-scheme quirks, common "
+        "errors). Grounded in the board's exam format and assessment notes; omit if the section "
+        "has no distinctive exam angle.",
+    )
     confidence: Literal["high", "medium", "low"] = Field(
         description="Honest self-reported confidence in the factual accuracy of this section."
     )
@@ -204,10 +211,6 @@ class NotesExtras(BaseModel):
     key_terms: list[KeyTerm]
     common_misconceptions: list[str] = Field(
         description="Frequent student errors paired with the correct understanding."
-    )
-    exam_tips: list[str] = Field(
-        description="How to earn marks at this board: command words, examiner expectations, "
-        "frequent question types."
     )
     practice_questions: list[PracticeQuestion]
     summary: str = Field(description="Concise recap a student could revise from.")
@@ -247,7 +250,6 @@ class ClassNotes(BaseModel):
     key_terms: list[KeyTerm]
     sections: list[NoteSection]
     common_misconceptions: list[str]
-    exam_tips: list[str]
     practice_questions: list[PracticeQuestion]
     summary: str
     # quality / audit

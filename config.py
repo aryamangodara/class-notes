@@ -52,11 +52,12 @@ high-stakes exams. Non-negotiables:
 - Teach toward how the topic is assessed, not just the content.
 """
 
-# Curated, board-level exam strategy — rendered as a "🎯 <level> exam strategy"
-# section on every topic of that board (looked up by the note's `level`).
-# Hand-authored so exam-format facts stay accurate; these are board-general (true
-# across subjects). Validate against each board's official exam spec before
-# relying on specifics.
+# Curated, board-level exam-format facts (board-general — true across subjects).
+# NOT rendered as a box. Injected into write_section as grounding so each
+# section's own `exam_tips` stay consistent with how the exam actually works; the
+# rendered "🎯 Exam strategy" box is per-section, built from NoteSection.exam_tips.
+# Hand-authored so exam-format facts stay accurate; validate against each board's
+# official exam spec before relying on specifics.
 BOARD_EXAM_TIPS: dict[str, list[str]] = {
     "AP": [
         "The exam has two parts — multiple-choice (Section I) and free-response (Section II). "

@@ -16,6 +16,10 @@ objective is owned by one section, so do not repeat what another section covers,
 though you may refer to it briefly):
 {outline}
 
+THIS BOARD'S EXAM FORMAT (accurate, board-general facts — use them to keep your
+section exam-strategy pointers consistent with how this exam actually works):
+{exam_format}
+
 Guidance:
 - Write the section body in clear, level-appropriate Markdown with real line breaks.
 - Inline maths as \(...\), display maths as $$...$$. Write currency as a plain
@@ -44,6 +48,10 @@ Guidance:
   Remember/mnemonic (`remember`). Keep each to 1-3 sentences, make them
   subject-appropriate, and include one ONLY when it is accurate and grounded —
   omit rather than invent. Do not force one of every kind or just repeat the body.
+- Add `exam_tips`: 1-3 pointers on how THIS section's content is examined — the
+  command words used, what earns or loses marks, and frequent errors — specific to
+  this subtopic and consistent with the board's exam format above. Omit if the
+  section has no distinctive exam angle; do not restate generic board-wide rules.
 - Set `confidence` honestly; if any claim is uncertain, lower it.
 
 Return the section as structured JSON.

@@ -11,8 +11,6 @@ Produce:
   definition (use the board's preferred wording where it affects marks).
 - common_misconceptions: frequent student errors, each paired with the correct
   understanding.
-- exam_tips: how to earn marks at this board — command words, examiner
-  expectations, frequent question types, common ways marks are lost.
 - practice_questions: a few questions WITH full worked solutions, each targeting
   one or more of the objectives.
 - summary: a concise recap a student could revise from.

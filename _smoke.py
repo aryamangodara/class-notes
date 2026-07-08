@@ -44,7 +44,7 @@ spec = topics["ap-bio-cellular-respiration"]
 sb = helpers._spec_block(spec)
 helpers.load_prompt("outline.txt").format(house_style=config.HOUSE_STYLE, spec_block=sb)
 helpers.load_prompt("write_section.txt").format(
-    house_style=config.HOUSE_STYLE, spec_block=sb, heading="H", intent="I", codes="C", outline="O")
+    house_style=config.HOUSE_STYLE, spec_block=sb, heading="H", intent="I", codes="C", outline="O", exam_format="F")
 helpers.load_prompt("finalize.txt").format(house_style=config.HOUSE_STYLE, spec_block=sb, sections="S")
 helpers.load_prompt("verify.txt").format(spec_block=sb, notes="N")
 print("prompt formatting OK for all 4 stages")
@@ -81,9 +81,9 @@ notes = ClassNotes(
             Callout(kind="tip", body="Read the axis labels before computing slope."),
             Callout(kind="mistake", body="Don't confuse the slope with the \\(y\\)-intercept."),
         ],
+        exam_tips=["For FRQs, explain the mechanism — a bare answer earns little."],
     )],
     common_misconceptions=["Respiration is not the same as breathing."],
-    exam_tips=["'Explain' needs a mechanism, not just a conclusion."],
     practice_questions=[PracticeQuestion(question="Where is the ETC?", worked_solution="Inner mitochondrial membrane.")],
     summary="Aerobic respiration yields far more ATP than fermentation.",
     coverage_report=[LOCoverage(code=lo.code, covered=True, where="Glycolysis", confidence="high")
@@ -112,9 +112,9 @@ assert 'A["Glucose (6C)"]' in md
 # image diagram renders as a <figure> with the embedded data URI + attribution
 assert '<figure class="note-img">' in md and "data:image/png;base64" in md
 assert "<figcaption>A leaf cross-section" in md and "CC BY-SA" in md
-# exam strategy box merges curated board tips + topic exam_tips; no separate section
-assert "> **🎯 AP exam strategy**" in md and "published rubric" in md
-assert "<summary>Exam tips</summary>" not in md and "needs a mechanism" in md
+# exam strategy is now a per-SECTION box (inside the section), no topic-level box
+assert "> **🎯 Exam strategy**" in md and "explain the mechanism" in md
+assert "> **🎯 AP exam strategy**" not in md and "<summary>Exam tips</summary>" not in md
 # sections render as collapsible <details class="topic"> with the heading as summary
 assert '<details class="topic">' in md
 assert "<summary>Glycolysis</summary>" in md and "<summary>Key terms</summary>" in md
