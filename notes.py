@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Class Notes generator — POC entry point.
 
-Feed a topic; get grounded, board-aligned class notes rendered to md / html / json.
+Feed a topic; get grounded, board-aligned class notes as json (the source of
+truth) plus a self-contained html render of it.
 
     python notes.py --list                       # show seeded topics
     python notes.py ap-bio-cellular-respiration  # generate one topic
@@ -39,7 +40,15 @@ def run_one(client, spec) -> None:
         f"  ✓ {covered}/{total} objectives covered | {len(notes.sections)} sections | "
         f"{len(notes.review_flags)} review flag(s)"
     )
-    print(f"    {paths['md']}\n    {paths['html']}")
+    print(f"    {paths['json']}\n    {paths['html']}")
+
+
+def run_one_v2(client, spec) -> None:
+    """Generate the INTERACTIVE v2 format (block-based; self-contained interactive HTML)."""
+    from pipeline_v2 import generate_interactive_notes, save_interactive_notes
+    print(f"\n=== {spec.topic} ({spec.board}) · INTERACTIVE v2 ===")
+    notes = generate_interactive_notes(client, spec)
+    save_interactive_notes(notes)
 
 
 def main() -> None:
@@ -53,6 +62,7 @@ def main() -> None:
     ap.add_argument("topic_id", nargs="?", help="topic id (see --list)")
     ap.add_argument("--list", action="store_true", help="list seeded topics and exit")
     ap.add_argument("--all", action="store_true", help="generate notes for all seeded topics")
+    ap.add_argument("--v2", action="store_true", help="generate the INTERACTIVE v2 format")
     args = ap.parse_args()
 
     topics = discover_topics()
@@ -63,14 +73,15 @@ def main() -> None:
         sys.exit("No curriculum specs found in curriculum/.")
 
     client = get_gemini_client()
+    runner = run_one_v2 if args.v2 else run_one
     if args.all:
         for spec in topics.values():
-            run_one(client, spec)
+            runner(client, spec)
     else:
         if args.topic_id not in topics:
             _print_topics(topics)
             sys.exit(f"\nUnknown topic '{args.topic_id}'.")
-        run_one(client, topics[args.topic_id])
+        runner(client, topics[args.topic_id])
 
 
 if __name__ == "__main__":

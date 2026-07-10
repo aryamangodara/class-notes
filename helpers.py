@@ -173,6 +173,13 @@ def _spec_block(spec: TopicSpec) -> str:
         for lo in spec.learning_objectives
     )
     prereqs = ", ".join(spec.prerequisites) or "none stated"
+    # Canonical constants shared by EVERY stage — this is what stops a worked example
+    # and a practice question disagreeing on the same value (e.g. a bond enthalpy).
+    ref = (
+        "\nREFERENCE DATA (use these EXACT values wherever the quantity appears — in "
+        "worked examples AND practice questions; never substitute a different value):\n"
+        f"{spec.reference_data}\n"
+    ) if spec.reference_data.strip() else ""
     return (
         f"BOARD: {spec.board}\nSUBJECT: {spec.subject}\nLEVEL: {spec.level}\n"
         f"UNIT: {spec.unit}\nTOPIC: {spec.topic}\n"
@@ -180,6 +187,7 @@ def _spec_block(spec: TopicSpec) -> str:
         f"DEPTH PROFILE (calibrate exactly to this):\n{spec.depth_profile}\n\n"
         f"ASSESSMENT NOTES (teach toward this):\n{spec.assessment_notes}\n\n"
         f"LEARNING OBJECTIVES (the contract — cover all, exceed none):\n{los}\n"
+        f"{ref}"
     )
 
 
@@ -228,8 +236,15 @@ def write_sections(client: genai.Client, spec: TopicSpec, outline: NotesOutline)
 
 def finalize_notes(client: genai.Client, spec: TopicSpec, sections: list[NoteSection]) -> NotesExtras:
     joined = "\n\n".join(f"## {s.heading}\n{s.body}" for s in sections)
+    # Show finalize the worked examples (dropped from `joined`, which is body-only) so
+    # its practice questions can reuse the SAME constants and avoid repeating scenarios.
+    worked = "\n\n".join(
+        f"[{s.heading}] {ex.prompt}\n{ex.solution}"
+        for s in sections for ex in s.worked_examples
+    ) or "(none)"
     prompt = load_prompt("finalize.txt").format(
-        house_style=HOUSE_STYLE, spec_block=_spec_block(spec), sections=joined
+        house_style=HOUSE_STYLE, spec_block=_spec_block(spec), sections=joined,
+        worked_examples=worked,
     )
     return call_model(client, label=f"finalize:{spec.topic_id}", contents=prompt,
                       **_gen_config("model_write", "temperature_write", NotesExtras))
@@ -542,16 +557,28 @@ def _fold_close(L: list[str]) -> None:
 
 
 def render_markdown(n: ClassNotes) -> str:
+    """ClassNotes -> one Markdown string. This is the REFERENCE renderer: the
+    browser's buildMarkdown() in _HTML_SHELL is a JS port of it and must stay in
+    sync. It is no longer written to a .md file (the page renders client-side from
+    the JSON), but is kept as the canonical spec and the _smoke.py render oracle."""
     L: list[str] = []
+    stubs: list[str] = []  # placeholder "diagrams" (no real visual) -> teacher/QA footer
     L.append(f"# {n.topic}")
-    L.append(f"*{n.board} · {n.subject} · {n.level} — {n.unit}*\n")
+    # Drop the standalone level when the board already carries it (e.g. board
+    # "Edexcel A-Level" + level "A-Level") so it is not printed twice.
+    _sub = [n.board, n.subject]
+    if n.level and n.level not in n.board:
+        _sub.append(n.level)
+    L.append(f"*{' · '.join(_sub)} — {n.unit}*\n")
     L.append(_clean_md(n.overview) + "\n")
 
     # Objective *codes* are internal grounding IDs — keep them in the JSON, not
     # in the student-facing notes. Tier (Core/Supplement) stays; it's pedagogical.
     _fold_open(L, "Learning objectives")
     for lo in n.learning_objectives:
-        tier = f" _({lo.tier})_" if lo.tier else ""
+        # Tier (Core/Supplement) is pedagogical and stays — but suppress it when it
+        # merely repeats the level (e.g. an A-Level note tagging every LO "(A-Level)").
+        tier = f" _({lo.tier})_" if lo.tier and lo.tier != n.level else ""
         L.append(f"- {lo.statement}{tier}")
     _fold_close(L)
 
@@ -563,6 +590,10 @@ def render_markdown(n: ClassNotes) -> str:
 
     for s in n.sections:
         _fold_open(L, s.heading)
+        # Section-level spec codes ARE shown (a coverage map / rigour signal) — unlike the
+        # objective *codes* in the LO list, which stay internal.
+        if s.covers_objective_codes:
+            L.append(f"*Spec points: {', '.join(s.covers_objective_codes)}*\n")
         L.append(_clean_md(s.body))
         for c in s.callouts:
             emoji, label = _CALLOUT.get(c.kind, ("📌", "Note"))
@@ -590,11 +621,14 @@ def render_markdown(n: ClassNotes) -> str:
                     f'<img src="{d.image_src}" alt="{alt}" loading="lazy">'
                     f'<figcaption>{_clean_md(d.caption)}{credit}</figcaption></figure>'
                 )
-            elif d.kind == "image":
-                # No suitable free image found — degrade to a placeholder for the teacher.
-                L.append(f"\n> **Suggested image — {d.caption}:** {_clean_md(d.content)}")
             else:
-                L.append(f"\n> **Diagram — {d.caption}:** {_clean_md(d.content)}")
+                # No real visual (kind "description", or an "image" whose search found
+                # nothing): don't emit a broken-looking inline "Diagram —" blockquote in
+                # the student flow — collect it for the teacher/QA footer instead.
+                stubs.append(
+                    f"**{_clean_md(s.heading)} — {_clean_md(d.caption)}:** "
+                    f"{_clean_md(d.content)}"
+                )
         for ex in s.worked_examples:
             L.append(f"\n**Worked example.** {_clean_md(ex.prompt)}\n\n{_clean_md(ex.solution)}")
         if s.exam_tips:
@@ -610,8 +644,15 @@ def render_markdown(n: ClassNotes) -> str:
 
     if n.practice_questions:
         _fold_open(L, "Practice questions")
+        # "points" for AP free-response, "marks" for UK boards. The model leaves marks
+        # null where the board doesn't mark-weight (e.g. SAT), so nothing shows there.
+        unit = "points" if n.level == "AP" else "marks"
         for i, q in enumerate(n.practice_questions, 1):
-            L.append(f"\n**Q{i}.** {_clean_md(q.question)}\n")
+            bits = [q.difficulty] if q.difficulty else []
+            if q.marks is not None:
+                bits.append(f"{q.marks} {unit}")
+            tag = f" _({' · '.join(bits)})_" if bits else ""
+            L.append(f"\n**Q{i}.**{tag} {_clean_md(q.question)}\n")
             L.append(f"<details><summary>Worked solution</summary>\n\n{_clean_md(q.worked_solution)}\n\n</details>")
         _fold_close(L)
 
@@ -619,13 +660,28 @@ def render_markdown(n: ClassNotes) -> str:
     L.append(_clean_md(n.summary))
     _fold_close(L)
 
+    # Internal QA + teacher notes — collapsed, out of the student flow. Nothing is
+    # deleted: coverage/flags stay auditable and illustration stubs (prose "diagrams"
+    # with no real visual) land here for a teacher/illustrator to fill in.
     covered = sum(1 for c in n.coverage_report if c.covered)
     total = len(n.coverage_report)
-    L.append(f"\n---\n*Coverage: {covered}/{total} learning objectives. Generated {n.generated_at}.*")
+    _fold_open(L, "For teachers · QA (coverage, review flags, illustrations to add)")
+    date = n.generated_at.split("T")[0] if n.generated_at else "—"
+    L.append(f"- **Coverage:** {covered}/{total} learning objectives.")
+    for c in n.coverage_report:
+        if not c.covered:
+            note = f" — {_clean_md(c.gap_note)}" if c.gap_note else ""
+            L.append(f"  - Not fully covered: {c.code}{note}")
+    L.append(f"- **Generated:** {date}.")
     if n.review_flags:
-        L.append("\n**⚠ Review flags (check before classroom use):**")
+        L.append("- **Review flags (check before classroom use):**")
         for f in n.review_flags:
-            L.append(f"- {_clean_md(f)}")
+            L.append(f"  - {_clean_md(f)}")
+    if stubs:
+        L.append("- **Illustrations to add (not shown to students):**")
+        for st in stubs:
+            L.append(f"  - {st}")
+    _fold_close(L)
     return "\n".join(L)
 
 
@@ -671,71 +727,226 @@ _HTML_SHELL = r"""<!doctype html>
  figure.note-img figcaption{font-size:.9em;color:#57606a;margin-top:.45rem}
  figure.note-img .credit{color:#8b949e}
 </style></head>
-<body><div id="content">Rendering…</div>
+<body>
+<script type="application/json" id="notes-data">__DATA_JSON__</script>
+<div id="content">Loading…</div>
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 mermaid.initialize({startOnLoad:false,securityLevel:'loose'});
-const md = __MD_JSON__;
-marked.setOptions({gfm:true,breaks:false});
-// Protect math spans before marked runs: CommonMark would strip the backslashes
-// from \(...\). A bare $ then passes through as literal currency, not math.
-const MATH=[];
-const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const src = md.replace(/\$\$[\s\S]*?\$\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/g,
-  m=>{MATH.push(m); return `@@MATH${MATH.length-1}@@`;});
-const html = marked.parse(src).replace(/@@MATH(\d+)@@/g,(_,i)=>esc(MATH[i]));
-document.getElementById('content').innerHTML = html;
-// Colourise callout blockquotes by the emoji that starts their title line.
-const CT=[['💡','tip'],['⚠','mistake'],['📐','formula'],['🧠','remember'],['🎯','strategy']];
-document.querySelectorAll('#content blockquote').forEach(bq=>{
-  const t=(bq.textContent||'').trim();
-  for(const [e,k] of CT){ if(t.startsWith(e)){ bq.classList.add('callout',k); break; } }
-});
-document.querySelectorAll('code.language-mermaid').forEach((c)=>{
-  const d=document.createElement('div'); d.className='mermaid'; d.textContent=c.textContent;
-  (c.closest('pre')||c).replaceWith(d);
-});
-(async () => {
-  for (const el of document.querySelectorAll('.mermaid')) {
-    let ok = true;
-    try { ok = (await mermaid.parse(el.textContent, {suppressErrors:true})) !== false; }
-    catch (e) { ok = false; }
-    if (!ok) {  // invalid diagram -> show the source in a soft box, never the error bomb
-      const pre = document.createElement('pre');
-      pre.className = 'mermaid-fallback'; pre.textContent = el.textContent;
-      el.replaceWith(pre);
+
+// This page is SELF-CONTAINED: the structured ClassNotes JSON (the source of
+// truth) is embedded inline in the #notes-data script tag above and rendered here
+// in the browser, so the file opens straight from disk — no server, no fetch.
+// buildMarkdown() below is a faithful port of helpers.py render_markdown; the two
+// MUST be kept in sync (render_markdown is the reference, asserted by _smoke.py).
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+// _clean_md: turn the literal \n / \t the model sometimes emits into real
+// whitespace, but protect math spans so \neq / \to / \text (LaTeX starting \n)
+// survive untouched.
+function cleanMd(s){
+  if(!s) return s;
+  const spans=[];
+  const p = s.replace(/\$\$[\s\S]*?\$\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/g,
+      m=>{spans.push(m); return '\u0000'+(spans.length-1)+'\u0000';})
+    .replace(/\\r\\n/g,'\n').replace(/\\n/g,'\n').replace(/\\t/g,'\t');
+  return p.replace(/\u0000(\d+)\u0000/g,(_,i)=>spans[+i]);
+}
+const CALLOUT = {tip:['💡','Quick Tip'],mistake:['⚠️','Common Mistake'],formula:['📐','Key Formula / Fact'],remember:['🧠','Remember']};
+const LATEX_TABLE = /\\hline|\\begin\{tabular\}|\\begin\{array\}/;
+const MERMAID_LABEL = /(?<!\[)\[([^\[\]"]+)\](?!\])/g;
+const sanitizeMermaid = src => src.replace(MERMAID_LABEL,(_,g)=>'["'+g.trim()+'"]');
+const foldOpen = h => '\n<details class="topic">\n<summary>'+cleanMd(h)+'</summary>\n';
+const foldClose = () => '\n</details>';
+
+// Port of helpers.py render_markdown (ClassNotes JSON -> one Markdown string).
+function buildMarkdown(n){
+  const L=[];
+  const stubs=[];  // placeholder "diagrams" (no real visual) -> teacher/QA footer
+  L.push('# '+n.topic);
+  // Drop the standalone level when the board already carries it (mirror of Python).
+  const sub=[n.board,n.subject];
+  if(n.level && n.board.indexOf(n.level)===-1) sub.push(n.level);
+  L.push('*'+sub.join(' · ')+' — '+n.unit+'*\n');
+  L.push(cleanMd(n.overview)+'\n');
+
+  L.push(foldOpen('Learning objectives'));
+  for(const lo of (n.learning_objectives||[])) L.push('- '+lo.statement+((lo.tier && lo.tier!==n.level)?' _('+lo.tier+')_':''));
+  L.push(foldClose());
+
+  if(n.key_terms && n.key_terms.length){
+    L.push(foldOpen('Key terms'));
+    for(const t of n.key_terms) L.push('- **'+t.term+'** — '+cleanMd(t.definition));
+    L.push(foldClose());
+  }
+
+  for(const s of (n.sections||[])){
+    L.push(foldOpen(s.heading));
+    if(s.covers_objective_codes && s.covers_objective_codes.length) L.push('*Spec points: '+s.covers_objective_codes.join(', ')+'*\n');
+    L.push(cleanMd(s.body));
+    for(const c of (s.callouts||[])){
+      const [emoji,label] = CALLOUT[c.kind] || ['📌','Note'];
+      const lead = (c.title && c.title.trim()) ? '**'+cleanMd(c.title.trim())+':** ' : '';
+      const body = (lead+cleanMd(c.body)).replace(/\n/g,'\n> ');
+      L.push('\n> **'+emoji+' '+label+'**\n>\n> '+body);
+    }
+    for(const d of (s.diagrams||[])){
+      if(d.kind==='mermaid'){
+        L.push('\n```mermaid\n'+sanitizeMermaid(d.content)+'\n```');
+        L.push('*'+d.caption+'*');
+      } else if(d.kind==='latex' && !LATEX_TABLE.test(d.content)){
+        L.push('\n$$\n'+d.content+'\n$$');
+        L.push('*'+d.caption+'*');
+      } else if(d.kind==='latex'){
+        L.push('\n**'+d.caption+':**\n\n```\n'+d.content+'\n```');
+      } else if(d.kind==='image' && d.image_src){
+        const alt=(d.caption||'figure').replace(/"/g,"'");
+        const credit = d.attribution ? ' <span class="credit">— '+d.attribution+'</span>' : '';
+        L.push('\n<figure class="note-img"><img src="'+d.image_src+'" alt="'+alt+'" loading="lazy"><figcaption>'+cleanMd(d.caption)+credit+'</figcaption></figure>');
+      } else {
+        // No real visual (kind "description", or an "image" with no fetched src):
+        // collect for the teacher/QA footer rather than an inline "Diagram —" box.
+        stubs.push('**'+cleanMd(s.heading)+' — '+cleanMd(d.caption)+':** '+cleanMd(d.content));
+      }
+    }
+    for(const ex of (s.worked_examples||[])) L.push('\n**Worked example.** '+cleanMd(ex.prompt)+'\n\n'+cleanMd(ex.solution));
+    if(s.exam_tips && s.exam_tips.length)
+      L.push('\n> **🎯 Exam strategy**\n>\n'+s.exam_tips.map(t=>'> - '+cleanMd(t)).join('\n'));
+    L.push(foldClose());
+  }
+
+  if(n.common_misconceptions && n.common_misconceptions.length){
+    L.push(foldOpen('Common misconceptions'));
+    for(const m of n.common_misconceptions) L.push('- '+cleanMd(m));
+    L.push(foldClose());
+  }
+
+  if(n.practice_questions && n.practice_questions.length){
+    L.push(foldOpen('Practice questions'));
+    const unit = n.level==='AP' ? 'points' : 'marks';
+    n.practice_questions.forEach((q,i)=>{
+      const bits = q.difficulty ? [q.difficulty] : [];
+      if(q.marks!==null && q.marks!==undefined) bits.push(q.marks+' '+unit);
+      const tag = bits.length ? ' _('+bits.join(' · ')+')_' : '';
+      L.push('\n**Q'+(i+1)+'.**'+tag+' '+cleanMd(q.question)+'\n');
+      L.push('<details><summary>Worked solution</summary>\n\n'+cleanMd(q.worked_solution)+'\n\n</details>');
+    });
+    L.push(foldClose());
+  }
+
+  L.push(foldOpen('Summary'));
+  L.push(cleanMd(n.summary));
+  L.push(foldClose());
+
+  // Internal QA + teacher notes — collapsed, out of the student flow (mirror of Python).
+  const cov = n.coverage_report||[];
+  const covered = cov.filter(c=>c.covered).length;
+  L.push(foldOpen('For teachers · QA (coverage, review flags, illustrations to add)'));
+  const date = n.generated_at ? n.generated_at.split('T')[0] : '—';
+  L.push('- **Coverage:** '+covered+'/'+cov.length+' learning objectives.');
+  for(const c of cov){
+    if(!c.covered){
+      const note = c.gap_note ? ' — '+cleanMd(c.gap_note) : '';
+      L.push('  - Not fully covered: '+c.code+note);
     }
   }
-  // Sections start collapsed; a Mermaid diagram in a hidden <details> sizes to 0.
-  // Render only visible diagrams, and render a section's diagrams when it opens.
-  const runIn = (root) => {
-    const pending = [...root.querySelectorAll('.mermaid:not([data-processed])')]
-      .filter(el => el.offsetParent !== null);
-    if (pending.length) mermaid.run({nodes: pending}).catch(()=>{});
-  };
-  document.querySelectorAll('details.topic').forEach(d =>
-    d.addEventListener('toggle', () => { if (d.open) runIn(d); }));
-  runIn(document);
-  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
-})();
+  L.push('- **Generated:** '+date+'.');
+  if(n.review_flags && n.review_flags.length){
+    L.push('- **Review flags (check before classroom use):**');
+    for(const f of n.review_flags) L.push('  - '+cleanMd(f));
+  }
+  if(stubs.length){
+    L.push('- **Illustrations to add (not shown to students):**');
+    for(const st of stubs) L.push('  - '+st);
+  }
+  L.push(foldClose());
+  return L.join('\n');
+}
+
+// Markdown string -> DOM (marked + math-protect + callout colourise + Mermaid).
+function renderInto(md, mount){
+  marked.setOptions({gfm:true,breaks:false});
+  // Protect math spans before marked runs: CommonMark would strip the backslashes
+  // from \(...\). A bare $ then passes through as literal currency, not math.
+  const MATH=[];
+  const src = md.replace(/\$\$[\s\S]*?\$\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/g,
+    m=>{MATH.push(m); return `@@MATH${MATH.length-1}@@`;});
+  mount.innerHTML = marked.parse(src).replace(/@@MATH(\d+)@@/g,(_,i)=>esc(MATH[i]));
+  // Colourise callout blockquotes by the emoji that starts their title line.
+  const CT=[['💡','tip'],['⚠','mistake'],['📐','formula'],['🧠','remember'],['🎯','strategy']];
+  mount.querySelectorAll('blockquote').forEach(bq=>{
+    const t=(bq.textContent||'').trim();
+    for(const [e,k] of CT){ if(t.startsWith(e)){ bq.classList.add('callout',k); break; } }
+  });
+  mount.querySelectorAll('code.language-mermaid').forEach((c)=>{
+    const d=document.createElement('div'); d.className='mermaid'; d.textContent=c.textContent;
+    (c.closest('pre')||c).replaceWith(d);
+  });
+  return (async () => {
+    for (const el of mount.querySelectorAll('.mermaid')) {
+      let ok = true;
+      try { ok = (await mermaid.parse(el.textContent, {suppressErrors:true})) !== false; }
+      catch (e) { ok = false; }
+      if (!ok) {  // invalid diagram -> soft source box, never the error bomb
+        const pre = document.createElement('pre');
+        pre.className = 'mermaid-fallback'; pre.textContent = el.textContent;
+        el.replaceWith(pre);
+      }
+    }
+    // Sections start collapsed; a Mermaid diagram in a hidden <details> sizes to 0.
+    // Render only visible diagrams, and render a section's diagrams when it opens.
+    const runIn = (root) => {
+      const pending = [...root.querySelectorAll('.mermaid:not([data-processed])')]
+        .filter(el => el.offsetParent !== null);
+      if (pending.length) mermaid.run({nodes: pending}).catch(()=>{});
+    };
+    document.querySelectorAll('details.topic').forEach(d =>
+      d.addEventListener('toggle', () => { if (d.open) runIn(d); }));
+    runIn(document);
+    // MathJax loads async; poll briefly so rendering doesn't beat it.
+    (function typeset(tries){
+      if (window.MathJax && MathJax.typesetPromise) { MathJax.typesetPromise(); return; }
+      if (tries > 0) setTimeout(() => typeset(tries - 1), 100);
+    })(30);
+  })();
+}
+
+const mount = document.getElementById('content');
+try {
+  const data = JSON.parse(document.getElementById('notes-data').textContent);
+  if (data && data.topic) document.title = data.topic + ' — ' + (data.board||'');
+  renderInto(buildMarkdown(data), mount);
+} catch (err) {
+  mount.innerHTML = '<div style="border:1px solid #cf222e;background:#ffebe9;border-radius:8px;padding:1rem 1.2rem;color:#86181d">'
+    + '<strong>Couldn\'t render notes</strong><p>'+esc(String(err))+'</p></div>';
+}
 </script></body></html>"""
 
 
 def render_html(n: ClassNotes) -> str:
-    md = render_markdown(n)
-    return _HTML_SHELL.replace("__TITLE__", f"{n.topic} — {n.board}").replace("__MD_JSON__", json.dumps(md))
+    # Self-contained page: the structured ClassNotes JSON is embedded inline and
+    # rendered client-side (buildMarkdown in _HTML_SHELL mirrors render_markdown), so
+    # the file opens straight from disk. Escape "<" so a literal "</script>" in any
+    # field can't close the embedded <script type="application/json"> block early.
+    data = n.model_dump_json().replace("<", "\\u003c")
+    return (
+        _HTML_SHELL
+        .replace("__TITLE__", f"{n.topic} — {n.board}")
+        .replace("__DATA_JSON__", data)
+    )
 
 
 def save_notes(n: ClassNotes, out_dir: str | None = None) -> dict[str, str]:
+    # JSON is the source of truth; HTML is a pure render of it. No .md artifact is
+    # written — render_markdown still runs *inside* render_html to feed marked in
+    # the browser, but the Markdown is not persisted as its own file.
     out = Path(out_dir or CONFIG["out_dir"])
     out.mkdir(parents=True, exist_ok=True)
     base = out / n.topic_id
     paths = {
-        "md": str(base.with_suffix(".md")),
         "html": str(base.with_suffix(".html")),
         "json": str(base.with_suffix(".json")),
     }
-    base.with_suffix(".md").write_text(render_markdown(n), encoding="utf-8")
     base.with_suffix(".html").write_text(render_html(n), encoding="utf-8")
     base.with_suffix(".json").write_text(n.model_dump_json(indent=2), encoding="utf-8")
     return paths

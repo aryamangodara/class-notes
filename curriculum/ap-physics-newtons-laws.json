@@ -1,0 +1,106 @@
+{
+  "topic_id": "ap-physics-newtons-laws",
+  "board": "AP (College Board)",
+  "subject": "Physics",
+  "level": "AP",
+  "unit": "Unit 2: Force and Translational Dynamics",
+  "topic": "Newton's Laws of Motion",
+  "prerequisites": [
+    "Kinematics in one and two dimensions (displacement, velocity, acceleration)",
+    "Vectors: resolving into components, addition, and magnitude-direction form",
+    "Algebra and right-angled trigonometry (sin, cos, tan)"
+  ],
+  "learning_objectives": [
+    {
+      "code": "2.1.A",
+      "statement": "Represent the forces exerted on an object with a free-body diagram, identifying each force (gravitational, normal, tension, applied, friction) and the object that exerts it.",
+      "tier": null,
+      "command_words": [
+        "represent",
+        "describe"
+      ]
+    },
+    {
+      "code": "2.2.A",
+      "statement": "Apply Newton's first law: an object is in translational equilibrium (at rest or moving at constant velocity) if and only if the net force on it is zero.",
+      "tier": null,
+      "command_words": [
+        "justify",
+        "apply"
+      ]
+    },
+    {
+      "code": "2.3.A",
+      "statement": "Apply Newton's second law, net F = ma, in component form to determine the acceleration of an object or system, including objects on horizontal surfaces and on inclines.",
+      "tier": null,
+      "command_words": [
+        "calculate",
+        "derive"
+      ]
+    },
+    {
+      "code": "2.4.A",
+      "statement": "Apply Newton's third law to identify force pairs between interacting objects and analyse connected systems, such as two blocks in contact or linked by a string over an ideal pulley.",
+      "tier": null,
+      "command_words": [
+        "justify",
+        "apply"
+      ]
+    },
+    {
+      "code": "2.5.A",
+      "statement": "Model static and kinetic friction using f_s (max) = mu_s * N and f_k = mu_k * N, and incorporate friction into translational dynamics problems.",
+      "tier": null,
+      "command_words": [
+        "calculate",
+        "justify"
+      ]
+    }
+  ],
+  "depth_profile": "AP Physics 1 (algebra-based) rigour. Students construct free-body diagrams, apply Newton's three laws quantitatively using vector components (including on inclines, choosing axes along and perpendicular to the surface), analyse systems of connected objects, and model static and kinetic friction with coefficients. Emphasis on REASONING and representations: relating a free-body diagram to the net force, justifying claims about motion, and deriving a symbolic (algebraic) expression before substituting numbers. Use g = 9.8 m/s^2. Do NOT use calculus (that is AP Physics C); keep to translational dynamics - rotational dynamics, momentum and energy are separate units.",
+  "assessment_notes": "AP Physics 1 is scored in POINTS, not marks. The exam has multiple-choice questions and free-response questions (FRQs), including qualitative-quantitative translation and experimental-design tasks. Points are earned for a correct free-body diagram (every force present and correctly labelled, no extra forces), for writing Newton's second law along each axis, for a correct symbolic derivation, and for a justified conclusion. Answers should be given algebraically before numeric substitution; a bare answer with no reasoning earns little. A calculator and the official equation sheet are permitted.",
+  "reference_data": "Use these values consistently in EVERY worked example and practice question; do not substitute other figures: acceleration due to gravity g = 9.8 m/s^2 (gravitational field strength 9.8 N/kg). Coefficients of friction (mu) are dimensionless and problem-specific - state the value used in each problem. VALIDATE against the official AP Physics 1 equation sheet before classroom use; this table only guarantees all sections use the SAME value of g.",
+  "source": "Hand-seeded for POC - validate against the AP Physics 1 Course and Exam Description (College Board), Unit 2 (Force and Translational Dynamics).",
+  "exam_map": [
+    {
+      "key": "Format",
+      "value": "Multiple-choice + **FRQs** (incl. experimental design & qualitative-quantitative translation); **points**"
+    },
+    {
+      "key": "What to expect",
+      "value": "**Free-body diagrams**, systems of connected objects, inclines, and friction"
+    },
+    {
+      "key": "Key skill",
+      "value": "Draw a correct free-body diagram, then write **ΣF = ma** along each axis"
+    },
+    {
+      "key": "Banked marks",
+      "value": "A correct, fully-labelled **free-body diagram** earns points on its own"
+    }
+  ],
+  "spec_source_citation": "AP Physics 1 Course and Exam Description (College Board), Unit 2 — Force and Translational Dynamics (validate against the official CED).",
+  "spec_checklist": [
+    {
+      "code": "2.1.A",
+      "can_do": "I can represent the forces exerted on an object with a free-body diagram, identifying each force (gravitational, normal, tension, applied, friction) and the object that exerts it."
+    },
+    {
+      "code": "2.2.A",
+      "can_do": "I can apply Newton's first law: an object is in translational equilibrium (at rest or moving at constant velocity) if and only if the net force on it is zero."
+    },
+    {
+      "code": "2.3.A",
+      "can_do": "I can apply Newton's second law, net F = ma, in component form to determine the acceleration of an object or system, including objects on horizontal surfaces and on inclines."
+    },
+    {
+      "code": "2.4.A",
+      "can_do": "I can apply Newton's third law to identify force pairs between interacting objects and analyse connected systems, such as two blocks in contact or linked by a string over an ideal pulley."
+    },
+    {
+      "code": "2.5.A",
+      "can_do": "I can model static and kinetic friction using f_s (max) = mu_s * N and f_k = mu_k * N, and incorporate friction into translational dynamics problems."
+    }
+  ],
+  "next_topic": "Energy & work"
+}

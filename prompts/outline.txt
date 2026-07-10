@@ -13,6 +13,10 @@ Rules:
   later section may build on an earlier one by reference, but must not re-teach it.
 - Group related objectives into coherent sections; do not create one section per
   objective unless that genuinely is the clearest structure.
+- Where the topic centrally rests on a standard visual a student must read or draw
+  (e.g. a reaction energy profile in energetics, standard apparatus, a graph shape),
+  ensure a section covers it so a real labelled diagram can be shown — a brief recap
+  is fine even if the visual is assumed prior knowledge.
 - Do not plan sections for material outside the contract.
 
 CURRICULUM CONTRACT:

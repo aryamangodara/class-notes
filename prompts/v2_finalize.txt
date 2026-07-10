@@ -1,0 +1,31 @@
+{house_style}
+
+The interactive lesson's sections are drafted. Now write the framing pieces that wrap
+around them.
+
+CURRICULUM CONTRACT:
+{spec_block}
+
+SECTION CONTENT:
+{sections}
+
+SPEC CHECKLIST STATEMENTS (in order — write one recap per statement):
+{checklist}
+
+Produce:
+- hero: `eyebrow` (e.g. "Edexcel A-Level · Chemistry · Topic 8"), `title` (the topic
+  name), `lede` (one punchy paragraph on why this topic matters and what the student
+  will be able to do by the end), and `icon` (one emoji).
+- hook: a curiosity question a student would genuinely want answered (`question`), a
+  one-line `teaser`, an `emoji`, and the `answer` that reveals the underlying
+  chemistry / physics / maths including the key equation or value. Ground it — no
+  invented facts.
+- command_words: the 3-5 exam command verbs used in THIS topic, each with a `gloss` of
+  what it demands and where the marks are.
+- mistakes: 4-6 common mark-losing mistakes, each a short `summary` and a `detail` fix.
+- checklist_recaps: ONE short recap string per spec-checklist statement above, in the
+  SAME ORDER, each a 1-2 sentence "not sure?" refresher. Use an empty string for a
+  statement that needs no recap.
+
+Ground everything in the sections and the contract; never write internal objective
+codes in student-facing text. Inline maths as \(...\). Return structured JSON.

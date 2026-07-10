@@ -1,0 +1,119 @@
+{
+  "topic_id": "igcse-physics-forces-motion",
+  "board": "Cambridge IGCSE",
+  "subject": "Physics",
+  "level": "IGCSE",
+  "unit": "Topic 1: Motion, Forces and Energy",
+  "topic": "Forces and Motion",
+  "prerequisites": [
+    "Measuring length, time and mass and using SI units",
+    "Rearranging a simple equation and substituting values",
+    "Plotting points on, and reading values from, a graph"
+  ],
+  "learning_objectives": [
+    {
+      "code": "1.2aC",
+      "statement": "Define speed and velocity, calculate average speed using average speed = distance / time, and distinguish speed (a scalar) from velocity (speed in a stated direction, a vector).",
+      "tier": "Core",
+      "command_words": [
+        "define",
+        "calculate"
+      ]
+    },
+    {
+      "code": "1.2bC",
+      "statement": "Plot and interpret distance-time and speed-time graphs: the gradient of a distance-time graph is speed and the gradient of a speed-time graph is acceleration.",
+      "tier": "Core",
+      "command_words": [
+        "describe",
+        "interpret"
+      ]
+    },
+    {
+      "code": "1.2cS",
+      "statement": "Calculate acceleration from the gradient of a speed-time graph and the distance travelled from the area under it for uniformly accelerated motion, and recall that the acceleration of free fall g is about 9.8 m/s^2 near the Earth's surface.",
+      "tier": "Supplement",
+      "command_words": [
+        "calculate",
+        "recall"
+      ]
+    },
+    {
+      "code": "1.3C",
+      "statement": "Distinguish mass (the quantity of matter, in kg) from weight (the gravitational force on an object, in N) and calculate weight using W = mg with gravitational field strength g = 9.8 N/kg.",
+      "tier": "Core",
+      "command_words": [
+        "define",
+        "calculate"
+      ]
+    },
+    {
+      "code": "1.5aC",
+      "statement": "Describe how a resultant force can change the speed, direction or shape of an object, find the resultant of forces acting along the same straight line, and describe friction as a force that opposes motion.",
+      "tier": "Core",
+      "command_words": [
+        "describe",
+        "determine"
+      ]
+    },
+    {
+      "code": "1.5bC",
+      "statement": "State and apply Newton's second law as resultant force = mass x acceleration (F = ma) for motion in a straight line, and use Newton's first law to explain motion at constant velocity when forces are balanced.",
+      "tier": "Core",
+      "command_words": [
+        "state",
+        "apply"
+      ]
+    }
+  ],
+  "depth_profile": "Cambridge IGCSE (0625) rigour, Core with the Supplement extension flagged. Students define and use speed, velocity and acceleration with average speed = distance / time; read and interpret distance-time and speed-time graphs (gradient, and area for Supplement); distinguish mass and weight and use W = mg; find the resultant of forces along a line; and state and apply F = ma to straight-line motion. Keep to one- and two-step numerical problems with quantities given, qualitative reasoning about balanced versus unbalanced forces, and correct SI units. Do NOT use calculus, resolution of forces into components, inclined-plane force triangles, or momentum - those are beyond this topic. Supplement objectives (coded S) go one step further (area under a speed-time graph, acceleration of free fall); Core objectives (coded C) are required of every candidate.",
+  "assessment_notes": "Cambridge IGCSE Physics is examined as Core (grades C-G) or Extended (Core plus Supplement, grades A*-E); use the Core/Supplement tags to calibrate depth. Questions are multiple-choice and short structured items. Marks are awarded for selecting the correct equation, substituting correctly, and stating the answer with the correct SI unit - a missing or wrong unit commonly costs the final mark. Values such as g are given on the paper. Graph questions reward a correct gradient or area method with working shown. Command words ('state', 'describe', 'calculate', 'determine') set the expected response.",
+  "reference_data": "Use these values consistently in EVERY worked example and practice question; do not substitute other figures: acceleration of free fall g = 9.8 m/s^2; gravitational field strength g = 9.8 N/kg. VALIDATE against the current Cambridge IGCSE Physics (0625) formula/data sheet before classroom use; some past papers use g = 10, so this table only guarantees that all sections use the SAME value.",
+  "source": "Hand-seeded for POC - validate against the Cambridge IGCSE Physics (0625) syllabus 2023-2025, Topic 1 (Motion, forces and energy).",
+  "exam_map": [
+    {
+      "key": "Papers",
+      "value": "**Core** or **Extended**; multiple-choice + structured papers"
+    },
+    {
+      "key": "What to expect",
+      "value": "Speed / velocity / acceleration from **graphs**, F = ma, W = mg, and resultant forces"
+    },
+    {
+      "key": "Key skill",
+      "value": "Read **gradients** (and areas, Supplement) off distance–time and speed–time graphs"
+    },
+    {
+      "key": "Banked marks",
+      "value": "**W = mg** and stating Newton's first law for constant velocity are reliable marks"
+    }
+  ],
+  "spec_source_citation": "Cambridge IGCSE Physics (0625) syllabus 2023–2025, Topic 1 (validate against the official syllabus).",
+  "spec_checklist": [
+    {
+      "code": "1.2aC",
+      "can_do": "I can define speed and velocity, calculate average speed using average speed = distance / time, and distinguish speed (a scalar) from velocity (speed in a stated direction, a vector)."
+    },
+    {
+      "code": "1.2bC",
+      "can_do": "I can plot and interpret distance-time and speed-time graphs: the gradient of a distance-time graph is speed and the gradient of a speed-time graph is acceleration."
+    },
+    {
+      "code": "1.2cS",
+      "can_do": "I can calculate acceleration from the gradient of a speed-time graph and the distance travelled from the area under it for uniformly accelerated motion, and recall that the acceleration of free fall g is about 9.8 m/s^2 near the Earth's surface."
+    },
+    {
+      "code": "1.3C",
+      "can_do": "I can distinguish mass (the quantity of matter, in kg) from weight (the gravitational force on an object, in N) and calculate weight using W = mg with gravitational field strength g = 9.8 N/kg."
+    },
+    {
+      "code": "1.5aC",
+      "can_do": "I can describe how a resultant force can change the speed, direction or shape of an object, find the resultant of forces acting along the same straight line, and describe friction as a force that opposes motion."
+    },
+    {
+      "code": "1.5bC",
+      "can_do": "I can state and apply Newton's second law as resultant force = mass x acceleration (F = ma) for motion in a straight line, and use Newton's first law to explain motion at constant velocity when forces are balanced."
+    }
+  ],
+  "next_topic": "Energy, work and power"
+}

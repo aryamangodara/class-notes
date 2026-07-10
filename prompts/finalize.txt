@@ -11,8 +11,18 @@ Produce:
   definition (use the board's preferred wording where it affects marks).
 - common_misconceptions: frequent student errors, each paired with the correct
   understanding.
-- practice_questions: a few questions WITH full worked solutions, each targeting
-  one or more of the objectives.
+- practice_questions: FIVE or SIX questions forming a difficulty LADDER — 1-2
+  `basic` warm-ups, 2-3 `standard` exam-level, and 1-2 `stretch` synthesis questions;
+  set `difficulty` on each. Assign `marks` using THIS board's convention (whole-number
+  marks for A-Level/IGCSE; points for AP free-response; leave null for SAT and any
+  board that does not mark-weight questions). Write each worked_solution as a MARK
+  SCHEME: label the scoring points (M1, M2, A1 ...) so it is explicit where each
+  mark/point is earned, and make them sum to `marks`. Test TRANSFER — do NOT re-use
+  the scenarios, reactions, contexts or datasets already used in the worked examples
+  listed below; pose genuinely different problems that apply the same skill. Where a
+  physical constant or data value ALSO appears in a worked example (e.g. a bond
+  enthalpy, a molar mass, an electrode potential), you MUST use the IDENTICAL value —
+  never introduce a different number for the same quantity.
 - summary: a concise recap a student could revise from.
 
 Formatting: inline maths as \(...\), display as $$...$$; currency as a plain
@@ -25,5 +35,9 @@ CURRICULUM CONTRACT:
 
 SECTION DRAFTS:
 {sections}
+
+WORKED EXAMPLES ALREADY IN THE NOTES (do not repeat these scenarios in
+practice_questions; reuse their exact constants/values wherever a quantity recurs):
+{worked_examples}
 
 Return structured JSON.

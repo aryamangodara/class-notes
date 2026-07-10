@@ -44,6 +44,40 @@ class LearningObjective(BaseModel):
     )
 
 
+# ---------------------------------------------------------------------------
+# Curated exam-format layer (hand-authored per topic; NEVER model-generated).
+# Feeds the interactive-notes exam map, spec checklist and past-paper panels
+# verbatim — validate every value against the official specification.
+# ---------------------------------------------------------------------------
+
+class ExamMapCell(BaseModel):
+    key: str = Field(description="Short label, e.g. 'Papers' or 'Core Practical'.")
+    value: str = Field(description="The fact. May contain light HTML (e.g. <b>, <a>).")
+
+
+class VerifiedPaper(BaseModel):
+    label: str = Field(description="Human-verified reference, e.g. 'June 2024 · Paper 1 · Q5 · 10 marks'.")
+    summary: str = Field(description="What the question tests, in our own words.")
+    url: str = Field(default="", description="Link to the official paper / PDF.")
+
+
+class PastPapers(BaseModel):
+    intro: str = Field(default="")
+    resources: list[ExamMapCell] = Field(default_factory=list, description="Where to get papers / mark schemes.")
+    verified: list[VerifiedPaper] = Field(
+        default_factory=list,
+        description="Human-verified past-paper citations. Leave EMPTY until confirmed against "
+        "the real papers — these are never model-generated.",
+    )
+    disclaimer: str = Field(default="")
+
+
+class SpecChecklistItem(BaseModel):
+    code: str = Field(description="Official spec point, e.g. '8.11'.")
+    can_do: str = Field(description="'I can ...' statement in student language, from the official spec.")
+    recap: str = Field(default="", description="Short 'not sure?' recap; filled in the finalize stage.")
+
+
 class TopicSpec(BaseModel):
     topic_id: str = Field(
         description="Filename-safe slug, unique across boards, e.g. 'ap-bio-cellular-respiration'."
@@ -72,6 +106,37 @@ class TopicSpec(BaseModel):
     assessment_notes: str = Field(
         description="How the topic is examined at this board: question styles, command words, "
         "mark-scheme expectations, and common pitfalls examiners penalise."
+    )
+    reference_data: str = Field(
+        default="",
+        description="Canonical constants / data values every stage MUST use verbatim (e.g. "
+        "mean bond enthalpies, standard electrode potentials, molar masses). Author per topic "
+        "and validate against the official data booklet; leave empty when the topic has no "
+        "fixed reference values. Injected into every stage so a worked example and a practice "
+        "question can never disagree on the same quantity.",
+    )
+    # --- curated exam-format layer (interactive v2; passthrough, never generated) ---
+    exam_map: list[ExamMapCell] = Field(
+        default_factory=list,
+        description="CURATED exam-map cells (papers, weighting, core practical, banked marks); "
+        "passed through to the interactive notes verbatim.",
+    )
+    spec_checklist: list[SpecChecklistItem] = Field(
+        default_factory=list,
+        description="CURATED official-spec statements at spec-point granularity (finer than "
+        "learning_objectives). code + can_do curated; recap filled in finalize.",
+    )
+    spec_source_citation: str = Field(
+        default="",
+        description="Provenance of the spec checklist, e.g. 'Pearson Edexcel 9CH0 spec, Issue 3 (Feb 2024)'.",
+    )
+    past_papers: PastPapers | None = Field(
+        default=None,
+        description="CURATED past-paper panel incl. human-verified references; passed through verbatim.",
+    )
+    next_topic: str = Field(
+        default="",
+        description="Curated 'next topic' hint for the finish/footer, e.g. 'Topic 9 — Kinetics I'.",
     )
     source: str = Field(
         default="hand-seeded for POC",
@@ -123,12 +188,16 @@ class WorkedExample(BaseModel):
 class Diagram(BaseModel):
     caption: str
     kind: Literal["mermaid", "latex", "image", "description"] = Field(
-        description="'mermaid' for flow/cycle/process diagrams; 'latex' for a SINGLE "
-        "mathematical expression or equation ONLY (never a table — MathJax cannot render "
-        "tabular/array/hline; put tables as Markdown tables in the section body); 'image' to "
-        "fetch a real labelled diagram, photo, micrograph, or map from a free image library "
-        "(set content to a precise search query); 'description' for a prose placeholder a "
-        "teacher or illustrator fills in."
+        description="'mermaid' for flow/cycle/process diagrams AND schematic node/arrow "
+        "diagrams you can draw this way — including reaction energy profiles and reaction-"
+        "coordinate diagrams; 'latex' for a SINGLE mathematical expression or equation ONLY "
+        "(never a table — MathJax cannot render tabular/array/hline; put tables as Markdown "
+        "tables in the section body); 'image' to fetch a real labelled diagram, photo, "
+        "micrograph, or map from a free image library (set content to a precise search query) "
+        "— PREFER this for standard, widely-depicted visuals. 'description' is a LAST RESORT "
+        "for a bespoke illustration with no mermaid/image form: it is a teacher/illustrator "
+        "stub NOT shown to students, so never put content a student needs ONLY in a "
+        "'description' — teach it in the body or use mermaid/image instead."
     )
     content: str = Field(
         description="The Mermaid source, a single LaTeX expression, an image SEARCH QUERY (for "
@@ -199,8 +268,21 @@ class NoteSection(BaseModel):
 
 class PracticeQuestion(BaseModel):
     question: str
+    difficulty: Literal["basic", "standard", "stretch"] = Field(
+        default="standard",
+        description="Difficulty rung: 'basic' warm-up, 'standard' exam-level, 'stretch' "
+        "synthesis/hardest. The question set should span a ladder from basic to stretch.",
+    )
+    marks: int | None = Field(
+        default=None,
+        description="Mark/point allocation, using the board's convention (UK 'marks' for "
+        "A-Level/IGCSE, AP FRQ 'points'). Leave null where questions are not mark-weighted "
+        "(e.g. SAT). The worked_solution's scoring points (M1, A1 ...) must sum to this.",
+    )
     worked_solution: str = Field(
-        description="Full solution, not just the final answer, so the notes are self-teaching."
+        description="Full solution written as a MARK SCHEME: label the scoring points "
+        "(M1, M2, A1 ...) so it is explicit where each mark/point is earned, and make them sum "
+        "to `marks`. Give full working, not just the final answer, so the notes are self-teaching."
     )
     targets_objective_codes: list[str] = Field(default_factory=list)
 

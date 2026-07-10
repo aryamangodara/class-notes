@@ -27,17 +27,27 @@ Guidance:
 - Present any table as a Markdown table — never as a LaTeX table (no tabular,
   array, or hline environments; MathJax cannot render them).
 - Include worked examples where they genuinely aid understanding.
-- Add diagrams where they help: `mermaid` for processes/cycles/flows; `latex` for
-  a single expression or equation ONLY (never a table); `image` to pull a real
-  labelled diagram, photo, micrograph, or map from a free image library — set
-  `content` to a SHORT keyword query of 2-4 words naming the thing itself (e.g.
-  "chloroplast diagram", "mitochondrion structure", "palisade cell"), NOT a full
-  sentence, and give a caption; or `description` for a bespoke illustration a
-  teacher would draw. Prefer `image` for STANDARD, widely-depicted things that free
-  libraries reliably have — labelled organelles, cells, atomic/bonding diagrams,
-  standard apparatus (e.g. an electrolysis cell), periodic trends — and avoid
-  `image` for very specific experimental set-ups or one-off scenarios (use
-  `description` for those). Use it where a real visual genuinely helps, not decoratively.
+- Add diagrams where they help: `mermaid` for processes/cycles/flows AND schematic
+  node/arrow diagrams you can draw that way — including reaction energy profiles and
+  reaction-coordinate diagrams; `latex` for a single expression or equation ONLY
+  (never a table); `image` to pull a real labelled diagram, photo, micrograph, or map
+  from a free image library — set `content` to a SHORT keyword query of 2-4 words
+  naming the thing itself (e.g. "chloroplast diagram", "mitochondrion structure",
+  "reaction energy profile"), NOT a full sentence, and give a caption. Prefer `image`
+  for STANDARD, widely-depicted things that free libraries reliably have — labelled
+  organelles, cells, atomic/bonding diagrams, standard apparatus (e.g. an electrolysis
+  cell), periodic trends. Use `description` ONLY as a last resort for a bespoke, one-off
+  illustration that has no mermaid or image form: it is a teacher/illustrator stub that
+  is NOT shown to students, so never rely on it to convey something a student needs —
+  teach that in the body, or draw it with mermaid/image. Use diagrams where a real
+  visual genuinely helps, not decoratively.
+- Include the STANDARD diagram a student must be able to read or draw for THIS
+  section's objectives, as a real `mermaid` or `image` — e.g. an exothermic/
+  endothermic reaction energy profile (progress of reaction on the x-axis, energy on
+  the y-axis; reactant and product levels, activation energy and delta H labelled) for
+  a section on energy changes. A brief visual recap of a foundational idea is worth
+  including even if it is listed as a prerequisite; never leave a core visual implicit
+  or prose-only.
 - In `mermaid` diagrams, wrap any node label containing parentheses, `+`, or
   punctuation in double quotes (e.g. `A["Glucose (6C)"]`) or Mermaid fails to parse.
 - Do not write the internal objective codes (e.g. SAT-ALG-LIN2-1) in the notes;

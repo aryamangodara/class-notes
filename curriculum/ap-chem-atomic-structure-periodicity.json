@@ -16,28 +16,77 @@
       "code": "SAP-1.A",
       "statement": "Calculate the average atomic mass of an element from isotopic masses and relative abundances, and interpret an element's mass spectrum.",
       "tier": null,
-      "command_words": ["calculate", "interpret"]
+      "command_words": [
+        "calculate",
+        "interpret"
+      ]
     },
     {
       "code": "SAP-1.B",
       "statement": "Write the electron configuration of an atom or ion (using the Aufbau shell/subshell model) and relate it to the element's position on the periodic table.",
       "tier": null,
-      "command_words": ["represent", "explain"]
+      "command_words": [
+        "represent",
+        "explain"
+      ]
     },
     {
       "code": "SAP-1.C",
       "statement": "Explain how photoelectron spectroscopy (PES) data provide evidence for shells and subshells and for effective nuclear charge (Zeff).",
       "tier": null,
-      "command_words": ["explain"]
+      "command_words": [
+        "explain"
+      ]
     },
     {
       "code": "SAP-2.A",
       "statement": "Explain periodic trends in atomic radius, ionization energy and electronegativity using Coulomb's law, effective nuclear charge and electron shielding.",
       "tier": null,
-      "command_words": ["explain", "justify"]
+      "command_words": [
+        "explain",
+        "justify"
+      ]
     }
   ],
   "depth_profile": "AP conceptual depth: students reason with Coulomb's law and effective nuclear charge (Zeff) to EXPLAIN trends and data, write electron configurations (including the common Cr and Cu exceptions), and interpret PES and mass-spectrum data. Students are NOT required to know quantum numbers, orbital shapes beyond the s/p/d labels, or the Schrodinger equation. The emphasis is on causal explanation (Coulombic attraction, distance, shielding) and on interpreting experimental data, not on rote facts.",
   "assessment_notes": "AP Chemistry MCQs and free-response require EXPLAINING a trend with a Coulomb's-law argument (Zeff and distance) — a bare statement of the trend earns no explanation credit. PES questions ask candidates to match peaks to subshells and reason that binding energy tracks Zeff. Quantitative parts include average atomic mass from isotopic abundances. Justify every claim with the atomic model; connect electron configuration to periodic position.",
-  "source": "Hand-seeded for POC — validate against the AP Chemistry Course and Exam Description (2020), Unit 1 Atomic Structure and Properties."
+  "source": "Hand-seeded for POC — validate against the AP Chemistry Course and Exam Description (2020), Unit 1 Atomic Structure and Properties.",
+  "exam_map": [
+    {
+      "key": "Format",
+      "value": "Multiple-choice + **FRQs**; **points**. Atomic structure & periodicity (SAP) is heavily tested"
+    },
+    {
+      "key": "What to expect",
+      "value": "**PES spectra** interpretation, mass-spec / isotope calculations, and Coulombic-attraction reasoning for periodic trends"
+    },
+    {
+      "key": "Key skill",
+      "value": "Justify trends with **Coulomb's law** (charge, distance, shielding) — not memorised rules"
+    },
+    {
+      "key": "Banked marks",
+      "value": "Electron configurations and reading a **PES peak** (energy + relative height) are reliable points"
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description (College Board), Unit 1 — Atomic Structure and Periodicity (validate against the official CED).",
+  "spec_checklist": [
+    {
+      "code": "SAP-1.A",
+      "can_do": "I can calculate the average atomic mass of an element from isotopic masses and relative abundances, and interpret an element's mass spectrum."
+    },
+    {
+      "code": "SAP-1.B",
+      "can_do": "I can write the electron configuration of an atom or ion (using the Aufbau shell/subshell model) and relate it to the element's position on the periodic table."
+    },
+    {
+      "code": "SAP-1.C",
+      "can_do": "I can explain how photoelectron spectroscopy (PES) data provide evidence for shells and subshells and for effective nuclear charge (Zeff)."
+    },
+    {
+      "code": "SAP-2.A",
+      "can_do": "I can explain periodic trends in atomic radius, ionization energy and electronegativity using Coulomb's law, effective nuclear charge and electron shielding."
+    }
+  ],
+  "next_topic": "Chemical bonding & molecular structure"
 }

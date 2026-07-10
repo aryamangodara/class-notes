@@ -15,29 +15,77 @@
     {
       "code": "7.1",
       "statement": "Understand the derivative of f(x) as the gradient of the tangent to the graph of y = f(x) at a general point, defined as the limit of the gradient of a chord as the chord shrinks.",
-      "tier": "A-Level",
-      "command_words": ["understand"]
+      "tier": null,
+      "command_words": [
+        "understand"
+      ]
     },
     {
       "code": "7.2",
       "statement": "Use the formal definition f'(x) = lim (h -> 0) [f(x+h) - f(x)] / h to differentiate functions from first principles.",
-      "tier": "A-Level",
-      "command_words": ["differentiate", "prove"]
+      "tier": null,
+      "command_words": [
+        "differentiate",
+        "prove"
+      ]
     },
     {
       "code": "7.3",
       "statement": "Prove from first principles the derivative of x^n for small positive integer n, and the derivatives of sin x and cos x (with x in radians).",
-      "tier": "A-Level",
-      "command_words": ["prove", "show"]
+      "tier": null,
+      "command_words": [
+        "prove",
+        "show"
+      ]
     },
     {
       "code": "7.4",
       "statement": "Interpret the derivative as a rate of change, and use its sign to determine where a function is increasing or decreasing.",
-      "tier": "A-Level",
-      "command_words": ["interpret"]
+      "tier": null,
+      "command_words": [
+        "interpret"
+      ]
     }
   ],
   "depth_profile": "A-Level (and AS) Pure Mathematics rigour: students must SHOW the full limit process — set up the difference quotient [f(x+h) - f(x)] / h, expand and simplify algebraically, then evaluate the limit as h tends to 0 — not merely apply differentiation rules. Proof from first principles for x^n (small n) and for sin x and cos x (using radian measure and small-angle approximations) is examinable. The formal lim notation must be present throughout. This is a deliberate step-change in rigour from GCSE or SAT-level gradient work; reasoning and notation carry marks.",
   "assessment_notes": "Edexcel A-Level Pure papers regularly ask candidates to 'prove from first principles'. Method marks are awarded for correctly setting up the chord-gradient quotient, for the algebraic simplification, and for the limit statement as h tends to 0. Marks are commonly lost by: omitting the lim notation, dividing by h before taking the limit without justification, or stating the answer with no derivation. The command word 'prove' signals that every step must be shown.",
-  "source": "Hand-seeded for POC — validate against the Edexcel A-Level Mathematics specification (9MA0), Pure Mathematics, section 7 Differentiation."
+  "source": "Hand-seeded for POC — validate against the Edexcel A-Level Mathematics specification (9MA0), Pure Mathematics, section 7 Differentiation.",
+  "exam_map": [
+    {
+      "key": "Papers",
+      "value": "**Paper 1 & Paper 2** (Pure Mathematics · 9MA0/01 & /02 · 100 marks · 2h each · 33.3% each)"
+    },
+    {
+      "key": "What to expect",
+      "value": "A **'prove from first principles'** question appears regularly — differentiating xⁿ, sin x or cos x — with method marks for the limit setup"
+    },
+    {
+      "key": "Key skill",
+      "value": "Set up the difference quotient, simplify, then state the limit as h → 0 — every step shown, lim notation throughout"
+    },
+    {
+      "key": "Banked marks",
+      "value": "The **lim notation** and the chord-gradient setup earn method marks even if the algebra slips"
+    }
+  ],
+  "spec_source_citation": "Edexcel A-Level Mathematics (9MA0) specification, Pure Mathematics (validate against the official spec).",
+  "spec_checklist": [
+    {
+      "code": "7.1",
+      "can_do": "I can understand the derivative of f(x) as the gradient of the tangent to the graph of y = f(x) at a general point, defined as the limit of the gradient of a chord as the chord shrinks."
+    },
+    {
+      "code": "7.2",
+      "can_do": "I can use the formal definition f'(x) = lim (h -> 0) [f(x+h) - f(x)] / h to differentiate functions from first principles."
+    },
+    {
+      "code": "7.3",
+      "can_do": "I can prove from first principles the derivative of x^n for small positive integer n, and the derivatives of sin x and cos x (with x in radians)."
+    },
+    {
+      "code": "7.4",
+      "can_do": "I can interpret the derivative as a rate of change, and use its sign to determine where a function is increasing or decreasing."
+    }
+  ],
+  "next_topic": "Applications of differentiation — stationary points & optimisation"
 }

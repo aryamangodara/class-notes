@@ -16,28 +16,75 @@
       "code": "ENE-1.I",
       "statement": "Explain how cellular respiration releases the chemical energy stored in organic molecules to produce ATP.",
       "tier": null,
-      "command_words": ["explain"]
+      "command_words": [
+        "explain"
+      ]
     },
     {
       "code": "ENE-1.J",
       "statement": "Describe the aerobic stages of cellular respiration (glycolysis, pyruvate oxidation, the citric acid / Krebs cycle, and oxidative phosphorylation) including where each occurs and its inputs and outputs.",
       "tier": null,
-      "command_words": ["describe"]
+      "command_words": [
+        "describe"
+      ]
     },
     {
       "code": "ENE-1.K",
       "statement": "Explain how the electron transport chain establishes a proton gradient that drives ATP synthesis by chemiosmosis, and the role of oxygen as the final electron acceptor.",
       "tier": null,
-      "command_words": ["explain"]
+      "command_words": [
+        "explain"
+      ]
     },
     {
       "code": "ENE-1.L",
       "statement": "Explain how anaerobic respiration and fermentation regenerate NAD+ when oxygen is absent, and compare their ATP yield with aerobic respiration.",
       "tier": null,
-      "command_words": ["explain", "compare"]
+      "command_words": [
+        "explain",
+        "compare"
+      ]
     }
   ],
   "depth_profile": "AP-level conceptual depth: students must understand the FLOW of energy and electrons and where ATP, NADH and FADH2 are produced and consumed, plus chemiosmosis as the link between the electron transport chain and ATP synthase. Per the CED exclusion statements, students are NOT required to memorise the individual intermediate molecules or specific enzyme steps of glycolysis or the Krebs cycle — focus on inputs, outputs, cellular location, and the role of the proton gradient. ATP accounting is approximate (net yield per glucose), not rote stoichiometry. Connect structure to function (e.g. why disrupting the inner membrane lowers ATP yield).",
   "assessment_notes": "AP Biology free-response questions reward explaining a mechanism and connecting structure to function. 'Explain' and 'Justify' points require a stated mechanism, not just a correct conclusion. Expect to interpret experimental data (respiration-rate experiments, effects of uncouplers or ETC inhibitors) and to reason about the proton gradient. Do not get lost in the intermediates the CED excludes — that wastes time and earns no extra credit.",
-  "source": "Hand-seeded for POC — validate against the AP Biology Course and Exam Description (2020), Unit 3 Topic 3.6, Enduring Understanding ENE-1."
+  "source": "Hand-seeded for POC — validate against the AP Biology Course and Exam Description (2020), Unit 3 Topic 3.6, Enduring Understanding ENE-1.",
+  "exam_map": [
+    {
+      "key": "Format",
+      "value": "Multiple-choice + **free-response (FRQs)**; scored in **points**. Cellular energetics (Big Idea ENE) recurs every year"
+    },
+    {
+      "key": "What to expect",
+      "value": "FRQs on glycolysis / Krebs / ETC, net ATP yield, and **interpreting experimental data** on respiration rates"
+    },
+    {
+      "key": "Key skill",
+      "value": "Trace carbon and electrons through the stages; connect mitochondrion structure to function"
+    },
+    {
+      "key": "Banked marks",
+      "value": "Naming the **location** of each stage and the net ATP figures are reliable points"
+    }
+  ],
+  "spec_source_citation": "AP Biology Course and Exam Description (College Board), Unit 3 — Cellular Energetics (validate against the official CED).",
+  "spec_checklist": [
+    {
+      "code": "ENE-1.I",
+      "can_do": "I can explain how cellular respiration releases the chemical energy stored in organic molecules to produce ATP."
+    },
+    {
+      "code": "ENE-1.J",
+      "can_do": "I can describe the aerobic stages of cellular respiration (glycolysis, pyruvate oxidation, the citric acid / Krebs cycle, and oxidative phosphorylation) including where each occurs and its inputs and outputs."
+    },
+    {
+      "code": "ENE-1.K",
+      "can_do": "I can explain how the electron transport chain establishes a proton gradient that drives ATP synthesis by chemiosmosis, and the role of oxygen as the final electron acceptor."
+    },
+    {
+      "code": "ENE-1.L",
+      "can_do": "I can explain how anaerobic respiration and fermentation regenerate NAD+ when oxygen is absent, and compare their ATP yield with aerobic respiration."
+    }
+  ],
+  "next_topic": "Photosynthesis"
 }

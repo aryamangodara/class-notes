@@ -6,8 +6,10 @@ Guidance for Claude Code (claude.ai/code) when working in this repository.
 
 A curriculum-grounded **class-notes generator** for AP / IGCSE / SAT / A-Level.
 Feed a topic id; a multi-stage Gemini pipeline (outline → draft sections → fetch
-images → finalize → verify coverage) renders self-contained notes to
-`out/<topic_id>.{md,html,json}`. Sister project to `../Grader` — same
+images → finalize → verify coverage) renders notes to
+`out/<topic_id>.{json,html}` — the JSON is the source of truth and the `.html` is a
+self-contained page that embeds that JSON and renders it in the browser (no `.md` is
+persisted; opens straight from disk, no server). Sister project to `../Grader` — same
 single-vendor Gemini stack and `config / schemas / helpers / prompts` split; the
 notes are grounded in the same curriculum the Grader assesses against.
 
@@ -19,7 +21,9 @@ Use **`py -3`**, NOT bare `python` (see Conventions):
 py -3 notes.py --list           # list discovered topics
 py -3 notes.py <topic_id>       # generate one topic (live Gemini calls)
 py -3 notes.py --all            # generate every topic
-py -3 _smoke.py                 # OFFLINE render self-test (stubs Gemini; no API key, no network)
+py -3 notes.py --v2 <topic_id>  # generate the INTERACTIVE v2 format (also: --v2 --all)
+py -3 _smoke.py                 # OFFLINE v1 render self-test (stubs Gemini; no key/network)
+py -3 _smoke_v2.py              # OFFLINE v2 self-test (schema<->dispatcher parity, safety, invariants)
 ```
 
 There is no build step and no test suite beyond `_smoke.py` — it's the fast
@@ -34,6 +38,40 @@ Everything (including embedded `image_src` base64) is stored in the JSON, so
 `render_markdown` / `render_html` are pure functions of the saved `ClassNotes` —
 render-layer changes apply instantly to all notes with no Gemini calls. Prefer
 this over `--all` when you only touched rendering.
+
+## Interactive v2 format (block-based; the new primary output)
+
+A richer output format lives ALONGSIDE v1: a single-scroll INTERACTIVE lesson
+(progress tracking, flip-card definitions, MCQs with per-option feedback,
+step-reveal worked examples, live sims, drag-to-bucket sorts, parameterized
+energy-profile / Hess SVGs, a numeric practice ladder with tolerance + diagnostic
+wrong-answers + mark schemes, a spec checklist, and a curated exam-map + past-paper
+panel). `notes.py --v2 <id>` writes `out/<id>.v2.json` + `<id>.interactive.html`
+(never overwrites v1 artifacts). Target design contract: `enthalpy-interactive-full.html`.
+
+- `schemas_v2.py` — the block vocabulary: an ordered list of typed `Block`s per
+  `InteractiveSection` (prose / callout / table / flip_cards / mcq / step_reveal /
+  numeric / sim / sort / toggle_diagram / cycle_diagram / reveal / accordion /
+  figure) + the assembled `InteractiveNotes`. The union is a **plain `Union`** (→
+  `anyOf`), NOT discriminated — the Vertex schema transformer rejects
+  `oneOf`/`discriminator`. Blocks carry NO id; the renderer assigns ids by position.
+- `render_v2.py` — ONE client-side block-dispatch renderer (`renderBlock`) + the
+  **safety doctrine**: the renderer OWNS all SVG geometry (`SVG_TEMPLATES`) and sim
+  arithmetic (a tokenized evaluator, never `eval`); model strings reach the DOM via
+  `textContent`, never `innerHTML` (prose is the one `marked` path). Also
+  `validate_interactives` (deterministic post-gen checks → `review_flags`).
+- `pipeline_v2.py` — `generate_interactive_notes`: outline → section blocks
+  (parallel) → images for `figure` blocks → practice ladder → finalize (hero / hook
+  / command words / mistakes / checklist recaps) → verify + validate. Prompts:
+  `prompts/v2_{write_section,write_practice,finalize}.txt`. **Prompt templates are
+  `str.format`-ed — never put literal `{`/`}` in them (a `{-1}` unit example once
+  broke every section-write with `KeyError`).**
+- Curated, NEVER generated: `TopicSpec.exam_map / spec_checklist / past_papers /
+  next_topic` (hand-authored per topic; the "Verified" past-paper citations must be
+  human-verified — leave empty until confirmed against the real papers).
+- **Parity contract** (asserted by `_smoke_v2.py`): the block `type` set in
+  `schemas_v2.BLOCK_TYPES` === the `renderBlock` `case` set in the JS — keep them in
+  lockstep. v2 drops Mermaid; keeps MathJax + `marked` (prose only) + a Google-Fonts link.
 
 ## Setup contract
 
@@ -75,13 +113,20 @@ curriculum/  the grounding store (TopicSpec JSON per topic)
 5. **verify** (`verify_coverage`) — per-objective coverage audit (callouts
    included) + review flags for doubtful / off-depth content.
 
-Then `render_markdown` → `render_html` → `save_notes` writes md/html/json.
+Then `save_notes` writes json + html. The `.json` is the source of truth; the
+`.html` embeds that JSON inline and renders it client-side (its JS `buildMarkdown`
+mirrors the Python `render_markdown`, kept as reference + `_smoke.py` oracle), so it
+opens straight from disk. No `.md` file is written.
 
 ## Rendering rules (helpers.py `render_markdown` + `_HTML_SHELL`)
 
-Self-contained HTML: `marked` renders the Markdown, MathJax renders LaTeX, Mermaid
-renders flowcharts (all CDN); images are base64 data URIs. Each rule below fixes a
-real bug — **don't regress them** (and re-run `_smoke.py`, which asserts most of them):
+The `.html` embeds the structured ClassNotes JSON inline and renders it in the
+browser: JS `buildMarkdown` (a port of `render_markdown`) assembles the Markdown,
+then `marked` renders it, MathJax renders LaTeX, Mermaid renders flowcharts (all
+CDN); images are base64 data URIs carried in the JSON. **Two renderers exist — Python
+`render_markdown` (reference / smoke oracle) and the shell's JS `buildMarkdown`
+(live) — keep them in sync.** Each rule below fixes a real bug — **don't regress
+them** (and re-run `_smoke.py`, which asserts most of them):
 
 - **Maths delimiters:** inline is `\(...\)`, display is `$$...$$`. A bare `$` is
   currency. MathJax is configured for `\(...\)` (NOT `$...$`) so `$80` never
@@ -104,6 +149,33 @@ real bug — **don't regress them** (and re-run `_smoke.py`, which asserts most 
 - **Exam strategy:** `BOARD_EXAM_TIPS[level]` (curated, accurate exam-format facts)
   is merged with the topic's `exam_tips` into ONE 🎯 box — there is no separate
   "Exam tips" section.
+- **Header subtitle** is `board · subject · level — unit`, but the standalone
+  `level` is **dropped when `board` already contains it** (e.g. board
+  `Edexcel A-Level` + level `A-Level` → prints "A-Level" once, not twice).
+- **Objective tier tag:** the per-objective `_(tier)_` suffix (Core/Supplement) is
+  **suppressed when `tier == level`** — it's redundant noise, not a depth tag. Fix
+  the source data too (a curriculum spec should not set `tier` to its own level).
+- **Prose "diagrams" are hidden from students:** only real visuals render inline
+  (`mermaid`, `latex`, `image` *with* a fetched `image_src`). A `kind:"description"`
+  stub, or an `image` whose search found nothing, is **collected into the teacher/QA
+  footer** ("Illustrations to add"), never shown inline as a broken-looking
+  "Diagram —" blockquote. (Generation is also steered away from `description`.)
+- **Teacher/QA footer:** coverage count, generated **date** (not the raw ISO
+  timestamp), review flags, and the illustration stubs above live in ONE collapsed
+  `<details>` ("For teachers · QA") at the end — **not** as inline student-facing
+  text. The JSON remains the full internal record.
+- **Practice questions carry `difficulty` + `marks`:** each renders a
+  `_(basic · 4 marks)_`-style tag; the unit is board-appropriate — **"points" when
+  `level == "AP"`**, else "marks", and omitted when `marks` is null (e.g. SAT). The
+  set is a difficulty ladder (basic → stretch, ~5–6 questions) and each solution is a
+  mark scheme (M1 / A1 …). Both fields live on `PracticeQuestion`.
+- **Section spec codes are shown:** each section renders a `*Spec points: …*` line
+  from `covers_objective_codes` (a coverage map / rigour signal). This is the ONE
+  place codes surface — the Learning-objectives list still shows statements only.
+- **Foundational visuals:** a topic's core diagram (e.g. an exothermic/endothermic
+  reaction energy profile in energetics) must render as a real `mermaid`/`image`, not
+  prose — the `outline` / `write_section` prompts steer this. ("Links to other topics"
+  is deferred until the corpus has sibling notes to link.)
 
 ## Conventions specific to this repo
 

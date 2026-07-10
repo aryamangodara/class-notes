@@ -1,0 +1,68 @@
+{house_style}
+
+You are authoring ONE section of an INTERACTIVE lesson as an ordered list of typed
+BLOCKS. Teach only this section's objectives; the other sections are listed so you do
+not repeat them. The learning should happen through interaction, not walls of text.
+
+CURRICULUM CONTRACT (calibrate depth to this; use its REFERENCE DATA values verbatim):
+{spec_block}
+
+THIS SECTION:
+  Heading: {heading}
+  Intent:  {intent}
+  Must teach these objectives: {codes}
+
+THE OTHER SECTIONS (do NOT teach their material):
+{outline}
+
+THIS BOARD'S EXAM FORMAT (keep any exam pointers consistent with this):
+{exam_format}
+
+Return an InteractiveSection: a `heading`, a short student-facing `spec_label`
+(e.g. "Spec 8.5-8.6 · CP8 skills"), `covers_objective_codes`, and `blocks` — an
+ordered list drawn from this widget vocabulary:
+
+- prose: a SHORT paragraph (1-3 sentences) that sets up the widget(s) that follow.
+  Keep prose minimal. Inline maths as \(...\).
+- flip_cards: 3-6 recall cards (front term / back definition) for word-for-word
+  definitions; bold the marking-point words in the back.
+- table: a compact summary table (headers + rows).
+- callout: one boxed note. kind = mistake (an examiner pet-peeve / common error AND its
+  fix), formula (a key rule or shortcut), practical (a board Core-Practical box), tip,
+  or remember. Include only when accurate and grounded; give a short title with an emoji.
+- mcq: a quick check — a question and 2-4 options with EXACTLY ONE correct=true, and a
+  distinct teaching explanation on EVERY option (why it is right, or why it is wrong).
+- step_reveal: a worked example broken into ordered steps revealed one at a time, with a
+  `think_hint` question first. Put the arithmetic of each step in its `formula`.
+- sim: a live calculator. Give `inputs` (sliders: key/label/unit/min/max/step/default),
+  `constants` (key/value — values MUST equal the REFERENCE DATA), and `expression`: a
+  SAFE arithmetic formula over ONLY those keys (the keys, numbers, + - * / and
+  parentheses; NO functions, no other names), e.g. "-(m*c*t)/1000/n". Optionally a
+  `qline_template` using {{key}} tokens plus {{q}} and {{result}}, a matching
+  `qline_expression` for {{q}}, and a `toggle` (a `factor` applied when ticked,
+  e.g. 0.85 for heat loss).
+- sort: a tap-to-bucket activity. Give `prompt` (the reaction/expression), `buckets`
+  (key/label/accent), and `items` (label/value/correct_bucket) — values from REFERENCE DATA.
+- toggle_diagram: template "energy_profile" with 2 labelled `states` (e.g. exothermic
+  with product_position "below", dh_sign "−"; endothermic "above", "+"). The renderer
+  draws the curve — you supply labelled states only.
+- cycle_diagram: a Hess triangle — node labels top_left/top_right/bottom and the three
+  `edges` (frm/to among those three, plus a label). The renderer draws the geometry.
+- figure: a real fetched image — set diagram.kind = "image" and diagram.content to a
+  SHORT 2-4 word search query (e.g. "coffee cup calorimeter"). Use for standard
+  apparatus/photos; prefer toggle_diagram / cycle_diagram for energy profiles and cycles.
+
+Rules:
+- Make the section INTERACTIVE: interleave prose with at least one or two widgets — do
+  not emit prose only.
+- Every number you write (steps, sims, sorts) MUST match the REFERENCE DATA; never
+  introduce a conflicting value for the same quantity.
+- Ground everything in the objectives and depth profile; do not exceed the depth.
+- Never write the internal objective codes in student-facing text.
+- For a topic involving exothermic/endothermic energy changes, include a
+  toggle_diagram (template "energy_profile") as an early, orienting visual.
+- Write units and symbols with UNICODE superscripts (kJ mol⁻¹, m s⁻², °C, ΔH, ⦵),
+  NOT caret or underscore notation. This matters especially for sim output_unit.
+- Inline maths as \(...\), display as $$...$$; currency as a plain dollar sign.
+
+Return the section as structured JSON.
