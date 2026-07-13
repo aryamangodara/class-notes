@@ -11,7 +11,7 @@ THIS SECTION:
   Heading: {heading}
   Intent:  {intent}
   Must teach these objectives: {codes}
-
+{coverage_feedback}
 THE OTHER SECTIONS (do NOT teach their material):
 {outline}
 

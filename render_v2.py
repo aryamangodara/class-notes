@@ -1,7 +1,7 @@
 """v2 interactive renderer: InteractiveNotes -> self-contained interactive HTML.
 
 ONE client-side block-dispatch renderer (JS `renderBlock`). The Python side only
-escapes + embeds the JSON island and substitutes the shell (mirrors v1 render_html).
+escapes + embeds the JSON island and substitutes the shell.
 
 Safety doctrine:
   * the renderer OWNS all SVG geometry (SVG_TEMPLATES) and sim arithmetic (a
@@ -707,7 +707,7 @@ function build(){
     reg('spec-'+scId, 'spec-'+scId); PROG.sec.set('spec-'+scId, null);  // standalone tracked item
     main.appendChild(ss);
   }
-  // past papers (curated; only if present)
+  // past papers (generated + PDF-verified, or curated; only if present)
   if(data.past_papers && ((data.past_papers.verified||[]).length || (data.past_papers.resources||[]).length)){
     var pp=data.past_papers; var sec=h('section');
     var box=h('div',{class:'exam-map'});
@@ -715,8 +715,11 @@ function build(){
     if(pp.intro){ var intro=h('p',{style:'margin:.7rem 0 .4rem;font-size:.92rem'}); intro.innerHTML=md(pp.intro,true); box.appendChild(intro); }
     var grid=h('div',{class:'em-grid'});
     (pp.resources||[]).forEach(function(r){ var cell=h('div',{class:'em-cell'}); cell.appendChild(h('div',{class:'k'},r.key)); var v=h('div',{class:'v'}); v.innerHTML=md(r.value,true); cell.appendChild(v); grid.appendChild(cell); });
+    // summary via textContent + a programmatic anchor whose href is scheme-guarded:
+    // these fields are model-generated, so they must never reach innerHTML or a raw href.
+    var safeUrl=function(u){ return (/^https?:\/\//i.test(u||'')) ? u : ''; };
     (pp.verified||[]).forEach(function(vp){ var cell=h('div',{class:'em-cell', style:'grid-column:1/-1'}); cell.appendChild(h('div',{class:'k'}, '✓ Verified · '+vp.label));
-      var v=h('div',{class:'v'}); v.innerHTML=md(vp.summary+(vp.url?(' <a href="'+vp.url+'" target="_blank" rel="noopener" style="color:var(--edex);font-weight:600">Sit the paper →</a>'):''),true); cell.appendChild(v); grid.appendChild(cell); });
+      var v=h('div',{class:'v'}, vp.summary||''); var u=safeUrl(vp.url); if(u){ v.appendChild(document.createTextNode(' ')); v.appendChild(h('a',{href:u, target:'_blank', rel:'noopener', style:'color:var(--edex);font-weight:600'}, 'Sit the paper →')); } cell.appendChild(v); grid.appendChild(cell); });
     box.appendChild(grid);
     if(pp.disclaimer){ var disc=h('div',{class:'em-cell', style:'grid-column:1/-1'}); disc.appendChild(h('div',{class:'v', style:'font-size:.8rem;color:var(--ink-soft)'}, pp.disclaimer)); grid.appendChild(disc); }
     sec.appendChild(box); main.appendChild(sec);

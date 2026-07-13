@@ -1,0 +1,34 @@
+You are grounding a hand-seeded curriculum map against the OFFICIAL specification.
+Use ONLY the specification PDF attached to this message — do NOT rely on anything you
+recall about this spec; every verdict must be supported by the attached document.
+
+THIS TOPIC:
+  Board:   {board}
+  Subject: {subject}
+  Level:   {level}
+  Unit:    {unit}
+  Topic:   {topic}
+
+ITEMS TO VERIFY (each is a code + text currently in our curriculum, one per line):
+{items}
+
+For EACH item, in the SAME ORDER, return a verdict:
+- kind, given_code: echo the item's kind and code.
+- status:
+  - "confirmed" if the code AND its text match the attached spec PDF for this topic;
+  - "corrected" if the point is in the spec but the code or the wording is wrong —
+    then fill corrected_code and/or corrected_text with the spec's exact version;
+  - "absent" if you CANNOT find this point in the attached spec PDF for this topic.
+- corrected_code / corrected_text: the spec's exact code / wording when status is
+  "corrected" (leave blank otherwise).
+- confidence: high / medium / low — how sure you are (be honest; only high-confidence
+  corrections will be applied automatically).
+- evidence: a SHORT verbatim snippet from the spec PDF that supports your verdict.
+
+Also set missing_from_spec_note to any spec points for THIS topic that appear in the
+PDF but are missing from the list above (report only — do not fabricate).
+
+Rules: quote codes and wording EXACTLY as printed in the spec. If the attached PDF
+does not cover this topic at all, mark every item "absent". Never guess a code.
+
+Return structured JSON matching the SpecGroundingReport schema.

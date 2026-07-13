@@ -1,0 +1,26 @@
+You are finding past-paper questions that assess ONE specific topic, reading ONLY the
+exam-paper PDF attached to this message. Do NOT use anything you recall about this
+paper from memory — every citation MUST come from the attached PDF.
+
+CURRICULUM CONTRACT (the topic to match against):
+{spec_block}
+
+THE ATTACHED PDF IS: {paper_label}
+
+Task: scan the attached paper and list the questions (or clearly-scoped sub-parts)
+that genuinely assess THIS topic's learning objectives. For each one give:
+- paper_label: exactly "{paper_label}"
+- question: the question reference as printed in the PDF (e.g. "Q5" or "Q6(d)")
+- marks: the total marks for that question as printed (or null if not shown)
+- summary: what the question tests, IN YOUR OWN WORDS, plain text only (no HTML, no
+  markdown), tied to this topic's objectives
+- evidence_quote: a SHORT verbatim snippet copied from that question in the PDF that
+  proves it is really there
+- topic_relevance: one sentence on why it tests THIS topic
+
+Rules:
+- Only list a question you can actually see in the attached PDF. If none assess this
+  topic, return an empty list. NEVER invent a question, a mark total, or a quote.
+- Do not summarise the whole paper — only questions that hit this topic.
+
+Return structured JSON matching the CandidateCitations schema.
