@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 
 import helpers
 import schemas_v2 as v2
-from config import BOARD_EXAM_TIPS, CONFIG, HOUSE_STYLE
+from config import CONFIG, HOUSE_STYLE, exam_tips_for
 from render_v2 import validate_interactives
 from schemas import CoverageReport, TopicSpec
 from coverage_gate import (
@@ -95,7 +95,7 @@ def write_section_v2(client: genai.Client, spec: TopicSpec, section, outline,
     others = "\n".join(
         f"  - {s.heading}: {s.intent} [{', '.join(s.covers_objective_codes) or 'none'}]"
         for s in outline.sections if s is not section) or "  (this is the only section)"
-    exam_format = "\n".join(f"  - {t}" for t in BOARD_EXAM_TIPS.get(spec.level, [])) or "  (none)"
+    exam_format = "\n".join(f"  - {t}" for t in exam_tips_for(spec.level, spec.subject)) or "  (none)"
     prompt = helpers.load_prompt("v2_write_section.txt").format(
         house_style=HOUSE_STYLE, spec_block=helpers._spec_block(spec),
         heading=section.heading, intent=section.intent,

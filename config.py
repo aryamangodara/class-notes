@@ -107,15 +107,11 @@ BOARD_EXAM_TIPS: dict[str, list[str]] = {
         "the controls and variables.",
     ],
     "SAT": [
-        "The digital SAT is section-adaptive: your first module sets the difficulty and score "
-        "ceiling of the second, so treat every question as counting.",
-        "There is no penalty for wrong answers — always enter something, even a guess.",
-        "A calculator (built-in Desmos) is allowed throughout the Math section; set up the algebra "
-        "first, then use it to check.",
-        "Time is tight (about 75 seconds per Math question), and the wrong options are built around "
-        "common errors like sign slips and swapped slope/intercept — watch for the trap.",
-        "For student-produced ('grid-in') responses, follow the entry rules and keep within the "
-        "character limit.",
+        "The digital SAT is section-adaptive by module: your first module sets the difficulty and "
+        "score ceiling of the second, so treat every question as counting.",
+        "There is no penalty for a wrong answer — never leave anything blank; enter your best guess.",
+        "Work in the Bluebook app: use the countdown timer, the 'mark for review' flag, and the "
+        "annotation tool to pace yourself and come back to the hard questions.",
     ],
     "A-Level": [
         "Answers are marked against Assessment Objectives (AO1 recall, AO2 application, AO3 "
@@ -129,4 +125,47 @@ BOARD_EXAM_TIPS: dict[str, list[str]] = {
         "Where the spec demands exact wording (a definition, or 'prove from first principles'), "
         "learn and reproduce it precisely.",
     ],
+    "AMC 10": [
+        "The AMC 10 is 25 multiple-choice questions in 75 minutes with no calculator, and the problems "
+        "get harder as you go — secure the earlier questions before you sink time into the last five.",
+        "Scoring is unusual: 6 points for a correct answer, 1.5 for a blank, and 0 for a wrong one. A "
+        "random guess is worth LESS than leaving it blank, so only guess once you can rule out choices.",
+        "Every answer is one of five choices (A-E) — use them: plugging in the options, estimating, or "
+        "checking parity and size can be faster than a full solution.",
+        "It rewards insight over grinding: look for symmetry, a clever substitution, complementary "
+        "counting, or a well-placed auxiliary line before committing to heavy algebra.",
+        "A high score (top 2.5%, or the announced cutoff) qualifies you for the AIME, so accuracy on the "
+        "problems you do reach beats rushing to attempt all 25.",
+    ],
 }
+
+
+# Subject-specific exam-format facts, layered ON TOP of the board-general
+# BOARD_EXAM_TIPS for the level. Keyed (level, subject) so a level whose facts
+# genuinely differ by subject — e.g. SAT Math (Desmos calculator, grid-ins) vs SAT
+# Reading & Writing (one passage per question, decide before you read the choices) —
+# no longer has to share one list. An absent (level, subject) => just the general tips.
+BOARD_SUBJECT_EXAM_TIPS: dict[tuple[str, str], list[str]] = {
+    ("SAT", "Mathematics"): [
+        "A built-in Desmos graphing calculator is available throughout the Math section — set up the "
+        "algebra first, then use it to check or to solve graphically.",
+        "Pace is roughly a minute and a half per question, and the wrong options are engineered around "
+        "common slips like sign errors and swapped slope and intercept — watch for the trap.",
+        "About a quarter of Math questions are student-produced 'grid-in' responses with no choices: "
+        "follow the entry rules for fractions, decimals and negatives, and stay within the character limit.",
+    ],
+    ("SAT", "Reading and Writing"): [
+        "Each question is a single short passage with one question — you have a little over a minute "
+        "each, so read for the point rather than rereading every word.",
+        "For grammar and transitions questions, decide what the sentence needs BEFORE reading the "
+        "choices: the wrong options are all grammatically clean and differ only in logic or punctuation.",
+        "Answer only from what the passage states — never from outside knowledge about the topic.",
+    ],
+}
+
+
+def exam_tips_for(level: str, subject: str) -> list[str]:
+    """Board-general exam-format tips for the level, plus any subject-specific tips.
+    Keyed so, e.g., SAT Reading & Writing does not inherit SAT Math-only facts
+    (Desmos, grid-ins). An absent subject => just the general tips for the level."""
+    return BOARD_EXAM_TIPS.get(level, []) + BOARD_SUBJECT_EXAM_TIPS.get((level, subject), [])

@@ -1,0 +1,103 @@
+{
+  "topic_id": "sat-english-transitions",
+  "board": "SAT (College Board)",
+  "subject": "Reading and Writing",
+  "level": "SAT",
+  "unit": "Expression of Ideas (content domain)",
+  "topic": "Transitions",
+  "prerequisites": [
+    "Reading a short paragraph for its meaning",
+    "Recognising common transition words (however, therefore, for example, moreover)",
+    "Following the logic from one sentence to the next"
+  ],
+  "learning_objectives": [
+    {
+      "code": "SAT-RW-TRANS-1",
+      "statement": "Identify the logical relationship a passage needs between two sentences or ideas: addition/continuation, contrast, cause-and-effect, example/illustration, emphasis, sequence, or conclusion.",
+      "tier": null,
+      "command_words": [
+        "identify"
+      ]
+    },
+    {
+      "code": "SAT-RW-TRANS-2",
+      "statement": "Match each logical relationship to the transition words that signal it, and classify transitions that look similar but do different jobs (e.g. 'however' for contrast vs 'therefore' for consequence vs 'moreover' for addition).",
+      "tier": null,
+      "command_words": [
+        "classify",
+        "identify"
+      ]
+    },
+    {
+      "code": "SAT-RW-TRANS-3",
+      "statement": "Choose the transition that fits the passage by reading the sentence before and the sentence after the blank and deciding the relationship first, rather than picking a familiar-sounding word.",
+      "tier": null,
+      "command_words": [
+        "choose",
+        "apply"
+      ]
+    },
+    {
+      "code": "SAT-RW-TRANS-4",
+      "statement": "Recognise and avoid the common traps: an option that signals the opposite relationship, and transitions that are redundant or overly emphatic for the logic actually present.",
+      "tier": null,
+      "command_words": [
+        "recognise",
+        "evaluate"
+      ]
+    },
+    {
+      "code": "SAT-RW-TRANS-5",
+      "statement": "Explain why the correct transition is right and each wrong option is wrong, in terms of the relationship between the ideas.",
+      "tier": null,
+      "command_words": [
+        "explain"
+      ]
+    }
+  ],
+  "depth_profile": "Digital SAT Reading and Writing depth: recognising the logical relationship between ideas and selecting the transition that matches, under about 71 seconds per question. Students are NOT required to name grammatical terminology or the transition type — only to choose correctly. A Transitions question gives one short (often academic) paragraph with a blank and four transition-word choices; all four are grammatically acceptable, so only the logic distinguishes them. The whole skill is a method: cover the choices, read the sentence before and after, state the relationship in your own words, then match. No literary analysis, no rhetorical-device labelling, no author-argument evaluation beyond the local logic between two sentences.",
+  "assessment_notes": "Digital SAT R&W, Expression of Ideas domain. Transitions items present a brief passage with a blank and four transition choices (e.g. 'For example', 'However', 'In addition', 'Therefore'). The exam tests whether the student can pin down the logical relationship from the surrounding sentences; every option is grammatically fine, so grammar is never the deciding factor. The wrong answers are engineered around predictable errors: choosing a transition that states the OPPOSITE relationship (e.g. 'however' where the two ideas actually agree), and choosing a word that 'sounds academic' without checking the logic. Method that earns the mark: cover the answer choices, read before and after the blank, decide the relationship (continue / contrast / cause / example / emphasise / conclude), then select. Naming the transition type is never required.",
+  "source": "Hand-seeded for POC — validate against the College Board Digital SAT Suite Assessment Framework, Reading and Writing section, Expression of Ideas domain (Transitions).",
+  "exam_map": [
+    {
+      "key": "Format",
+      "value": "**Digital SAT**, Reading & Writing section (adaptive, 2 modules); each question is a single short passage"
+    },
+    {
+      "key": "Where it sits",
+      "value": "**Expression of Ideas** — 'Transitions' questions ask for the word or phrase that best connects the ideas"
+    },
+    {
+      "key": "Key skill",
+      "value": "Name the relationship (**add / contrast / cause / example / emphasise / conclude**) BEFORE you look at the choices"
+    },
+    {
+      "key": "Banked marks",
+      "value": "Every option is a real transition — decide the logic first and the opposite-relationship traps fall away"
+    }
+  ],
+  "spec_source_citation": "College Board Digital SAT — Reading and Writing, Expression of Ideas (Transitions). Validate against the official SAT Suite Assessment Framework.",
+  "spec_checklist": [
+    {
+      "code": "SAT-RW-TRANS-1",
+      "can_do": "I can identify the logical relationship a passage needs between two ideas: addition, contrast, cause-and-effect, example, emphasis, sequence, or conclusion."
+    },
+    {
+      "code": "SAT-RW-TRANS-2",
+      "can_do": "I can match each relationship to the transitions that signal it, and tell apart similar-looking transitions that do different jobs."
+    },
+    {
+      "code": "SAT-RW-TRANS-3",
+      "can_do": "I can choose the right transition by reading the sentences before and after the blank and deciding the relationship first."
+    },
+    {
+      "code": "SAT-RW-TRANS-4",
+      "can_do": "I can spot and avoid the traps: an option that signals the opposite relationship, or one that is redundant or over-emphatic."
+    },
+    {
+      "code": "SAT-RW-TRANS-5",
+      "can_do": "I can explain why the correct transition works and why each wrong option does not, in terms of the logic between the ideas."
+    }
+  ],
+  "next_topic": "Rhetorical Synthesis"
+}

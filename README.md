@@ -108,7 +108,8 @@ calibration is the point of grounding.
   (`schemas.py`) — auto-discovered, no code change. For production, extract these
   from official CED / syllabus PDFs via `prompts/spec_extract.txt`.
 - **Exam strategy for a new board:** add a `BOARD_EXAM_TIPS[level]` entry in
-  `config.py`.
+  `config.py` (and a `BOARD_SUBJECT_EXAM_TIPS[(level, subject)]` overlay when the facts
+  differ by subject, e.g. SAT Math vs SAT Reading & Writing).
 
 ## Layout
 

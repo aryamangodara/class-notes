@@ -165,8 +165,23 @@ _REGISTRY: "dict[str, BoardSources]" = {
         fetch_allowlist=_SAT_HOSTS,
         subject_hub={
             "Mathematics": "https://satsuite.collegeboard.org/practice/practice-tests",
+            "Reading and Writing": "https://satsuite.collegeboard.org/practice/practice-tests",
         },
         # papers_by_subject empty — practice tests live in Bluebook, not as fetchable PDFs.
+    ),
+    "AMC (MAA)": BoardSources(
+        intro="Once these techniques are automatic, train on real AMC papers under the 75-minute clock. "
+              "Every past AMC is published with full official solutions — the best practice there is.",
+        disclaimer="Practise with official past AMC papers; the problems and full solutions are freely "
+                   "available from the MAA and the Art of Problem Solving wiki. No citations are "
+                   "auto-generated here.",
+        how_to="Sit a full 25-question set to time with no calculator, then study the official solution "
+               "to every problem you missed OR guessed — the review is where competition scores grow.",
+        fetch_allowlist=("maa.org", "artofproblemsolving.com"),
+        subject_hub={
+            "Mathematics": "https://artofproblemsolving.com/wiki/index.php/AMC_10_Problems_and_Solutions",
+        },
+        # papers_by_subject empty — link to the problem archive; no single-topic PDFs to fetch.
     ),
 }
 

@@ -222,4 +222,18 @@ except cg.CoverageError as _e:
     assert "7.3" in str(_e)
 print("structural-gate OK (prove-by-mcq caught; soft/empty ignored; multi-section union; recall-gated)")
 
+# 12. exam tips are subject-aware: SAT Math keeps its Math-only facts (Desmos, grid-ins),
+#     SAT Reading & Writing must NOT inherit them, and a level with no subject overlay
+#     falls back to the board-general tips (unknown level -> empty, no crash).
+from config import BOARD_EXAM_TIPS as _BET, exam_tips_for as _tips  # noqa: E402
+
+_math = " ".join(_tips("SAT", "Mathematics")).lower()
+_rw = " ".join(_tips("SAT", "Reading and Writing")).lower()
+assert "desmos" in _math and "grid-in" in _math, "SAT Math tips must keep the calculator/grid-in facts"
+assert "desmos" not in _rw and "grid-in" not in _rw, "SAT R&W must NOT inherit SAT Math-only facts"
+assert set(_BET.get("SAT", [])) <= set(_tips("SAT", "Mathematics")), "general SAT tips apply to every subject"
+assert _tips("AMC 10", "Mathematics") == _BET.get("AMC 10", []), "no subject overlay -> just the general tips"
+assert _tips("Nope", "Nope") == [], "unknown level -> empty (no crash)"
+print("exam-tips subject-aware OK (SAT Math keeps Desmos/grid-in; R&W does not; fallback clean)")
+
 print("\nALL V2 SMOKE CHECKS PASSED")

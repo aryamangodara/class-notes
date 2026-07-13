@@ -1,0 +1,102 @@
+{
+  "topic_id": "amc10-counting-probability",
+  "board": "AMC (MAA)",
+  "subject": "Mathematics",
+  "level": "AMC 10",
+  "unit": "Counting & Probability",
+  "topic": "Counting and Probability",
+  "prerequisites": [
+    "Factorials and basic algebra",
+    "Fractions, ratios and simplification",
+    "Listing outcomes in an organised way"
+  ],
+  "learning_objectives": [
+    {
+      "code": "AMC10-CP-1",
+      "statement": "Apply the fundamental counting principles: the multiplication principle for a sequence of independent choices, and the addition principle for mutually exclusive cases.",
+      "tier": null,
+      "command_words": [
+        "apply"
+      ]
+    },
+    {
+      "code": "AMC10-CP-2",
+      "statement": "Count selections and arrangements with combinations (nCr) and permutations (nPr), decide when order matters, and correct for overcounting from identical items or symmetry (e.g. circular arrangements).",
+      "tier": null,
+      "command_words": [
+        "calculate",
+        "distinguish"
+      ]
+    },
+    {
+      "code": "AMC10-CP-3",
+      "statement": "Use complementary counting — count the total and subtract the unwanted outcomes — when counting the complement is easier than counting directly.",
+      "tier": null,
+      "command_words": [
+        "apply",
+        "calculate"
+      ]
+    },
+    {
+      "code": "AMC10-CP-4",
+      "statement": "Break a problem into disjoint cases (casework) and add the case counts, ensuring the cases neither overlap nor leave gaps.",
+      "tier": null,
+      "command_words": [
+        "apply"
+      ]
+    },
+    {
+      "code": "AMC10-CP-5",
+      "statement": "Compute a probability as (favourable equally-likely outcomes) / (total equally-likely outcomes) using these counting techniques.",
+      "tier": null,
+      "command_words": [
+        "calculate"
+      ]
+    }
+  ],
+  "depth_profile": "AMC 10 competition depth: clever, organised counting rather than heavy machinery. In scope — the multiplication/addition principles, permutations and combinations, complementary counting, casework, correcting for overcounting, and basic probability of equally-likely outcomes. Out of scope — calculus, expected value, generating functions, continuous or conditional-probability distributions, and anything needing a calculator. Numbers are kept tractable so answers are exact integers or reduced fractions done by hand. The emphasis is on choosing the efficient method (direct vs complementary vs casework), on justifying each factor in a count, and above all on NOT overcounting. Problems are solvable in a few minutes by a strong 10th-grader who sees the right structure.",
+  "assessment_notes": "AMC 10 (MAA): 25 multiple-choice questions, 75 minutes, no calculator; counting & probability typically supplies several mid-to-hard problems. Each answer is exact (an integer or reduced fraction) and is one of five choices A-E. What is rewarded: setting up the count as a clearly justified product or sum, recognising when complementary counting or casework is far faster than brute force, and dividing out symmetry to fix overcounting. The classic mistakes that distractor answers are built around: forgetting to divide out equivalent arrangements (overcounting), confusing permutations with combinations, double-counting overlapping cases, and off-by-one slips. Because a blank scores 1.5 and a wrong answer scores 0, students should attempt only after eliminating choices. Present the count as factors with a one-line reason for each.",
+  "reference_data": "Multiplication principle: independent sequential choices multiply. Addition principle: counts of disjoint cases add. Permutations (order matters): nPr = n! / (n - r)!. Combinations (order does not matter): nCr = n! / (r! (n - r)!), read 'n choose r'. Complementary counting: (desired count) = (total) - (unwanted). Probability of an event = (number of favourable equally-likely outcomes) / (total number of equally-likely outcomes). Circular arrangements of n distinct objects: (n - 1)!.",
+  "exam_map": [
+    {
+      "key": "Format",
+      "value": "**AMC 10** (MAA): 25 multiple-choice, 75 minutes, **no calculator** — scoring **6** correct / **1.5** blank / **0** wrong"
+    },
+    {
+      "key": "Where it sits",
+      "value": "**Counting & Probability** — usually several mid-to-late problems that reward organised counting"
+    },
+    {
+      "key": "Key skill",
+      "value": "Pick the method — **direct vs complementary vs casework** — then correct for **overcounting**"
+    },
+    {
+      "key": "Scoring quirk",
+      "value": "A blank (**1.5**) beats a wrong guess (**0**) — only guess once you can eliminate choices"
+    }
+  ],
+  "spec_source_citation": "MAA American Mathematics Competitions (AMC 10), Counting & Probability. Validate against the official MAA AMC 10 scope and past papers / AoPS.",
+  "spec_checklist": [
+    {
+      "code": "AMC10-CP-1",
+      "can_do": "I can apply the multiplication principle for sequential independent choices and the addition principle for mutually exclusive cases."
+    },
+    {
+      "code": "AMC10-CP-2",
+      "can_do": "I can count with combinations and permutations, decide when order matters, and correct for overcounting from symmetry or identical items."
+    },
+    {
+      "code": "AMC10-CP-3",
+      "can_do": "I can use complementary counting when counting the unwanted outcomes is easier than counting directly."
+    },
+    {
+      "code": "AMC10-CP-4",
+      "can_do": "I can split a problem into disjoint cases and add the counts without overlapping or leaving gaps."
+    },
+    {
+      "code": "AMC10-CP-5",
+      "can_do": "I can compute a probability as favourable over total equally-likely outcomes using these counting techniques."
+    }
+  ],
+  "next_topic": "Number Theory: divisibility & modular arithmetic"
+}

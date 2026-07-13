@@ -178,8 +178,10 @@ regress** (`_smoke_v2.py` asserts most):
 - **Parity:** `schemas_v2.BLOCK_TYPES` === the `renderBlock` `case` set (asserted).
 - **Codes:** section `spec_label` + the spec checklist surface spec-point codes; the
   internal objective codes never appear in student-facing prose.
-- **Exam strategy:** `BOARD_EXAM_TIPS[level]` (curated, accurate exam-format facts)
-  grounds the per-section exam pointers; keep them consistent with the real format.
+- **Exam strategy:** `exam_tips_for(level, subject)` — the board-general
+  `BOARD_EXAM_TIPS[level]` plus any `BOARD_SUBJECT_EXAM_TIPS[(level, subject)]` overlay
+  (so SAT Reading & Writing doesn't inherit SAT Math's Desmos/grid-in facts) — grounds the
+  per-section exam pointers; keep them consistent with the real format.
 
 ## Conventions specific to this repo
 
@@ -192,7 +194,8 @@ regress** (`_smoke_v2.py` asserts most):
   — never recall. Curated facts are hand-authored and tagged "validate against the
   official spec".
 - **Curriculum is self-describing.** Add a topic = drop a `curriculum/<id>.json`;
-  no code change. New board's exam strategy = a `BOARD_EXAM_TIPS[level]` entry.
+  no code change. New board's exam strategy = a `BOARD_EXAM_TIPS[level]` entry (add a
+  `BOARD_SUBJECT_EXAM_TIPS[(level, subject)]` entry when the facts differ by subject).
 - **Schema field `description=`s are prompt surface** — sent to Gemini as
   `response_schema`; edit deliberately, not just for documentation.
 - **Prompts are plain text**, `str.format`-ed at call time. Avoid literal `{`/`}`
