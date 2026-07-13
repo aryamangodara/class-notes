@@ -122,4 +122,104 @@ print(f"interactive block ids OK: {len(ids)} trackable")
 v2.InteractiveNotes.model_validate_json(n.model_dump_json())
 print("json round-trip OK")
 
+# 9. coverage-gate logic (deterministic enforcement; coverage_gate is genai-free,
+#    so the hard-block safety net is exercised here without a key or network).
+import coverage_gate as cg  # noqa: E402
+
+
+class _Cov:  # duck-typed stand-in for LOCoverage / LearningObjective / section
+    def __init__(self, code, covered=True, gap_note="", statement="", codes=None,
+                 command_words=None, blocks=None):
+        self.code, self.covered, self.gap_note = code, covered, gap_note
+        self.statement, self.covers_objective_codes = statement, codes or []
+        self.command_words = command_words or []
+        self.blocks = blocks or []
+
+
+items = [_Cov("8.1", True), _Cov("7.3", False, "only appears in an MCQ, never derived"), _Cov("9.9", False)]
+assert [c.code for c in cg.uncovered_items(items)] == ["7.3", "9.9"], "uncovered filter"
+
+objs = [_Cov("8.1", statement="define enthalpy change"),
+        _Cov("7.3", statement="prove the derivative of cos x from first principles"),
+        _Cov("9.9", statement="integrate simple polynomials")]
+secs = [_Cov("s0", codes=["8.1"]), _Cov("s1", codes=["7.3"])]  # note: 9.9 claimed by NO section
+texts = ["enthalpy heat energy definition", "prove derivative cos first principles"]
+gaps = cg.uncovered_items(items)
+targets, forced = cg.plan_regeneration(gaps, secs, texts, objs)
+assert 1 in targets, "an uncovered claimed objective (7.3) must target its owning section"
+assert forced, "an uncovered UNclaimed objective (9.9) must be force-routed to a section"
+assert all(0 <= i < len(secs) for i in forced), "force-routed index must be a real section"
+assert cg.feedback_block([]) == "", "empty feedback -> empty string (no COVERAGE FIX on a clean draft)"
+assert "COVERAGE FIX" in cg.feedback_block(targets[1]), "re-draft feedback carries the fix header"
+try:
+    raise cg.CoverageError("demo", gaps)
+except cg.CoverageError as e:
+    assert "7.3" in str(e) and "9.9" in str(e), "CoverageError must name the uncovered codes"
+print(f"coverage-gate OK (uncovered={len(gaps)}, targets={sorted(targets)}, forced={sorted(forced)})")
+
+# 10. prompt brace-safety: every prompt str.format's cleanly with its call-site keys.
+#     (Migrated from the removed _smoke.py; a stray literal { } once broke every
+#     section-write with KeyError. Dependency-free: no helpers/genai import.)
+from pathlib import Path as _Path  # noqa: E402
+
+_PROMPT_KEYS = {
+    "outline.txt": ["house_style", "spec_block"],
+    "verify.txt": ["spec_block", "notes"],
+    "v2_write_section.txt": ["house_style", "spec_block", "heading", "intent",
+                             "codes", "outline", "exam_format", "coverage_feedback"],
+    "v2_write_practice.txt": ["house_style", "spec_block", "sections", "worked_examples"],
+    "v2_finalize.txt": ["house_style", "spec_block", "sections", "checklist"],
+    "past_papers_candidates.txt": ["spec_block", "paper_label"],
+    "past_papers_verify.txt": ["spec_block", "candidates"],
+    "spec_ground.txt": ["board", "subject", "level", "unit", "topic", "items"],
+}
+for _name, _keys in _PROMPT_KEYS.items():
+    _tmpl = _Path("prompts", _name).read_text(encoding="utf-8")
+    try:
+        _tmpl.format(**{k: "x" for k in _keys})
+    except (KeyError, IndexError, ValueError) as e:
+        raise AssertionError(f"{_name} does not str.format cleanly with {_keys}: {e!r}")
+print(f"prompt brace-safety OK ({len(_PROMPT_KEYS)} prompts format cleanly)")
+
+# 11. structural coverage gate (deterministic: command-word -> required block type).
+from types import SimpleNamespace as _NS  # noqa: E402
+
+
+def _blk(*type_tags):
+    return [_NS(type=t) for t in type_tags]
+
+
+# MOTIVATING FAILURE: a 'prove' objective assessed only by an mcq -> structural gap.
+o_prove = _Cov("7.3", statement="prove d/dx cos x from first principles", command_words=["prove", "show"])
+assert cg.structural_fail_codes([o_prove], [_Cov("s", codes=["7.3"], blocks=_blk("prose", "mcq"))]) == {"7.3"}
+_si = cg.structural_gap_items([o_prove], [_Cov("s", codes=["7.3"], blocks=_blk("mcq"))])
+assert _si and _si[0].covered is False and "step_reveal" in _si[0].gap_note
+# same objective WITH a step_reveal present -> passes.
+assert cg.structural_fail_codes([o_prove], [_Cov("s", codes=["7.3"], blocks=_blk("mcq", "step_reveal"))]) == set()
+# 'calculate' satisfied by a numeric block; prose-only fails.
+o_calc = _Cov("8.2", command_words=["calculate"])
+assert cg.structural_fail_codes([o_calc], [_Cov("s", codes=["8.2"], blocks=_blk("numeric"))]) == set()
+assert cg.structural_fail_codes([o_calc], [_Cov("s", codes=["8.2"], blocks=_blk("prose"))]) == {"8.2"}
+# soft/empty command words never flag (model verifier's job).
+_soft = [_Cov("9.9", command_words=["explain"]), _Cov("9.0", command_words=[])]
+assert cg.structural_fail_codes(_soft, [_Cov("s", codes=["9.9", "9.0"], blocks=_blk("prose"))]) == set()
+# multi-section union: a step_reveal in EITHER covering section -> passes.
+_s1 = _Cov("s", codes=["7.3"], blocks=_blk("prose"))
+_s2 = _Cov("s", codes=["7.3"], blocks=_blk("step_reveal"))
+assert cg.structural_fail_codes([o_prove], [_s1, _s2]) == set()
+# recall tier (define/state -> flip_cards) is OFF by default, ON via the flag.
+o_def = _Cov("8.1", command_words=["define"])
+_sp = _Cov("s", codes=["8.1"], blocks=_blk("prose"))
+assert cg.structural_fail_codes([o_def], [_sp]) == set()
+assert cg.structural_fail_codes([o_def], [_sp], include_recall=True) == {"8.1"}
+# a StructuralGap flows through the SAME plan_regeneration / CoverageError path.
+_gi = cg.structural_gap_items([o_prove], [_Cov("s", codes=["7.3"], blocks=_blk("mcq"))])
+_t, _f = cg.plan_regeneration(_gi, [_Cov("s", codes=["7.3"], blocks=_blk("mcq"))], ["prove derivative"], [o_prove])
+assert "step_reveal" in cg.feedback_block(_t[0])
+try:
+    raise cg.CoverageError("demo", _gi)
+except cg.CoverageError as _e:
+    assert "7.3" in str(_e)
+print("structural-gate OK (prove-by-mcq caught; soft/empty ignored; multi-section union; recall-gated)")
+
 print("\nALL V2 SMOKE CHECKS PASSED")

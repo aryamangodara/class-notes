@@ -1,7 +1,7 @@
 """Pydantic schemas for the INTERACTIVE (v2) notes format.
 
-v2 replaces the Markdown-in-<details> output with a stream of typed, interactive
-BLOCKS rendered by ONE client-side dispatcher (helpers._INTERACTIVE_SHELL). Every
+The output is a stream of typed, interactive BLOCKS rendered by ONE client-side
+dispatcher (``render_v2._JS`` / ``_INTERACTIVE_SHELL``). Every
 ``Field(description=...)`` here is Gemini ``response_schema`` prompt surface.
 
 Reuses the grounding/curated types from ``schemas`` (LearningObjective, Diagram,
@@ -9,7 +9,7 @@ LOCoverage, ExamMapCell, SpecChecklistItem, PastPapers). Blocks carry NO id — 
 renderer assigns stable ids by position, so the model never invents ids.
 
 The block ``type`` tags here MUST stay in lockstep with the JS ``renderBlock``
-dispatcher in ``_INTERACTIVE_SHELL`` — ``_smoke.py`` asserts that parity.
+dispatcher in ``render_v2`` — ``_smoke_v2.py`` asserts that parity.
 """
 from __future__ import annotations
 
@@ -249,7 +249,7 @@ class FigureBlock(BaseModel):
 
 
 # Registered block models — the ONE source of truth for both the union and the
-# type-tag list that _smoke.py checks against the JS dispatcher.
+# type-tag list that _smoke_v2.py checks against the JS dispatcher.
 _BLOCK_MODELS = (
     ProseBlock, CalloutBlock, TableBlock, FlipCardsBlock, MCQBlock, StepRevealBlock,
     NumericBlock, SimBlock, SortBlock, ToggleDiagramBlock, CycleDiagramBlock,
@@ -310,7 +310,7 @@ class ExamMap(BaseModel):
 
 
 class InteractiveNotes(BaseModel):
-    """Final assembled interactive notes. Built in code (like ClassNotes) — NOT one response_schema."""
+    """Final assembled interactive notes. Built in code — NOT one response_schema."""
     schema_version: Literal["2"] = "2"
     # context
     topic_id: str

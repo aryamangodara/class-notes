@@ -10,8 +10,10 @@ Two families:
     given board+level actually requires for a topic. Hand-seeded in
     ``curriculum/*.json`` for the POC; extractable from official spec PDFs via
     ``prompts/spec_extract.txt`` for production.
-  * Notes side (output) — ``ClassNotes`` and its parts: a consistent
-    pedagogical template so every topic's notes share one shape.
+  * Shared output parts — ``Diagram``, ``ExamMapCell``, ``PastPapers``,
+    ``SpecChecklistItem``, ``LOCoverage`` / ``CoverageReport``, ``ImageChoice``,
+    ``OutlineSection`` / ``NotesOutline``: reused by the interactive v2 schemas in
+    ``schemas_v2.py`` (the assembled output type lives there, not here).
 """
 from __future__ import annotations
 
@@ -56,9 +58,11 @@ class ExamMapCell(BaseModel):
 
 
 class VerifiedPaper(BaseModel):
-    label: str = Field(description="Human-verified reference, e.g. 'June 2024 · Paper 1 · Q5 · 10 marks'.")
-    summary: str = Field(description="What the question tests, in our own words.")
-    url: str = Field(default="", description="Link to the official paper / PDF.")
+    label: str = Field(description="Reference as verified against the paper PDF, e.g. "
+                       "'June 2024 · Paper 1 · Q5 · 10 marks'.")
+    summary: str = Field(description="What the question tests, in our own words (plain text).")
+    url: str = Field(default="", description="Source paper URL — set by the pipeline from the curated "
+                     "source registry, never model-authored.")
 
 
 class PastPapers(BaseModel):
@@ -66,10 +70,78 @@ class PastPapers(BaseModel):
     resources: list[ExamMapCell] = Field(default_factory=list, description="Where to get papers / mark schemes.")
     verified: list[VerifiedPaper] = Field(
         default_factory=list,
-        description="Human-verified past-paper citations. Leave EMPTY until confirmed against "
-        "the real papers — these are never model-generated.",
+        description="Past-paper citations, each generated from a fetched paper PDF and independently "
+        "verified against that SAME PDF in a second pass; the url is set by the pipeline from the "
+        "curated source registry (never by the model), and an entry with no PDF fetched this run is "
+        "disallowed. May be empty (resources-only) when no lawful paper PDF is available.",
     )
     disclaimer: str = Field(default="")
+
+
+# --- past-paper GENERATION schemas (PDF-grounded; used by past_papers.py) -------
+# Candidates are proposed from a fetched paper PDF, then independently verified
+# against that SAME PDF. Only confirmed ones become VerifiedPaper entries, and the
+# url is always set from the source registry — never by the model.
+
+class PaperCitationCandidate(BaseModel):
+    paper_label: str = Field(description="The paper as printed on the PDF, e.g. 'June 2024 · Paper 1'.")
+    question: str = Field(description="Question reference as printed, e.g. 'Q5' or 'Q6(d)'.")
+    marks: int | None = Field(default=None, description="Total marks for that question, or null if unclear.")
+    summary: str = Field(description="What the question tests, in OUR OWN WORDS (plain text, NO HTML/markup); "
+                         "tie it to this topic's objectives.")
+    evidence_quote: str = Field(description="A SHORT verbatim snippet copied from the PDF that anchors this "
+                                "citation (proves the question is really in this paper).")
+    topic_relevance: str = Field(description="Why this question tests THIS topic (one sentence).")
+
+
+class CandidateCitations(BaseModel):
+    items: list[PaperCitationCandidate] = Field(
+        default_factory=list,
+        description="Questions in THIS paper PDF that assess this topic. Empty if none — never invent one.")
+
+
+class CitationVerdict(BaseModel):
+    paper_label: str = Field(description="Echo the candidate's paper_label.")
+    question: str = Field(description="Echo the candidate's question reference.")
+    confirmed: bool = Field(description="True ONLY if you can locate this exact question in the attached PDF AND "
+                            "it genuinely assesses this topic. If unsure, false.")
+    marks_ok: bool = Field(default=False, description="True if the candidate's marks match the PDF.")
+    corrected_marks: int | None = Field(default=None, description="The correct mark total from the PDF, if different.")
+    corrected_question: str = Field(default="", description="Corrected question reference if the candidate's was wrong.")
+    verified_summary: str = Field(default="", description="A PDF-grounded own-words summary (plain text, NO HTML) you "
+                                  "endorse; used verbatim when confirmed.")
+    reason: str = Field(default="", description="Why confirmed / rejected.")
+
+
+class VerificationReport(BaseModel):
+    items: list[CitationVerdict] = Field(
+        default_factory=list, description="One verdict per candidate, in the same order as the candidates.")
+
+
+# --- spec/CED grounding (PDF-verified; used by ground_specs.py) -----------------
+# Each hand-seeded code + statement is checked against the official spec PDF. Only
+# high-confidence corrections are auto-applied to curriculum/*.json; 'absent' is
+# report-only (a mis-sliced PDF must never silently delete an objective).
+
+class SpecItemVerdict(BaseModel):
+    kind: Literal["objective", "checklist"] = Field(description="Which list the item came from.")
+    given_code: str = Field(description="The code as currently in our curriculum JSON.")
+    given_text: str = Field(default="", description="The statement / can-do text as currently in our JSON.")
+    status: Literal["confirmed", "corrected", "absent"] = Field(
+        description="'confirmed' = matches the spec PDF; 'corrected' = present but the code or text is "
+        "wrong (give the fix); 'absent' = you could NOT find this in the attached spec PDF.")
+    corrected_code: str = Field(default="", description="The correct code from the PDF, if different.")
+    corrected_text: str = Field(default="", description="The correct statement/can-do from the PDF, if different.")
+    confidence: Literal["high", "medium", "low"] = Field(
+        default="low", description="Confidence in this verdict. Only 'high' corrections are auto-applied.")
+    evidence: str = Field(default="", description="A SHORT verbatim snippet from the spec PDF supporting the verdict.")
+
+
+class SpecGroundingReport(BaseModel):
+    items: list[SpecItemVerdict] = Field(default_factory=list, description="One verdict per item given, same order.")
+    missing_from_spec_note: str = Field(default="", description="Spec points found in the PDF but NOT in our "
+                                        "curriculum (report-only — additions are a human decision).")
+    summary: str = Field(default="", description="One-line summary of the grounding outcome.")
 
 
 class SpecChecklistItem(BaseModel):
@@ -169,22 +241,6 @@ class NotesOutline(BaseModel):
 # Notes (output)
 # ---------------------------------------------------------------------------
 
-class KeyTerm(BaseModel):
-    term: str
-    definition: str = Field(
-        description="Precise, level-appropriate definition. Use the board's preferred wording "
-        "where it matters for marks."
-    )
-
-
-class WorkedExample(BaseModel):
-    prompt: str = Field(description="The example question or scenario.")
-    solution: str = Field(
-        description="Step-by-step worked solution. Inline maths as \\(...\\), display as $$...$$. "
-        "Currency as a plain $ (e.g. $80), never inside maths."
-    )
-
-
 class Diagram(BaseModel):
     caption: str
     kind: Literal["mermaid", "latex", "image", "description"] = Field(
@@ -220,84 +276,6 @@ class ImageChoice(BaseModel):
     reason: str = Field(default="", description="Brief reason for the choice.")
 
 
-class Callout(BaseModel):
-    kind: Literal["tip", "mistake", "formula", "remember"] = Field(
-        description="'tip' = a Quick Tip (an exam technique or shortcut); 'mistake' = a Common "
-        "Mistake (a frequent student error AND its correction); 'formula' = a Key Formula or "
-        "must-know fact (a formula for maths/science, a key fact for humanities); 'remember' = a "
-        "memory aid or mnemonic. Only include a callout that is accurate and grounded in the "
-        "objectives/assessment notes — omit rather than invent."
-    )
-    title: str = Field(default="", description="Optional short custom title; a default label is used if empty.")
-    body: str = Field(
-        description="1-3 sentences, Markdown. Inline maths as \\(...\\). Grounded in the "
-        "material — no invented facts."
-    )
-
-
-class NoteSection(BaseModel):
-    heading: str
-    covers_objective_codes: list[str] = Field(
-        description="Objective codes this section actually taught (echo of the plan, corrected "
-        "if the draft drifted)."
-    )
-    body: str = Field(
-        description="Teaching content in Markdown with real line breaks (not the literal "
-        "characters backslash-n). Inline maths as \\(...\\), display as $$...$$. Currency as a "
-        "plain $ (e.g. $80), never inside maths. Tables as Markdown tables, not LaTeX."
-    )
-    worked_examples: list[WorkedExample] = Field(default_factory=list)
-    diagrams: list[Diagram] = Field(default_factory=list)
-    callouts: list[Callout] = Field(
-        default_factory=list,
-        description="Contextual callout boxes for THIS section (Quick Tips, Common Mistakes, "
-        "Key Formulas/Facts, Remember/mnemonics) — include only where they genuinely help and "
-        "are grounded; do not force one of every kind.",
-    )
-    exam_tips: list[str] = Field(
-        default_factory=list,
-        description="1-3 exam-strategy pointers SPECIFIC to this section: how this part is "
-        "examined and where marks are won or lost (command words, mark-scheme quirks, common "
-        "errors). Grounded in the board's exam format and assessment notes; omit if the section "
-        "has no distinctive exam angle.",
-    )
-    confidence: Literal["high", "medium", "low"] = Field(
-        description="Honest self-reported confidence in the factual accuracy of this section."
-    )
-
-
-class PracticeQuestion(BaseModel):
-    question: str
-    difficulty: Literal["basic", "standard", "stretch"] = Field(
-        default="standard",
-        description="Difficulty rung: 'basic' warm-up, 'standard' exam-level, 'stretch' "
-        "synthesis/hardest. The question set should span a ladder from basic to stretch.",
-    )
-    marks: int | None = Field(
-        default=None,
-        description="Mark/point allocation, using the board's convention (UK 'marks' for "
-        "A-Level/IGCSE, AP FRQ 'points'). Leave null where questions are not mark-weighted "
-        "(e.g. SAT). The worked_solution's scoring points (M1, A1 ...) must sum to this.",
-    )
-    worked_solution: str = Field(
-        description="Full solution written as a MARK SCHEME: label the scoring points "
-        "(M1, M2, A1 ...) so it is explicit where each mark/point is earned, and make them sum "
-        "to `marks`. Give full working, not just the final answer, so the notes are self-teaching."
-    )
-    targets_objective_codes: list[str] = Field(default_factory=list)
-
-
-class NotesExtras(BaseModel):
-    """The pedagogical scaffolding assembled once over all section drafts."""
-    overview: str = Field(description="Short orientation: why the topic matters and how it fits the unit.")
-    key_terms: list[KeyTerm]
-    common_misconceptions: list[str] = Field(
-        description="Frequent student errors paired with the correct understanding."
-    )
-    practice_questions: list[PracticeQuestion]
-    summary: str = Field(description="Concise recap a student could revise from.")
-
-
 class LOCoverage(BaseModel):
     code: str
     covered: bool = Field(description="True only if the notes genuinely TEACH this objective to "
@@ -315,33 +293,3 @@ class CoverageReport(BaseModel):
     )
 
 
-class ClassNotes(BaseModel):
-    """Final assembled notes. Not a Gemini response_schema — assembled in code."""
-    # context
-    topic_id: str
-    board: str
-    subject: str
-    level: str
-    unit: str
-    topic: str
-    learning_objectives: list[LearningObjective] = Field(
-        description="Echoed from the TopicSpec — the contract these notes fulfil."
-    )
-    # content
-    overview: str
-    key_terms: list[KeyTerm]
-    sections: list[NoteSection]
-    common_misconceptions: list[str]
-    practice_questions: list[PracticeQuestion]
-    summary: str
-    # quality / audit
-    coverage_report: list[LOCoverage] = Field(
-        default_factory=list,
-        description="Per-objective coverage check — the verifiable guarantee that nothing "
-        "required was skipped.",
-    )
-    review_flags: list[str] = Field(
-        default_factory=list,
-        description="Low-confidence facts or coverage gaps a teacher should check before use.",
-    )
-    generated_at: str = Field(default="", description="ISO-8601 timestamp, stamped in code.")

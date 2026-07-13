@@ -1,4 +1,4 @@
-"""v2 interactive-notes generation pipeline (lives alongside v1 generate_notes).
+"""Interactive-notes generation pipeline (the sole notes-generation pipeline).
 
 Reuses helpers' client/retry (`call_model`), config wiring (`_gen_config`),
 grounding (`_spec_block`), the outline stage, and the image-fetch internals.
@@ -19,6 +19,9 @@ import schemas_v2 as v2
 from config import BOARD_EXAM_TIPS, CONFIG, HOUSE_STYLE
 from render_v2 import validate_interactives
 from schemas import CoverageReport, TopicSpec
+from coverage_gate import (
+    CoverageError, feedback_block, plan_regeneration, structural_gap_items, uncovered_items,
+)
 
 # The practice ladder is mcq | numeric only (plain Union -> anyOf, no discriminator).
 _PracticeBlock = Union[v2.MCQBlock, v2.NumericBlock]
@@ -87,7 +90,8 @@ def _worked_examples_text(sections: list[v2.InteractiveSection]) -> str:
 # stages
 # ---------------------------------------------------------------------------
 
-def write_section_v2(client: genai.Client, spec: TopicSpec, section, outline) -> v2.InteractiveSection:
+def write_section_v2(client: genai.Client, spec: TopicSpec, section, outline,
+                     coverage_feedback: str = "") -> v2.InteractiveSection:
     others = "\n".join(
         f"  - {s.heading}: {s.intent} [{', '.join(s.covers_objective_codes) or 'none'}]"
         for s in outline.sections if s is not section) or "  (this is the only section)"
@@ -97,6 +101,7 @@ def write_section_v2(client: genai.Client, spec: TopicSpec, section, outline) ->
         heading=section.heading, intent=section.intent,
         codes=", ".join(section.covers_objective_codes) or "(none specified)",
         outline=others, exam_format=exam_format,
+        coverage_feedback=coverage_feedback,
     )
     return helpers.call_model(
         client, label=f"v2-section:{section.heading[:22]}", contents=prompt,
@@ -175,9 +180,60 @@ def fetch_images_for_blocks(client: genai.Client, sections, *, max_images: int, 
 def verify_v2(client: genai.Client, spec: TopicSpec, sections) -> CoverageReport:
     joined = "\n\n".join(_section_text(s) for s in sections)
     prompt = helpers.load_prompt("verify.txt").format(spec_block=helpers._spec_block(spec), notes=joined)
+    # `model_coverage` (writer-strength by default): this audit GATES the build, so
+    # it must not be a weak rubber-stamp. It sees only the notes + contract, never
+    # the writer's reasoning, so it stays an independent second read of the output.
     return helpers.call_model(
         client, label=f"v2-verify:{spec.topic_id}", contents=prompt,
-        **helpers._gen_config("model_verify", "temperature_verify", CoverageReport))
+        **helpers._gen_config("model_coverage", "temperature_coverage", CoverageReport))
+
+
+def enforce_coverage_v2(client: genai.Client, spec: TopicSpec, outline, sections) -> CoverageReport:
+    """The coverage GATE: verify -> targeted re-draft of the section(s) that own an
+    uncovered objective (with the verifier's gap_notes injected) -> re-verify, up to
+    ``max_coverage_retries``. Sections are mutated in place. Raises ``CoverageError``
+    if a gap survives, so a topic that cannot be made to cover its contract NEVER
+    produces an artifact — a false ``covered`` no longer slips through as a soft flag.
+    """
+    max_retries = CONFIG.get("max_coverage_retries", 2)
+    coverage = verify_v2(client, spec, sections)
+    attempt = 0
+    while True:
+        model_gaps = uncovered_items(coverage.items)
+        # Deterministic structural evidence: an objective whose command word demands
+        # a specific artifact (prove -> step_reveal, calculate -> numeric/sim) is a
+        # gap when that artifact is absent, EVEN IF the model marked it covered.
+        struct_gaps = structural_gap_items(
+            spec.learning_objectives, sections,
+            include_recall=CONFIG.get("structural_gate_recall", False))
+        seen = {c.code for c in model_gaps}
+        gaps = model_gaps + [g for g in struct_gaps if g.code not in seen]
+        if not gaps:
+            return coverage
+        if attempt >= max_retries:
+            raise CoverageError(spec.topic_id, gaps)
+        attempt += 1
+        print(f"       coverage gap: {', '.join(c.code for c in gaps)} — "
+              f"regenerating owning section(s) ({attempt}/{max_retries})")
+        texts = [_section_text(s) for s in sections]
+        targets, forced = plan_regeneration(gaps, sections, texts, spec.learning_objectives)
+        # Route codes no section claimed onto their best-overlap section, so the
+        # re-draft is told to teach them and the next verify can find them.
+        for i, codes in forced.items():
+            outline.sections[i].covers_objective_codes = list(
+                dict.fromkeys([*outline.sections[i].covers_objective_codes, *codes]))
+            sections[i].covers_objective_codes = list(
+                dict.fromkeys([*sections[i].covers_objective_codes, *codes]))
+
+        def _redraw(i: int):
+            return i, write_section_v2(client, spec, outline.sections[i], outline,
+                                       coverage_feedback=feedback_block(targets[i]))
+
+        with ThreadPoolExecutor(max_workers=CONFIG["max_parallel_sections"]) as ex:
+            for fut in as_completed([ex.submit(_redraw, i) for i in targets]):
+                i, sec = fut.result()
+                sections[i] = sec
+        coverage = verify_v2(client, spec, sections)
 
 
 # ---------------------------------------------------------------------------
@@ -185,12 +241,18 @@ def verify_v2(client: genai.Client, spec: TopicSpec, sections) -> CoverageReport
 # ---------------------------------------------------------------------------
 
 def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.InteractiveNotes:
-    print(f"[1/5] outline    {spec.topic_id}")
+    print(f"[1/6] outline    {spec.topic_id}")
     outline = helpers.generate_outline(client, spec)
     print(f"      planned {len(outline.sections)} section(s)")
 
-    print(f"[2/5] blocks     {len(outline.sections)} section(s) in parallel")
+    print(f"[2/6] blocks     {len(outline.sections)} section(s) in parallel")
     sections = write_sections_v2(client, spec, outline)
+
+    # Coverage GATE — settle sections against the contract BEFORE spending
+    # image/practice/finalize calls on them. Hard-fails (raises CoverageError) if a
+    # gap cannot be closed, so nothing under-covered is ever assembled or written.
+    print(f"[3/6] coverage   enforcing coverage of {len(spec.learning_objectives)} objective(s)")
+    coverage = enforce_coverage_v2(client, spec, outline, sections)
 
     if CONFIG.get("image_search"):
         print("[img]  fetching images for figure blocks")
@@ -201,15 +263,24 @@ def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.Inte
         except Exception as exc:  # noqa: BLE001
             print(f"       image stage skipped: {exc}")
 
-    print("[3/5] practice   5-6 question ladder")
+    print("[4/6] practice   5-6 question ladder")
     practice = write_practice_v2(client, spec, sections)
 
-    print("[4/5] finalize   hero, hook, command words, mistakes, recaps")
+    print("[5/6] finalize   hero, hook, command words, mistakes, recaps")
     fin = finalize_v2(client, spec, sections)
 
-    print(f"[5/5] verify     coverage of {len(spec.learning_objectives)} objective(s)")
-    coverage = verify_v2(client, spec, sections)
+    # Past papers: generate PDF-grounded citations for topics WITHOUT hand-verified
+    # curated ones (never clobber human-verified data); degrades to resources-only.
+    past_papers = spec.past_papers
+    if CONFIG.get("generate_past_papers") and not (past_papers and past_papers.verified):
+        print("[pp]   past papers  fetch + two-pass verify")
+        try:
+            from past_papers import build_past_papers
+            past_papers = build_past_papers(client, spec) or past_papers
+        except Exception as exc:  # noqa: BLE001 — never let the paper stage fail a topic
+            print(f"       past-paper stage skipped: {exc}")
 
+    print("[6/6] assemble   interactive notes")
     # curated passthrough (never generated)
     exam_map = v2.ExamMap(cells=spec.exam_map) if spec.exam_map else None
     checklist = None
@@ -226,20 +297,19 @@ def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.Inte
         unit=spec.unit, topic=spec.topic, learning_objectives=spec.learning_objectives,
         hero=fin.hero, exam_map=exam_map, hook=fin.hook, sections=sections, practice=practice,
         command_words=fin.command_words, mistakes=fin.mistakes, spec_checklist=checklist,
-        past_papers=spec.past_papers, finish=v2.Finish(next_topic=spec.next_topic),
+        past_papers=past_papers, finish=v2.Finish(next_topic=spec.next_topic),
         coverage_report=coverage.items,
         generated_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
     )
 
-    # review flags: verifier flags + uncovered + deterministic interactive validation
+    # review flags: verifier flags + deterministic interactive validation. (An
+    # uncovered objective is no longer a soft flag here — enforce_coverage_v2 has
+    # already hard-failed the build if any survived.)
     flags = list(coverage.review_flags)
-    uncovered = [c.code for c in coverage.items if not c.covered]
-    if uncovered:
-        flags.append(f"Objectives not fully covered: {', '.join(uncovered)}")
     flags.extend(validate_interactives(notes))
     notes.review_flags = flags
     covered = sum(1 for c in coverage.items if c.covered)
-    print(f"  ok {covered}/{len(coverage.items)} objectives | {len(sections)} sections | "
+    print(f"  ok {covered}/{len(coverage.items)} objectives covered | {len(sections)} sections | "
           f"{len(practice)} practice | {len(flags)} flag(s)")
     return notes
 

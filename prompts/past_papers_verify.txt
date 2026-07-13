@@ -1,0 +1,23 @@
+You are an INDEPENDENT checker. Using ONLY the exam-paper PDF attached to this
+message, verify each candidate citation below. Do not trust the candidate text — it
+may be wrong or invented; confirm every detail against the attached PDF.
+
+CURRICULUM CONTRACT (the topic each citation should assess):
+{spec_block}
+
+CANDIDATE CITATIONS TO VERIFY (one per line):
+{candidates}
+
+For EACH candidate, in the SAME ORDER, return a verdict:
+- paper_label, question: echo the candidate's values.
+- confirmed: true ONLY if you can locate that exact question in the attached PDF AND
+  it genuinely assesses this topic. If you cannot find it, or it does not match, false.
+- marks_ok / corrected_marks: whether the stated marks match the PDF, and the correct
+  total if different.
+- corrected_question: the correct question reference if the candidate's was wrong.
+- verified_summary: a corrected, PDF-grounded, own-words summary (plain text, no HTML
+  or markdown) that you endorse — used verbatim when confirmed.
+- reason: one line on why you confirmed or rejected it.
+
+Reject rather than guess: a citation you cannot locate in the attached PDF must be
+confirmed=false. Return structured JSON matching the VerificationReport schema.

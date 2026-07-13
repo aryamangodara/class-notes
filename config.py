@@ -13,16 +13,38 @@ CONFIG = {
     # matters most (drafting), a fast model for planning and checking.
     "model_write":  "gemini-3.1-pro-preview",   # section drafting + finalize
     "model_plan":   "gemini-3.5-flash",         # outline
-    "model_verify": "gemini-3.5-flash",         # coverage audit
+    # The v2 coverage GATE hard-blocks output, so it runs at writer strength — a
+    # weak auditor rubber-stamps, which is the exact failure this gate guards
+    # against. Swap to a lighter/different model here to trade rigour for a more
+    # independent second opinion.
+    "model_coverage": "gemini-3.1-pro-preview",
     # Temperatures — a little warmth for readable prose, deterministic checking.
     "temperature_write":  0.3,
     "temperature_plan":   0.2,
     "temperature_verify": 0.0,
+    "temperature_coverage": 0.0,
     # IO
     "curriculum_dir": "curriculum",
     "out_dir": "out",
     # Concurrency for per-section drafting (mirrors grade_questions_parallel).
     "max_parallel_sections": 4,
+    # v2 coverage gate: targeted section re-draws before a topic hard-fails.
+    "max_coverage_retries": 2,
+    # Also require deterministic structural evidence per command word (prove ->
+    # step_reveal, calculate -> numeric/sim). The define/state -> flip_cards tier is
+    # higher-false-positive, so it is opt-in (default off).
+    "structural_gate_recall": False,
+    # v2 past-paper stage: fetch real paper PDFs and cite questions verified against
+    # them (two-pass). resources[] signposting is filled for every board; verified[]
+    # only where a lawful paper PDF is fetchable (see sources.py).
+    "generate_past_papers": True,
+    "model_paper_verify": "gemini-3.1-pro-preview",  # 2nd-pass citation verifier (writer strength)
+    "max_papers_per_topic": 3,
+    "max_pdf_bytes": 15_000_000,                     # inline-Part fetch cap (~15 MB)
+    # spec/CED grounding CLI (ground_specs.py): verify hand-seeded codes vs the official PDF.
+    "model_spec_ground": "gemini-3.1-pro-preview",
+    "spec_autocorrect_min_confidence": "high",       # only auto-apply corrections at >= this confidence
+    "ced_slice_page_threshold": 40,                  # PDFs longer than this get pymupdf-sliced to topic pages
     # Images — Wikimedia Commons (primary) + Openverse (fallback), embedded as base64.
     "image_search": True,
     "image_vision_select": True,     # let Gemini vision pick the best/appropriate candidate
