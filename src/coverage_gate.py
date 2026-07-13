@@ -231,3 +231,69 @@ def structural_gap_items(objectives, sections, *, include_recall: bool = False) 
                 "assessed without the required teaching structure — add "
                 + _phrase_groups(failed[o.code])))
     return out
+
+
+# ---------------------------------------------------------------------------
+# Block-level structural defects (the tiered gate)
+# ---------------------------------------------------------------------------
+#
+# The two gates above enforce the CONTRACT (every objective is taught, with the
+# required teaching artifact). This third tier enforces per-block COMPLETENESS: a
+# defect the renderer or the student relies on (an MCQ option with no explanation,
+# a numeric with no mark scheme, a worked example with no steps, a widget that will
+# not evaluate). ``render_v2.block_defects`` finds them; the functions here turn
+# them into regeneration feedback + the hard-fail error, staying genai-free so the
+# offline smoke exercises the whole tier without a key.
+#
+# WHY this is a GATE, not a review flag: these are deterministic FACTS, so they can
+# be fixed by regeneration and must never ship. The model verifier's opinions
+# (``coverage.review_flags``) stay ADVISORY — routed to the human spot-check queue —
+# precisely because a single model read can be wrong (it can flag a complete block
+# as incomplete), so blocking on it would regenerate good work chasing a phantom.
+
+
+class StructuralError(RuntimeError):
+    """Raised when interactive blocks still fail deterministic completeness checks
+    after the allotted regeneration attempts. Like ``CoverageError``, it stops the
+    build — a broken interactive (a missing answer key, an unexplained option, a
+    dead widget) must not reach ``out/``. Duck-typed over the defects (``.where`` /
+    ``.message``), so ``render_v2.BlockDefect`` flows straight through."""
+
+    def __init__(self, topic_id: str, defects: list):
+        self.topic_id = topic_id
+        self.defects = defects
+        detail = "; ".join(f"[{getattr(d, 'where', '?')}] {getattr(d, 'message', d)}" for d in defects)
+        super().__init__(
+            f"{topic_id}: {len(defects)} structural block defect(s) survived regeneration — {detail}"
+        )
+
+
+def defect_feedback_by_section(defects: list) -> "dict[int, list[str]]":
+    """Section index -> feedback lines, for the ``kind == 'section'`` defects only.
+
+    Practice/hook-locus defects are handled by their own stage, so they are skipped
+    here. Duck-typed: each defect needs ``.kind`` / ``.index`` / ``.message``."""
+    out: "dict[int, list[str]]" = {}
+    for d in defects:
+        if getattr(d, "kind", "") == "section":
+            out.setdefault(d.index, []).append(f"  - {d.message}")
+    return out
+
+
+def structural_feedback_lines(defects: list) -> list[str]:
+    """Flat feedback lines for a set of defects (used for the single-locus practice
+    ladder, which has no per-section split)."""
+    return [f"  - {getattr(d, 'message', d)}" for d in defects]
+
+
+def structural_feedback_block(lines: list[str]) -> str:
+    """The STRUCTURAL FIX block injected into a re-draft (empty -> ''). Sibling of
+    ``feedback_block``; concatenated with it when a section fails both tiers."""
+    if not lines:
+        return ""
+    return (
+        "\nSTRUCTURAL FIX — the previous draft produced interactive block(s) that fail "
+        "deterministic completeness checks. FIX each so it renders and teaches correctly: "
+        "give EVERY MCQ option a distinct explanation, every worked example real steps, and "
+        "every numeric question a mark scheme and a positive tolerance:\n" + "\n".join(lines) + "\n"
+    )

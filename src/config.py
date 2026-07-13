@@ -8,6 +8,12 @@ models, concurrency, or the house style applied across every board.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
+# Anchor data dirs to the repo root (this file lives in src/) so the CLI works
+# regardless of the current working directory.
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+
 CONFIG = {
     # Models — same split as the Grader: a heavy model where reasoning/quality
     # matters most (drafting), a fast model for planning and checking.
@@ -24,12 +30,17 @@ CONFIG = {
     "temperature_verify": 0.0,
     "temperature_coverage": 0.0,
     # IO
-    "curriculum_dir": "curriculum",
-    "out_dir": "out",
+    "curriculum_dir": str(_REPO_ROOT / "curriculum"),
+    "out_dir": str(_REPO_ROOT / "out"),
     # Concurrency for per-section drafting (mirrors grade_questions_parallel).
     "max_parallel_sections": 4,
     # v2 coverage gate: targeted section re-draws before a topic hard-fails.
     "max_coverage_retries": 2,
+    # v2 structural gate: deterministic per-block completeness (every MCQ option
+    # explained, every worked example has steps, every numeric has a mark scheme).
+    # Blocking FACTS, not model opinions — regenerate the owning section/practice
+    # this many times, then hard-fail (StructuralError) rather than ship it broken.
+    "max_structure_retries": 1,
     # Also require deterministic structural evidence per command word (prove ->
     # step_reveal, calculate -> numeric/sim). The define/state -> flip_cards tier is
     # higher-false-positive, so it is opt-in (default off).

@@ -6,8 +6,11 @@ textContent) and graceful degradation are exercised without a Gemini key or a re
 fetch. Mirrors the dependency-light discipline of ``_smoke_v2.py``.
 """
 import os
+import sys
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(_ROOT)               # anchor CWD-relative paths to the repo root
+sys.path.insert(0, os.path.join(_ROOT, "src"))  # app modules live in src/
 
 import helpers  # noqa: E402
 import past_papers as pp  # noqa: E402

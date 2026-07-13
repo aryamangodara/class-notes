@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import shutil
 import sys
 from pathlib import Path
@@ -32,8 +33,8 @@ def select_sample(ids: "list[str]", rate: int = 20) -> "list[str]":
     return sorted(ranked[:k])
 
 
-def review_template(topic_id: str) -> str:
-    return (
+def review_template(topic_id: str, flags: "list[str] | None" = None) -> str:
+    body = (
         f"# Spot-check — {topic_id}\n\n"
         f"Open `{topic_id}.interactive.html` and check the CONCEPTUAL accuracy the "
         "automated passes can't:\n\n"
@@ -47,6 +48,21 @@ def review_template(topic_id: str) -> str:
         "Reviewer: __________   Date: __________   Verdict: pass / needs-fix\n\n"
         "Notes:\n"
     )
+    # Advisory model-verifier flags for THIS page (the tiered gate routes them here
+    # rather than blocking on them: a single model read can be wrong, so a human
+    # adjudicates each — confirm a real defect, or dismiss a false positive).
+    if flags:
+        listed = "\n".join(f"- [ ] {f}" for f in flags)
+        body += (
+            "\n---\n\n"
+            "## Model review flags — ADVISORY, adjudicate each\n\n"
+            "The generator's own verifier raised these. They are deliberately NOT gated "
+            "(deterministic defects already are; a model *opinion* can be a false "
+            "positive), so decide per flag: confirm a real defect → needs-fix, or "
+            "dismiss it.\n\n"
+            f"{listed}\n"
+        )
+    return body
 
 
 def main() -> None:
@@ -72,7 +88,14 @@ def main() -> None:
             shutil.copyfile(html, dest / html.name)
         else:
             print(f"  (no interactive.html for {tid}; writing checklist only)")
-        (dest / f"{tid}.review.md").write_text(review_template(tid), encoding="utf-8")
+        flags: "list[str]" = []
+        jpath = out / f"{tid}.v2.json"
+        if jpath.exists():
+            try:
+                flags = json.loads(jpath.read_text(encoding="utf-8")).get("review_flags") or []
+            except Exception:  # noqa: BLE001 — a malformed JSON must not abort the bundle
+                flags = []
+        (dest / f"{tid}.review.md").write_text(review_template(tid, flags), encoding="utf-8")
     print(f"Sampled {len(sample)}/{len(ids)} page(s) (~1 in {args.rate}, deterministic) -> {dest}/")
     for tid in sample:
         print(f"  - {tid}")

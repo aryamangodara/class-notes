@@ -1,7 +1,10 @@
 """Offline test for the deterministic spot-check sampler (no key/network)."""
 import os
+import sys
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(_ROOT)               # anchor CWD-relative paths (out/) to the repo root
+sys.path.insert(0, os.path.join(_ROOT, "src"))  # app modules live in src/
 
 import spotcheck  # noqa: E402
 

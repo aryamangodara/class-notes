@@ -81,6 +81,12 @@ section{margin-top:3.2rem}
 .tick.on{opacity:1;transform:scale(1)}
 .spec{font-size:.75rem;font-weight:600;color:var(--edex);background:var(--edex-soft);border-radius:99px;padding:.15rem .7rem}
 section > p, .prose{max-width:66ch}
+/* Prose is the only top-level block without its own top margin, so a prose block
+   after a card (e.g. a worked example) used to collapse to a ~0 gap. Give it the same
+   vertical rhythm as the carded blocks; the sec-head already spaces a section-opening
+   prose, so zero it there to avoid a double gap. */
+.prose{margin-top:1.4rem}
+.sec-head + .prose{margin-top:0}
 .prose :first-child{margin-top:0}
 .callout{margin-top:1.2rem;border-radius:var(--radius);padding:.9rem 1.1rem;font-size:.93rem;border:1px solid var(--line);border-left-width:5px;background:#fff}
 .callout b.ct{display:block;margin-bottom:.25rem}
@@ -828,57 +834,130 @@ def interactive_block_ids(n: InteractiveNotes) -> list[str]:
             if b.type in INTERACTIVE_BLOCK_TYPES]
 
 
-def validate_interactives(n: InteractiveNotes) -> list[str]:
-    """Deterministic checks over the interactive blocks; returns problems to
-    append to review_flags. Empty list == clean."""
+class BlockDefect:
+    """A deterministic block-level defect with its locus, for the STRUCTURAL GATE.
+
+    ``kind`` is 'section' | 'practice' | 'hook'; ``index`` is the section index
+    (or -1). Every defect is a FACT the renderer or the student relies on, so the
+    pipeline regenerates-or-hard-fails on these rather than shipping them as a soft
+    flag (unlike the model verifier's advisory opinions). Duck-typed by
+    ``coverage_gate`` (reads ``.kind`` / ``.index`` / ``.where`` / ``.message``)."""
+
+    def __init__(self, kind: str, index: int, where: str, message: str):
+        self.kind, self.index, self.where, self.message = kind, index, where, message
+
+    def __repr__(self):  # pragma: no cover - debug aid
+        return f"BlockDefect({self.kind}, {self.index}, {self.message!r})"
+
+
+def _iter_blocks_loc(n: InteractiveNotes):
+    """Like ``_iter_blocks`` but yields a structured locus ``(kind, index, where)``
+    so a defect can be routed back to the exact stage that must regenerate it."""
+    if n.hook is not None:
+        yield ("hook", -1, "hook"), n.hook
+    for i, s in enumerate(n.sections):
+        for b in s.blocks:
+            yield ("section", i, f"section '{s.heading}'"), b
+    for b in n.practice:
+        yield ("practice", -1, "practice"), b
+
+
+def _block_defects(b) -> list[str]:
+    """Every deterministic completeness/validity problem for ONE block, as messages
+    WITHOUT a locus prefix. These are necessary conditions a correct block must meet
+    (exactly one right MCQ answer, every option explained, a worked example with real
+    steps, a numeric with a usable mark scheme, a widget that evaluates) — the class
+    of defect the model verifier catches only unreliably, so we check it here."""
     from schemas_v2 import SVG_TEMPLATES
-    flags: list[str] = []
-    for where, b in _iter_blocks(n):
-        t = b.type
-        if t == "mcq":
-            nc = sum(1 for o in b.options if o.correct)
-            if nc != 1:
-                flags.append(f"[{where}] MCQ '{b.question[:40]}' has {nc} correct options (need exactly 1).")
-            if len(b.options) < 2:
-                flags.append(f"[{where}] MCQ '{b.question[:40]}' has < 2 options.")
-        elif t == "numeric":
-            if b.tolerance is None or b.tolerance <= 0:
-                flags.append(f"[{where}] numeric '{b.label}' has non-positive tolerance.")
-            for w in b.wrong_answers:
-                if abs(w.value - b.answer) <= (b.tolerance or 0):
-                    flags.append(f"[{where}] numeric '{b.label}' diagnostic {w.value} is within tolerance of the answer {b.answer}.")
-            if not b.mark_scheme:
-                flags.append(f"[{where}] numeric '{b.label}' has no mark scheme.")
-        elif t == "sim":
-            scope = {i.key: i.default for i in b.inputs}
-            scope.update({c.key: c.value for c in b.constants})
-            for expr in (b.expression, b.qline_expression):
-                if not expr:
-                    continue
-                try:
-                    val = _safe_eval(expr, scope)
-                    if val != val or abs(val) == float("inf"):
-                        flags.append(f"[{where}] sim '{b.title}' expression '{expr}' is not finite at defaults.")
-                except Exception as e:  # noqa: BLE001
-                    flags.append(f"[{where}] sim '{b.title}' expression '{expr}' invalid: {e}")
-        elif t == "sort":
-            bkeys = {bk.key for bk in b.buckets}
-            used = set()
-            for it in b.items:
-                if it.correct_bucket not in bkeys:
-                    flags.append(f"[{where}] sort item '{it.label}' -> unknown bucket '{it.correct_bucket}'.")
-                used.add(it.correct_bucket)
-            for bk in b.buckets:
-                if bk.key not in used:
-                    flags.append(f"[{where}] sort bucket '{bk.key}' has no items.")
-        elif t == "toggle_diagram":
-            if b.template not in SVG_TEMPLATES:
-                flags.append(f"[{where}] toggle_diagram uses unknown template '{b.template}'.")
-            if len(b.states) < 2:
-                flags.append(f"[{where}] toggle_diagram '{b.title}' has < 2 states.")
-        elif t == "cycle_diagram":
-            nodes = {"top_left", "top_right", "bottom"}
-            for e in b.edges:
-                if e.frm not in nodes or e.to not in nodes:
-                    flags.append(f"[{where}] cycle_diagram edge has an invalid endpoint.")
-    return flags
+    msgs: list[str] = []
+    t = b.type
+    if t == "mcq":
+        nc = sum(1 for o in b.options if o.correct)
+        if nc != 1:
+            msgs.append(f"MCQ '{b.question[:40]}' has {nc} correct options (need exactly 1).")
+        if len(b.options) < 2:
+            msgs.append(f"MCQ '{b.question[:40]}' has < 2 options.")
+        # Every option needs a teaching explanation — a blank one is the exact
+        # 'no answer key' defect that must not ship (the schema allows '', so check).
+        for i, o in enumerate(b.options, 1):
+            if not (o.explanation or "").strip():
+                msgs.append(f"MCQ '{b.question[:40]}' option {i} ('{o.text[:24]}') has an empty explanation.")
+    elif t == "numeric":
+        if b.tolerance is None or b.tolerance <= 0:
+            msgs.append(f"numeric '{b.label}' has non-positive tolerance.")
+        for w in b.wrong_answers:
+            if abs(w.value - b.answer) <= (b.tolerance or 0):
+                msgs.append(f"numeric '{b.label}' diagnostic {w.value} is within tolerance of the answer {b.answer}.")
+        if not b.mark_scheme:
+            msgs.append(f"numeric '{b.label}' has no mark scheme.")
+    elif t == "step_reveal":
+        # A worked example that reveals nothing is a broken promise to the reader.
+        if not b.steps:
+            msgs.append(f"step_reveal '{b.prompt[:40]}' has no steps to reveal.")
+    elif t == "sim":
+        scope = {i.key: i.default for i in b.inputs}
+        scope.update({c.key: c.value for c in b.constants})
+        for expr in (b.expression, b.qline_expression):
+            if not expr:
+                continue
+            try:
+                val = _safe_eval(expr, scope)
+                if val != val or abs(val) == float("inf"):
+                    msgs.append(f"sim '{b.title}' expression '{expr}' is not finite at defaults.")
+            except Exception as e:  # noqa: BLE001
+                msgs.append(f"sim '{b.title}' expression '{expr}' invalid: {e}")
+    elif t == "sort":
+        bkeys = {bk.key for bk in b.buckets}
+        used = set()
+        for it in b.items:
+            if it.correct_bucket not in bkeys:
+                msgs.append(f"sort item '{it.label}' -> unknown bucket '{it.correct_bucket}'.")
+            used.add(it.correct_bucket)
+        for bk in b.buckets:
+            if bk.key not in used:
+                msgs.append(f"sort bucket '{bk.key}' has no items.")
+    elif t == "toggle_diagram":
+        if b.template not in SVG_TEMPLATES:
+            msgs.append(f"toggle_diagram uses unknown template '{b.template}'.")
+        if len(b.states) < 2:
+            msgs.append(f"toggle_diagram '{b.title}' has < 2 states.")
+    elif t == "cycle_diagram":
+        nodes = {"top_left", "top_right", "bottom"}
+        for e in b.edges:
+            if e.frm not in nodes or e.to not in nodes:
+                msgs.append("cycle_diagram edge has an invalid endpoint.")
+    return msgs
+
+
+def block_defects(n: InteractiveNotes) -> "list[BlockDefect]":
+    """All deterministic block defects across the whole document, locus-tagged."""
+    out: "list[BlockDefect]" = []
+    for (kind, idx, where), b in _iter_blocks_loc(n):
+        out.extend(BlockDefect(kind, idx, where, m) for m in _block_defects(b))
+    return out
+
+
+def section_block_defects(sections) -> "list[BlockDefect]":
+    """Block defects in the SECTIONS only (the coverage-stage gate runs before the
+    practice ladder exists, so it validates sections in the same loop it settles)."""
+    out: "list[BlockDefect]" = []
+    for i, s in enumerate(sections):
+        for b in s.blocks:
+            out.extend(BlockDefect("section", i, f"section '{s.heading}'", m) for m in _block_defects(b))
+    return out
+
+
+def practice_block_defects(practice) -> "list[BlockDefect]":
+    """Block defects in the PRACTICE ladder only (gated in its own stage loop)."""
+    out: "list[BlockDefect]" = []
+    for b in practice:
+        out.extend(BlockDefect("practice", -1, "practice", m) for m in _block_defects(b))
+    return out
+
+
+def validate_interactives(n: InteractiveNotes) -> list[str]:
+    """Deterministic checks over the interactive blocks as locus-prefixed strings;
+    empty list == clean. The structured form is ``block_defects`` (what the pipeline
+    GATES on); this string view is the back-compat surface + the final assemble-time
+    guard that no structurally-broken note is ever written."""
+    return [f"[{d.where}] {d.message}" for d in block_defects(n)]

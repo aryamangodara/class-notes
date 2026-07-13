@@ -5,9 +5,12 @@ gating and in-place patch are pure functions verified here without a Gemini key.
 """
 import copy
 import os
+import sys
 from types import SimpleNamespace as NS
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(_ROOT)               # anchor CWD-relative paths (curriculum/ out/) to the repo root
+sys.path.insert(0, os.path.join(_ROOT, "src"))  # app modules live in src/
 
 import ground_specs as gs  # noqa: E402
 from schemas import SpecGroundingReport, SpecItemVerdict  # noqa: E402

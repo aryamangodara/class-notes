@@ -10,7 +10,9 @@ import os
 import re
 import sys
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(_ROOT)               # anchor prompts/ curriculum/ out/ (CWD-relative) to the repo root
+sys.path.insert(0, os.path.join(_ROOT, "src"))  # app modules live in src/
 
 import render_v2  # noqa: E402
 import schemas_v2 as v2  # noqa: E402
@@ -111,7 +113,28 @@ good = render_v2.validate_interactives(sample())
 assert good == [], f"clean note should have no flags, got: {good}"
 bad = render_v2.validate_interactives(sample(bad_mcq=True))
 assert any("correct options" in f for f in bad), f"two-correct MCQ should be flagged, got: {bad}"
-print(f"validate_interactives OK (clean=0 flags, bad-mcq flagged: {len(bad)})")
+
+# 6a. NEW completeness checks — the 'missing answer key' / 'broken promise' class the
+#     reviewer flagged: a blank MCQ-option explanation and an empty worked example.
+n_ee = sample()
+_mcq = next(b for s in n_ee.sections for b in s.blocks if b.type == "mcq")
+_mcq.options[0].explanation = "   "  # whitespace-only counts as empty
+assert any("empty explanation" in f for f in render_v2.validate_interactives(n_ee)), "blank MCQ explanation must flag"
+n_ns = sample()
+_sr = next(b for s in n_ns.sections for b in s.blocks if b.type == "step_reveal")
+_sr.steps = []
+assert any("no steps" in f for f in render_v2.validate_interactives(n_ns)), "empty step_reveal must flag"
+
+# 6b. structured, locus-tagged defects so the gate can route each to the stage that
+#     must regenerate it (section vs practice).
+_bd = render_v2.block_defects(sample(bad_mcq=True))
+assert _bd and _bd[0].kind == "section" and _bd[0].index == 0, "section defect must carry (kind, index)"
+_sd = render_v2.section_block_defects(sample(bad_mcq=True).sections)
+assert _sd and all(d.kind == "section" for d in _sd), "section_block_defects tags the section locus"
+n_pd = sample(); n_pd.practice[0].mark_scheme = []
+_pd = render_v2.practice_block_defects(n_pd.practice)
+assert _pd and _pd[0].kind == "practice" and "mark scheme" in _pd[0].message, "practice defect detected + tagged"
+print("validate_interactives OK (clean=0; bad-mcq/blank-expl/empty-steps flagged; loci tagged)")
 
 # 7. progress ids derived + unique.
 ids = render_v2.interactive_block_ids(sample())
@@ -167,14 +190,15 @@ _PROMPT_KEYS = {
     "verify.txt": ["spec_block", "notes"],
     "v2_write_section.txt": ["house_style", "spec_block", "heading", "intent",
                              "codes", "outline", "exam_format", "coverage_feedback"],
-    "v2_write_practice.txt": ["house_style", "spec_block", "sections", "worked_examples"],
+    "v2_write_practice.txt": ["house_style", "spec_block", "sections", "worked_examples",
+                              "structural_feedback"],
     "v2_finalize.txt": ["house_style", "spec_block", "sections", "checklist"],
     "past_papers_candidates.txt": ["spec_block", "paper_label"],
     "past_papers_verify.txt": ["spec_block", "candidates"],
     "spec_ground.txt": ["board", "subject", "level", "unit", "topic", "items"],
 }
 for _name, _keys in _PROMPT_KEYS.items():
-    _tmpl = _Path("prompts", _name).read_text(encoding="utf-8")
+    _tmpl = _Path(_ROOT, "src", "prompts", _name).read_text(encoding="utf-8")
     try:
         _tmpl.format(**{k: "x" for k in _keys})
     except (KeyError, IndexError, ValueError) as e:
@@ -235,5 +259,32 @@ assert set(_BET.get("SAT", [])) <= set(_tips("SAT", "Mathematics")), "general SA
 assert _tips("AMC 10", "Mathematics") == _BET.get("AMC 10", []), "no subject overlay -> just the general tips"
 assert _tips("Nope", "Nope") == [], "unknown level -> empty (no crash)"
 print("exam-tips subject-aware OK (SAT Math keeps Desmos/grid-in; R&W does not; fallback clean)")
+
+# 13. tiered structural gate: deterministic block defects are FACTS that gate (route to
+#     the owning section / practice ladder + hard-fail), while the model verifier's
+#     opinions stay ADVISORY. Pure logic (coverage_gate is genai-free), so exercised
+#     here without a key — the same discipline as the coverage gate above.
+from types import SimpleNamespace as _NS2  # noqa: E402
+
+_defs = [
+    _NS2(kind="section", index=1, where="section 'Traps'",
+         message="MCQ 'x' option 2 ('too strong') has an empty explanation."),
+    _NS2(kind="section", index=1, where="section 'Traps'",
+         message="step_reveal 'y' has no steps to reveal."),
+    _NS2(kind="practice", index=-1, where="practice", message="numeric 'Q5' has no mark scheme."),
+]
+_by = cg.defect_feedback_by_section(_defs)
+assert set(_by) == {1}, "only section-locus defects route to a section (practice has its own gate)"
+assert len(_by[1]) == 2, "both section defects land on their section"
+_fb = cg.structural_feedback_block(_by[1])
+assert "STRUCTURAL FIX" in _fb and "empty explanation" in _fb, "fix block names the header + the defects"
+assert cg.structural_feedback_block([]) == "", "no defects -> no fix block (clean re-draft)"
+assert cg.structural_feedback_lines(_defs)[2].endswith("no mark scheme."), "flat lines for the practice ladder"
+try:
+    raise cg.StructuralError("demo", _defs)
+except cg.StructuralError as _se:
+    assert "empty explanation" in str(_se) and "mark scheme" in str(_se) and "3 structural" in str(_se), \
+        "StructuralError must name the surviving defects"
+print("tiered-gate OK (section defects route + fix block; practice flat lines; StructuralError names them)")
 
 print("\nALL V2 SMOKE CHECKS PASSED")

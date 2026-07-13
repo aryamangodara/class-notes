@@ -4,7 +4,7 @@ Guidance for Claude Code (claude.ai/code) when working in this repository.
 
 ## What this is
 
-A curriculum-grounded **class-notes generator** for AP / IGCSE / SAT / A-Level.
+A curriculum-grounded **class-notes generator** for AP / IGCSE / SAT / A-Level / AMC.
 Feed a topic id; a multi-stage Gemini pipeline (outline → draft interactive section
 blocks → enforce coverage → fetch images → practice ladder → finalize) writes an
 INTERACTIVE lesson to `out/<topic_id>.v2.json` (the source of truth) +
@@ -25,24 +25,24 @@ against.
 Use **`py -3`**, NOT bare `python` (see Conventions):
 
 ```bash
-py -3 notes.py --list           # list discovered topics
-py -3 notes.py <topic_id>       # generate one topic (live Gemini calls)
-py -3 notes.py --all            # generate every topic
-py -3 ground_specs.py --list    # spec-grounding CLI: verify codes vs official spec PDFs
-                                #   (DRY RUN by default; --apply writes; --all = corpus)
-py -3 spotcheck.py              # bundle a deterministic ~1-in-20 tutor spot-check into out/spotcheck/
-py -3 _smoke_v2.py              # OFFLINE self-test — no key/network
+py -3 src/notes.py --list           # list discovered topics
+py -3 src/notes.py <topic_id>       # generate one topic (live Gemini calls)
+py -3 src/notes.py --all            # generate every topic
+py -3 src/ground_specs.py --list    # spec-grounding CLI: verify codes vs official spec PDFs
+                                    #   (DRY RUN by default; --apply writes; --all = corpus)
+py -3 src/spotcheck.py              # bundle a deterministic ~1-in-20 tutor spot-check into out/spotcheck/
+py -3 tests/_smoke_v2.py            # OFFLINE self-test — no key/network
 ```
 
-Offline self-tests (no key/network), each the fast regression check for its area:
-`_smoke_v2.py` (renderer↔schema parity + coverage/structural gate + prompt brace-safety),
-`_smoke_past_papers.py` (two-pass + URL/render safety), `_smoke_ground_specs.py`
-(confidence gating + in-place patch), `_smoke_spotcheck.py` (deterministic sampling).
+Offline self-tests live in `tests/` (no key/network), each the fast regression check for its area:
+`tests/_smoke_v2.py` (renderer↔schema parity + coverage/structural gate + prompt brace-safety),
+`tests/_smoke_past_papers.py` (two-pass + URL/render safety), `tests/_smoke_ground_specs.py`
+(confidence gating + in-place patch), `tests/_smoke_spotcheck.py` (deterministic sampling).
 **Run the relevant one after touching its module.**
 
 **Re-render existing notes without regenerating** (apply render/CSS changes, no API):
 ```bash
-py -3 -c "from pathlib import Path; from schemas_v2 import InteractiveNotes; from pipeline_v2 import save_interactive_notes; [save_interactive_notes(InteractiveNotes.model_validate_json(Path(p).read_text(encoding='utf-8'))) for p in sorted(Path('out').glob('*.v2.json'))]"
+py -3 -c "import sys; sys.path.insert(0, 'src'); from pathlib import Path; from schemas_v2 import InteractiveNotes; from pipeline_v2 import save_interactive_notes; [save_interactive_notes(InteractiveNotes.model_validate_json(Path(p).read_text(encoding='utf-8'))) for p in sorted(Path('out').glob('*.v2.json'))]"
 ```
 Everything (including embedded `image_src` base64) is stored in the JSON, so
 `render_interactive_html` is a pure function of the saved `InteractiveNotes` —
@@ -91,19 +91,37 @@ exam-map + past-paper panel. `notes.py <id>` writes `out/<id>.v2.json` +
   `schemas_v2.BLOCK_TYPES` === the `renderBlock` `case` set in the JS — keep them in
   lockstep. Keeps MathJax + `marked` (prose only) + a Google-Fonts link; no Mermaid.
 
-## Coverage enforcement (the gate)
+## Enforcement gates — tiered by trust (deterministic FACTS block; model OPINIONS advise)
 
-Coverage is **enforced, not just flagged**. After sections are drafted,
-`enforce_coverage_v2` (`pipeline_v2.py`) runs the audit and, for any objective the
-verifier marks `covered:false`, **regenerates the owning section(s)** with the
-verifier's `gap_note` injected, re-verifies, and repeats up to
-`CONFIG["max_coverage_retries"]`. If a gap survives it raises `CoverageError` and
-**nothing is written** (`notes.py` reports it and exits non-zero; `--all` lists the
-failed topics and continues). The deterministic gate logic lives in
-`coverage_gate.py` — pure and genai-free, so `_smoke_v2.py` exercises it without a
-key. The gate audit runs at writer strength via `CONFIG["model_coverage"]` (a weak
-auditor rubber-stamps — the exact failure it guards against) and sees only the notes
-+ contract, never the writer's reasoning, so it stays an independent read.
+The pipeline separates what it **gates** on from what it merely **flags** by the
+**source** of the signal, because they have different reliability:
+
+- **Deterministic checks are FACTS → they gate (fix-or-fail).** Two tiers:
+  1. **Coverage.** `enforce_coverage_v2` (`pipeline_v2.py`) runs the audit and, for any
+     objective the verifier marks `covered:false` — or that a command word demands an
+     artifact for but lacks it (the structural-evidence rules in `coverage_gate.py`:
+     `prove → step_reveal`, `calculate → numeric/sim`) — **regenerates the owning
+     section(s)** with the `gap_note` injected, re-verifies, up to
+     `CONFIG["max_coverage_retries"]`; a surviving gap raises `CoverageError`.
+  2. **Block completeness.** The SAME section loop also runs `render_v2.block_defects`
+     (an unexplained MCQ option, a numeric with no mark scheme, an empty worked example,
+     a dead widget) and regenerates the owning section for any defect — so a structural
+     fix is re-verified for coverage in the same loop. The practice ladder gets the same
+     check in its own loop (`enforce_practice_structure_v2`, `max_structure_retries`). A
+     surviving defect raises `StructuralError`. A final `block_defects` guard at
+     assemble time refuses to write if anything slipped a gate.
+- **The model verifier's `review_flags` are OPINIONS → they DON'T gate.** They land in
+  `notes.review_flags` (advisory) and are surfaced to the human `spotcheck.py` queue. A
+  single model read can be wrong — it can flag a *complete* block as incomplete — so a
+  blanket "regenerate on any flag" would burn calls fixing phantom defects and could
+  replace good work with worse. Gating that class is the deterministic tier's job.
+
+If any gate fails, **nothing is written** (`notes.py` reports it and exits non-zero;
+`--all` lists the failed topics and continues). All gate logic is pure and genai-free
+(`coverage_gate.py` + `render_v2.block_defects`), so `_smoke_v2.py` exercises every tier
+without a key. The coverage audit runs at writer strength via `CONFIG["model_coverage"]`
+(a weak auditor rubber-stamps — the exact failure it guards against) and sees only the
+notes + contract, never the writer's reasoning, so it stays an independent read.
 
 ## Setup contract
 
@@ -117,23 +135,30 @@ auditor rubber-stamps — the exact failure it guards against) and sees only the
 ## Architecture & data flow
 
 ```
-config.py        CONFIG (models, temps, coverage gate, image settings), HOUSE_STYLE, BOARD_EXAM_TIPS
-schemas.py       Pydantic. Grounding: TopicSpec / LearningObjective. Shared output parts: Diagram,
-                 ExamMapCell, PastPapers, SpecChecklistItem, LOCoverage / CoverageReport, ImageChoice,
-                 OutlineSection / NotesOutline. Field descriptions are Gemini response_schema surface.
-schemas_v2.py    the v2 block vocabulary + the assembled InteractiveNotes
-helpers.py       shared utilities: Gemini client + retry (call_model -> response.parsed), _gen_config,
-                 load_prompt, curriculum grounding (_spec_block), the outline stage, image search + vision
-coverage_gate.py deterministic, genai-free coverage-gate logic (CoverageError + helpers)
-sources.py       curated per-board source registry (paper/spec PDF URLs) + resolve_sources
-past_papers.py   PDF-grounded past-paper stage (two-pass: generate + verify against the fetched PDF)
-pipeline_v2.py   the pipeline: generate_interactive_notes + save_interactive_notes
-render_v2.py     the interactive renderer (render_interactive_html) + validate_interactives
-ground_specs.py  standalone CLI: verify + auto-correct curriculum codes vs official spec/CED PDFs
-spotcheck.py     standalone CLI: deterministic 1-in-20 tutor spot-check bundle
-prompts/         outline / verify / v2_* / past_papers_* / spec_ground / spec_extract
+src/             the application — run: py -3 src/notes.py <id>
+  config.py        CONFIG (models, temps, coverage + structure gates, image settings), HOUSE_STYLE,
+                   BOARD_EXAM_TIPS, BOARD_SUBJECT_EXAM_TIPS, exam_tips_for(level, subject)
+  schemas.py       Pydantic. Grounding: TopicSpec / LearningObjective. Shared output parts: Diagram,
+                   ExamMapCell, PastPapers, SpecChecklistItem, LOCoverage / CoverageReport, ImageChoice,
+                   OutlineSection / NotesOutline. Field descriptions are Gemini response_schema surface.
+  schemas_v2.py    the v2 block vocabulary + the assembled InteractiveNotes
+  helpers.py       shared utilities: Gemini client + retry (call_model -> response.parsed), _gen_config,
+                   load_prompt, curriculum grounding (_spec_block), the outline stage, image search + vision
+  coverage_gate.py deterministic, genai-free gate logic — coverage (CoverageError) + block-completeness
+                   tier (StructuralError, defect_feedback_by_section, structural_feedback_block)
+  sources.py       curated per-board source registry (paper/spec PDF URLs) + resolve_sources
+  past_papers.py   PDF-grounded past-paper stage (two-pass: generate + verify against the fetched PDF)
+  pipeline_v2.py   the pipeline: generate_interactive_notes + save_interactive_notes
+  render_v2.py     the interactive renderer (render_interactive_html) + block_defects / validate_interactives
+                   (the deterministic block-completeness checks the structural gate enforces)
+  ground_specs.py  standalone CLI: verify + auto-correct curriculum codes vs official spec/CED PDFs
+  spotcheck.py     standalone CLI: deterministic 1-in-20 tutor spot-check bundle (surfaces each page's
+                   advisory review_flags for human adjudication)
+  notes.py         CLI entry point
+  prompts/         outline / verify / v2_* / past_papers_* / spec_ground / spec_extract
+tests/           offline self-tests (_smoke_*.py; no key/network)
 curriculum/      the grounding store (TopicSpec JSON per topic)
-notes.py         CLI entry point
+out/             generated notes (gitignored)
 ```
 
 `generate_interactive_notes(client, spec)` orchestrates (all structured output via
@@ -152,9 +177,13 @@ notes.py         CLI entry point
    CC/PD only) → `helpers._select_image` (Gemini **vision** picks best or rejects) →
    base64 embed + `_attribution`. Mutates the figure diagrams in place.
 5. **practice** (`write_practice_v2`) — a 5–6 question numeric/mcq ladder
-   (basic → stretch) with tolerances, diagnostic wrong-answers and mark schemes.
+   (basic → stretch) with tolerances, diagnostic wrong-answers and mark schemes, then
+   the **practice structural gate** (`enforce_practice_structure_v2`) fixes-or-fails any
+   block defect (missing mark scheme, unexplained option) in the ladder.
 6. **finalize** (`finalize_v2`) — hero, hook, command words, common mistakes,
-   spec-checklist recaps.
+   spec-checklist recaps. Assembly ends with a `block_defects` guard; `review_flags`
+   then carry ONLY the model verifier's advisory opinions (deterministic FACTS have
+   already been fixed-or-failed by the gates — see Enforcement gates above).
 
 Then `save_interactive_notes` writes the `.v2.json` (source of truth) +
 `.interactive.html` (embeds the JSON, rendered client-side by `render_v2._JS`).

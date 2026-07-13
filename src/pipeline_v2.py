@@ -17,10 +17,12 @@ from pydantic import BaseModel, Field
 import helpers
 import schemas_v2 as v2
 from config import CONFIG, HOUSE_STYLE, exam_tips_for
-from render_v2 import validate_interactives
+from render_v2 import block_defects, practice_block_defects, section_block_defects
 from schemas import CoverageReport, TopicSpec
 from coverage_gate import (
-    CoverageError, feedback_block, plan_regeneration, structural_gap_items, uncovered_items,
+    CoverageError, StructuralError, defect_feedback_by_section, feedback_block,
+    plan_regeneration, structural_feedback_block, structural_feedback_lines,
+    structural_gap_items, uncovered_items,
 )
 
 # The practice ladder is mcq | numeric only (plain Union -> anyOf, no discriminator).
@@ -118,15 +120,41 @@ def write_sections_v2(client: genai.Client, spec: TopicSpec, outline) -> list[v2
     return [r for r in results if r is not None]
 
 
-def write_practice_v2(client: genai.Client, spec: TopicSpec, sections) -> list:
+def write_practice_v2(client: genai.Client, spec: TopicSpec, sections,
+                      structural_feedback: str = "") -> list:
     joined = "\n\n".join(_section_text(s) for s in sections)
     prompt = helpers.load_prompt("v2_write_practice.txt").format(
         house_style=HOUSE_STYLE, spec_block=helpers._spec_block(spec),
-        sections=joined, worked_examples=_worked_examples_text(sections))
+        sections=joined, worked_examples=_worked_examples_text(sections),
+        structural_feedback=structural_feedback)
     ps = helpers.call_model(
         client, label=f"v2-practice:{spec.topic_id}", contents=prompt,
         **helpers._gen_config("model_write", "temperature_write", _PracticeSet))
     return list(ps.questions)
+
+
+def enforce_practice_structure_v2(client: genai.Client, spec: TopicSpec, sections, practice) -> list:
+    """The practice-ladder structural GATE (sibling of the section gate). Runs the
+    deterministic block-completeness check on the generated ladder — every MCQ option
+    explained, every numeric with a mark scheme, a positive tolerance and no diagnostic
+    within tolerance of the answer — and regenerates the WHOLE ladder with the defects
+    injected, up to ``max_structure_retries``, then hard-fails (``StructuralError``). A
+    broken practice question (the reviewer's 'missing answer key') never ships.
+    """
+    max_retries = CONFIG.get("max_structure_retries", 1)
+    attempt = 0
+    while True:
+        defects = practice_block_defects(practice)
+        if not defects:
+            return practice
+        if attempt >= max_retries:
+            raise StructuralError(spec.topic_id, defects)
+        attempt += 1
+        print(f"       practice gate: {len(defects)} block defect(s) — "
+              f"regenerating the ladder ({attempt}/{max_retries})")
+        practice = write_practice_v2(
+            client, spec, sections,
+            structural_feedback=structural_feedback_block(structural_feedback_lines(defects)))
 
 
 def finalize_v2(client: genai.Client, spec: TopicSpec, sections) -> _Finalize:
@@ -189,11 +217,14 @@ def verify_v2(client: genai.Client, spec: TopicSpec, sections) -> CoverageReport
 
 
 def enforce_coverage_v2(client: genai.Client, spec: TopicSpec, outline, sections) -> CoverageReport:
-    """The coverage GATE: verify -> targeted re-draft of the section(s) that own an
-    uncovered objective (with the verifier's gap_notes injected) -> re-verify, up to
+    """The section GATE: verify coverage AND deterministic block completeness, then
+    targeted re-draft of the section(s) that own an uncovered objective OR a broken
+    block (the relevant feedback injected), then re-verify — up to
     ``max_coverage_retries``. Sections are mutated in place. Raises ``CoverageError``
-    if a gap survives, so a topic that cannot be made to cover its contract NEVER
-    produces an artifact — a false ``covered`` no longer slips through as a soft flag.
+    (a contract gap) or ``StructuralError`` (a broken block) if the fault survives, so
+    a section that cannot be made BOTH covered and structurally complete NEVER produces
+    an artifact. Both faults are FACTS the pipeline fixes-or-fails on — neither slips
+    through as a soft flag (the model verifier's opinions do, routed to spot-check).
     """
     max_retries = CONFIG.get("max_coverage_retries", 2)
     coverage = verify_v2(client, spec, sections)
@@ -208,12 +239,27 @@ def enforce_coverage_v2(client: genai.Client, spec: TopicSpec, outline, sections
             include_recall=CONFIG.get("structural_gate_recall", False))
         seen = {c.code for c in model_gaps}
         gaps = model_gaps + [g for g in struct_gaps if g.code not in seen]
-        if not gaps:
+        # Deterministic per-block completeness (an unexplained MCQ option, a numeric
+        # with no mark scheme, an empty worked example, a dead widget). These are
+        # FACTS, so they gate exactly like a coverage gap — re-drafting the owning
+        # section here (before images/practice) also keeps them coverage-safe: every
+        # regeneration is re-verified in this same loop.
+        sec_defects = section_block_defects(sections)
+        defect_targets = defect_feedback_by_section(sec_defects)
+
+        if not gaps and not defect_targets:
             return coverage
         if attempt >= max_retries:
-            raise CoverageError(spec.topic_id, gaps)
+            if gaps:
+                raise CoverageError(spec.topic_id, gaps)
+            raise StructuralError(spec.topic_id, sec_defects)
         attempt += 1
-        print(f"       coverage gap: {', '.join(c.code for c in gaps)} — "
+        reasons = []
+        if gaps:
+            reasons.append("coverage " + ", ".join(c.code for c in gaps))
+        if defect_targets:
+            reasons.append(f"structure {sum(len(v) for v in defect_targets.values())} defect(s)")
+        print(f"       section gate [{' | '.join(reasons)}] — "
               f"regenerating owning section(s) ({attempt}/{max_retries})")
         texts = [_section_text(s) for s in sections]
         targets, forced = plan_regeneration(gaps, sections, texts, spec.learning_objectives)
@@ -225,12 +271,15 @@ def enforce_coverage_v2(client: genai.Client, spec: TopicSpec, outline, sections
             sections[i].covers_objective_codes = list(
                 dict.fromkeys([*sections[i].covers_objective_codes, *codes]))
 
+        redraw = set(targets) | set(defect_targets)
+
         def _redraw(i: int):
+            feedback = feedback_block(targets.get(i, [])) + structural_feedback_block(defect_targets.get(i, []))
             return i, write_section_v2(client, spec, outline.sections[i], outline,
-                                       coverage_feedback=feedback_block(targets[i]))
+                                       coverage_feedback=feedback)
 
         with ThreadPoolExecutor(max_workers=CONFIG["max_parallel_sections"]) as ex:
-            for fut in as_completed([ex.submit(_redraw, i) for i in targets]):
+            for fut in as_completed([ex.submit(_redraw, i) for i in redraw]):
                 i, sec = fut.result()
                 sections[i] = sec
         coverage = verify_v2(client, spec, sections)
@@ -265,6 +314,7 @@ def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.Inte
 
     print("[4/6] practice   5-6 question ladder")
     practice = write_practice_v2(client, spec, sections)
+    practice = enforce_practice_structure_v2(client, spec, sections, practice)
 
     print("[5/6] finalize   hero, hook, command words, mistakes, recaps")
     fin = finalize_v2(client, spec, sections)
@@ -302,15 +352,23 @@ def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.Inte
         generated_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
     )
 
-    # review flags: verifier flags + deterministic interactive validation. (An
-    # uncovered objective is no longer a soft flag here — enforce_coverage_v2 has
-    # already hard-failed the build if any survived.)
-    flags = list(coverage.review_flags)
-    flags.extend(validate_interactives(notes))
-    notes.review_flags = flags
+    # Final structural guard: the section + practice gates have already fixed-or-failed
+    # every deterministic block defect, so this must come back clean. If ANY survives
+    # (e.g. a future checked block type on a locus no gate covers), refuse to ship
+    # rather than emit a broken interactive — the same fix-or-fail contract as coverage.
+    residual = block_defects(notes)
+    if residual:
+        raise StructuralError(spec.topic_id, residual)
+
+    # review_flags now carry ONLY the model verifier's ADVISORY opinions. A single
+    # model read can be wrong (it can flag a complete block as incomplete — exactly the
+    # false positive that would make a blanket "block on any flag" rule regenerate good
+    # work), so these are routed to the human spot-check queue, NOT hard-blocked. Every
+    # deterministic FACT has already been fixed-or-failed by the gates above.
+    notes.review_flags = list(coverage.review_flags)
     covered = sum(1 for c in coverage.items if c.covered)
     print(f"  ok {covered}/{len(coverage.items)} objectives covered | {len(sections)} sections | "
-          f"{len(practice)} practice | {len(flags)} flag(s)")
+          f"{len(practice)} practice | {len(notes.review_flags)} advisory flag(s)")
     return notes
 
 
