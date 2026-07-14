@@ -1,0 +1,23 @@
+You are reading the OFFICIAL exam-board specification (or Course and Exam
+Description) for ONE subject, attached as a PDF. List every discrete, teachable
+TOPIC it defines — each at the grain of a single class-notes lesson.
+
+Context (already known — do not re-derive):
+- BOARD: {board}
+- SUBJECT: {subject}
+- LEVEL: {level}
+
+Rules:
+- One entry per lesson-sized topic, in the order the spec presents them.
+- A topic is FINER than a whole unit/theme but COARSER than a single learning
+  objective. Example: 'Enthalpy changes' is a topic; 'Energetics' is a unit;
+  'define the standard enthalpy of formation' is one objective within the topic.
+- Use the spec's OWN unit and topic titles. Do NOT invent topics the spec does not
+  contain, and do NOT merge unrelated content just to reduce the count.
+- For each topic give 3-8 distinctive KEYWORDS copied from that topic's spec text
+  (specific terms, quantities, processes) — these are used to locate the topic's
+  pages in the PDF for the next stage, so make them specific and discriminating.
+- Cover the whole subject the PDF describes. Omit only front-matter, administration,
+  assessment-logistics and appendices that define no teachable content.
+
+Return structured JSON matching the SpecTopicList schema.

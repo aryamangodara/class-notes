@@ -28,16 +28,26 @@ Use **`py -3`**, NOT bare `python` (see Conventions):
 py -3 src/notes.py --list           # list discovered topics
 py -3 src/notes.py <topic_id>       # generate one topic (live Gemini calls)
 py -3 src/notes.py --all            # generate every topic
+py -3 src/extract_specs.py --list   # curriculum-extraction CLI: official spec/CED PDF -> many TopicSpecs
+                                    #   (--board/--subject or --all; DRY RUN by default; --apply writes)
 py -3 src/ground_specs.py --list    # spec-grounding CLI: verify codes vs official spec PDFs
                                     #   (DRY RUN by default; --apply writes; --all = corpus)
 py -3 src/spotcheck.py              # bundle a deterministic ~1-in-20 tutor spot-check into out/spotcheck/
 py -3 tests/_smoke_v2.py            # OFFLINE self-test — no key/network
 ```
 
+The curriculum store is **grown from the source of record**: `extract_specs.py` fetches a
+subject's official spec/CED PDF, enumerates its topics, and extracts one grounded `TopicSpec`
+per topic into `curriculum/`. Extraction is PDF-grounded but **stamped UNVERIFIED** — the
+pipeline is `extract_specs --apply` → `ground_specs --apply` (verify codes vs the SAME PDF) →
+review `git diff` → `notes.py --all`. It only pulls (board, subject) pairs registered in
+`sources._SPEC_SOURCES`; widen coverage by adding entries there.
+
 Offline self-tests live in `tests/` (no key/network), each the fast regression check for its area:
 `tests/_smoke_v2.py` (renderer↔schema parity + coverage/structural gate + prompt brace-safety),
 `tests/_smoke_past_papers.py` (two-pass + URL/render safety), `tests/_smoke_ground_specs.py`
-(confidence gating + in-place patch), `tests/_smoke_spotcheck.py` (deterministic sampling).
+(confidence gating + in-place patch), `tests/_smoke_extract_specs.py` (id convention + skip-existing
++ UNVERIFIED stamping), `tests/_smoke_spotcheck.py` (deterministic sampling).
 **Run the relevant one after touching its module.**
 
 **Re-render existing notes without regenerating** (apply render/CSS changes, no API):
@@ -130,7 +140,9 @@ notes + contract, never the writer's reasoning, so it stays an independent read.
   - `GOOGLE_APPLICATION_CREDENTIALS` + `GOOGLE_CLOUD_PROJECT` (Vertex AI).
   `get_gemini_client()` prefers the key and falls back to Vertex.
 - `curriculum/*.json` — one `TopicSpec` per topic, self-describing (carries its
-  own board/subject/level); discovered automatically by `discover_topics()`.
+  own board/subject/level); discovered automatically by `discover_topics()`. Author
+  them by hand, or grow the store from official spec PDFs with `extract_specs.py`
+  (then verify with `ground_specs.py` + review the `git diff` before generating).
 
 ## Architecture & data flow
 
@@ -151,13 +163,15 @@ src/             the application — run: py -3 src/notes.py <id>
   pipeline_v2.py   the pipeline: generate_interactive_notes + save_interactive_notes
   render_v2.py     the interactive renderer (render_interactive_html) + block_defects / validate_interactives
                    (the deterministic block-completeness checks the structural gate enforces)
+  extract_specs.py standalone CLI: official subject spec/CED PDF -> many TopicSpec JSONs (enumerate topics ->
+                   extract one grounded spec each; DRY RUN default; stamps every spec UNVERIFIED for review)
   ground_specs.py  standalone CLI: verify + auto-correct curriculum codes vs official spec/CED PDFs
   spotcheck.py     standalone CLI: deterministic 1-in-20 tutor spot-check bundle (surfaces each page's
                    advisory review_flags for human adjudication)
   notes.py         CLI entry point
-  prompts/         outline / verify / v2_* / past_papers_* / spec_ground / spec_extract
+  prompts/         outline / verify / v2_* / past_papers_* / spec_ground / spec_extract / spec_enumerate
 tests/           offline self-tests (_smoke_*.py; no key/network)
-curriculum/      the grounding store (TopicSpec JSON per topic)
+curriculum/      the grounding store (TopicSpec JSON per topic; hand-authored or extract_specs-grown)
 out/             generated notes, grouped <board>/<subject>/<id>.{v2.json,interactive.html} (gitignored)
 ```
 
@@ -222,10 +236,17 @@ regress** (`_smoke_v2.py` asserts most):
   codes, or past-paper citations, or exceed the depth profile. A model claim becomes
   a shippable fact only when it traces to a fetched document or a deterministic check
   — never recall. Curated facts are hand-authored and tagged "validate against the
-  official spec".
+  official spec". This extends to **curriculum extraction** (`extract_specs.py`):
+  objectives are pulled from the fetched spec PDF (never memory), the controlled
+  identity fields (board/level/id) are stamped deterministically not model-guessed,
+  the curated exam-format layer is left empty for a human, and every extracted spec is
+  marked UNVERIFIED until `ground_specs.py` + a human `git diff` clear it.
 - **Curriculum is self-describing.** Add a topic = drop a `curriculum/<id>.json`;
-  no code change. New board's exam strategy = a `BOARD_EXAM_TIPS[level]` entry (add a
-  `BOARD_SUBJECT_EXAM_TIPS[(level, subject)]` entry when the facts differ by subject).
+  no code change (hand-author it, or extract it with `extract_specs.py`). New board's
+  exam strategy = a `BOARD_EXAM_TIPS[level]` entry (add a `BOARD_SUBJECT_EXAM_TIPS[(level,
+  subject)]` entry when the facts differ by subject) + a `BOARD_TO_LEVEL` mapping if the
+  board is new. A new (board, subject) becomes extractable by adding its official spec
+  PDF to `sources._SPEC_SOURCES`.
 - **Schema field `description=`s are prompt surface** — sent to Gemini as
   `response_schema`; edit deliberately, not just for documentation.
 - **Prompts are plain text**, `str.format`-ed at call time. Avoid literal `{`/`}`

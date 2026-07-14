@@ -75,6 +75,7 @@ cp .env.example .env                     # add GEMINI_API_KEY (the Grader's key 
 Use **`py -3`** on this machine (bare `python` lacks the deps — see CLAUDE.md):
 
 ```bash
+py -3 src/extract_specs.py --list                    # grow the curriculum from official spec PDFs
 py -3 src/notes.py --list                            # the seeded topics
 py -3 src/notes.py alevel-chem-enthalpy-changes      # one topic (live Gemini)
 py -3 src/notes.py --all                             # every topic
@@ -114,12 +115,17 @@ calibration is the point of grounding.
 
 ## Add a topic or board
 
-- **Topic:** drop a `curriculum/<topic_id>.json` matching the `TopicSpec` schema
-  (`schemas.py`) — auto-discovered, no code change. For production, extract these
-  from official CED / syllabus PDFs via `prompts/spec_extract.txt`.
+- **Topic (by hand):** drop a `curriculum/<topic_id>.json` matching the `TopicSpec`
+  schema (`schemas.py`) — auto-discovered, no code change.
+- **Topics at scale (extract):** `py -3 src/extract_specs.py --board "…" --subject …
+  --apply` fetches the official spec/CED PDF, enumerates its topics, and extracts one
+  grounded `TopicSpec` per topic. Extraction is stamped **UNVERIFIED** — verify with
+  `ground_specs.py --apply` and review the `git diff` before generating. Register a new
+  (board, subject)'s spec PDF in `sources._SPEC_SOURCES` to make it extractable.
 - **Exam strategy for a new board:** add a `BOARD_EXAM_TIPS[level]` entry in
   `config.py` (and a `BOARD_SUBJECT_EXAM_TIPS[(level, subject)]` overlay when the facts
-  differ by subject, e.g. SAT Math vs SAT Reading & Writing).
+  differ by subject, e.g. SAT Math vs SAT Reading & Writing), plus a `BOARD_TO_LEVEL`
+  entry so extraction sets the right level.
 
 ## Layout
 
@@ -133,7 +139,7 @@ src/             the application (run: py -3 src/notes.py <id>)
   coverage_gate.py deterministic, genai-free coverage-gate logic (CoverageError + helpers)
   pipeline_v2.py   the pipeline (generate_interactive_notes + save_interactive_notes)
   render_v2.py     the interactive renderer + validate_interactives
-  sources.py / past_papers.py / ground_specs.py / spotcheck.py  — sources registry + grounding CLIs
+  sources.py / past_papers.py / ground_specs.py / extract_specs.py / spotcheck.py — sources registry + grounding/extraction CLIs
   prompts/         outline / verify / v2_* / spec_extract  (plain text, edit freely)
   notes.py         CLI entry point
 tests/           offline self-tests (_smoke_*.py; no API key)
@@ -147,11 +153,14 @@ image/licence policy, the `py -3` interpreter, etc.).
 
 ## Roadmap
 
-Recently shipped: enforced gates tiered by trust — coverage (regenerate-or-hard-fail) +
-per-command-word structural evidence + per-block completeness (unexplained option, missing
-mark scheme), with the model verifier's opinions kept advisory and routed to the tutor
-spot-check; PDF-grounded past papers (`sources.py` + `past_papers.py`); spec-code grounding
-(`ground_specs.py`); and a deterministic tutor spot-check (`spotcheck.py`).
+Recently shipped: **curriculum extraction** (`extract_specs.py`) — official spec/CED PDF →
+many grounded `TopicSpec` JSONs, so `notes.py --all` can cover a whole subject from one
+command (extraction is UNVERIFIED-until-grounded, human-gated); enforced gates tiered by
+trust — coverage (regenerate-or-hard-fail) + per-command-word structural evidence + per-block
+completeness (unexplained option, missing mark scheme), with the model verifier's opinions
+kept advisory and routed to the tutor spot-check; PDF-grounded past papers (`sources.py` +
+`past_papers.py`); spec-code grounding (`ground_specs.py`); and a deterministic tutor
+spot-check (`spotcheck.py`).
 
 - **PDF / DOCX export** — printable, teacher-editable notes.
 - **S3 distribution** — reuse the Grader's `upload_to_s3.py`.

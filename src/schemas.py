@@ -144,6 +144,31 @@ class SpecGroundingReport(BaseModel):
     summary: str = Field(default="", description="One-line summary of the grounding outcome.")
 
 
+# --- spec EXTRACTION (PDF-grounded curriculum building; used by extract_specs.py) -----
+# A full subject spec/CED covers MANY topics. We first ENUMERATE its topics (unit +
+# topic + slicing keywords), then extract ONE grounded TopicSpec per topic from its own
+# pages. Extraction fills the objective/depth/assessment half of a TopicSpec only; the
+# curated exam-format layer is left for humans, and every extracted spec is stamped
+# UNVERIFIED so it flows through ground_specs.py + human review before it can ship.
+
+class SpecTopicEntry(BaseModel):
+    unit: str = Field(description="The unit/theme this topic sits under, as titled in the spec "
+                      "(e.g. 'Topic 8: Energetics I' or 'Unit 3: Cellular Energetics').")
+    topic: str = Field(description="A single teachable topic title as printed in the spec — the grain of "
+                       "ONE lesson (e.g. 'Enthalpy changes'), NOT a whole unit and NOT a single objective.")
+    keywords: list[str] = Field(
+        default_factory=list,
+        description="3-8 distinctive words/phrases from THIS topic's spec text (specific terms, quantities, "
+        "processes) used to locate its pages in the PDF later. Prefer specific nouns over generic verbs.")
+
+
+class SpecTopicList(BaseModel):
+    items: list[SpecTopicEntry] = Field(
+        default_factory=list,
+        description="Every discrete teachable topic in this subject specification, in spec order. One entry "
+        "per lesson-sized topic; do NOT merge a whole unit into one entry or split a single objective out.")
+
+
 class SpecChecklistItem(BaseModel):
     code: str = Field(description="Official spec point, e.g. '8.11'.")
     can_do: str = Field(description="'I can ...' statement in student language, from the official spec.")

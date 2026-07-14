@@ -1,21 +1,36 @@
 You are extracting a structured curriculum map from an official exam-board
-specification. From the supplied spec pages covering ONE topic, produce a
-TopicSpec.
+specification (or Course and Exam Description). The attached PDF pages are sliced
+to ONE topic. Produce a single TopicSpec for that topic, grounded ONLY in those pages.
 
-Extract:
-- board, subject, level, unit, topic
-- prerequisites the spec assumes
-- the exact learning objectives: verbatim codes and statements, with `tier`
-  (e.g. Core / Supplement) and `command_words` where the spec marks them
-- depth_profile: how far THIS board takes the topic, including anything the spec
-  explicitly excludes
-- assessment_notes: how the topic is examined (paper, question styles, command
-  words, mark-scheme expectations)
-- source: the document and page range you extracted from
+Context (already known — use these EXACT values; do not re-derive them):
+- BOARD: {board}
+- SUBJECT: {subject}
+- LEVEL: {level}
+- UNIT: {unit}
+- TOPIC: {topic}
+
+Extract from the attached pages:
+- prerequisites: prior knowledge the spec assumes for this topic (may be empty).
+- learning_objectives: the EXACT spec points for THIS topic — verbatim `code`s and
+  `statement`s, with `tier` (e.g. Core / Supplement, or AS / A-Level) and
+  `command_words` wherever the spec marks them. Quote codes exactly as printed.
+- depth_profile: how far THIS board takes THIS topic, INCLUDING anything the spec
+  explicitly excludes or does not require (exclusions are as important as inclusions).
+- assessment_notes: how the topic is examined (papers, question styles, command
+  words, mark-scheme expectations, common pitfalls).
+- reference_data: canonical constants/values the spec fixes for this topic (bond
+  enthalpies, constants, molar masses…), verbatim; leave empty if none.
+- spec_checklist: the same spec points restated as student-facing 'I can …' can-do
+  statements (code + can_do), at spec-point granularity.
 
 Rules:
-- Do NOT invent objectives that are not present in the spec.
-- Quote objective codes exactly as printed.
-- If the spec marks Core vs Supplement (or AS vs A-Level), preserve that in `tier`.
+- Ground EVERYTHING in the attached pages. Do NOT invent an objective, code, tier or
+  exclusion that is not present. If the pages do not state it, leave it out.
+- Cover ONLY this topic ({topic}). Ignore content that belongs to other topics but
+  happens to share a page.
+- Set topic_id/board/subject/level/unit/topic to match the context above; the caller
+  overrides them deterministically, so faithful objectives matter more than these.
+- Do NOT author the curated exam-format layer (exam_map, past_papers, next_topic) —
+  leave them empty. A human curates those.
 
 Return structured JSON matching the TopicSpec schema.

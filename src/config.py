@@ -56,6 +56,11 @@ CONFIG = {
     "model_spec_ground": "gemini-3.1-pro-preview",
     "spec_autocorrect_min_confidence": "high",       # only auto-apply corrections at >= this confidence
     "ced_slice_page_threshold": 40,                  # PDFs longer than this get pymupdf-sliced to topic pages
+    # spec EXTRACTION CLI (extract_specs.py): official subject spec/CED PDF -> many TopicSpec JSONs.
+    # Grows the curriculum store from the source of record so notes.py --all can cover it.
+    "model_spec_enumerate": "gemini-3.5-flash",      # list the teachable topics in a subject spec (light)
+    "model_spec_extract": "gemini-3.1-pro-preview",  # extract one grounded TopicSpec per topic (writer strength)
+    "max_topics_per_spec": 120,                      # safety rail on topics enumerated from one PDF (logged if hit)
     # Images — Wikimedia Commons (primary) + Openverse (fallback), embedded as base64.
     "image_search": True,
     "image_vision_select": True,     # let Gemini vision pick the best/appropriate candidate
@@ -180,3 +185,28 @@ def exam_tips_for(level: str, subject: str) -> list[str]:
     Keyed so, e.g., SAT Reading & Writing does not inherit SAT Math-only facts
     (Desmos, grid-ins). An absent subject => just the general tips for the level."""
     return BOARD_EXAM_TIPS.get(level, []) + BOARD_SUBJECT_EXAM_TIPS.get((level, subject), [])
+
+
+# Board identity -> the controlled `level` vocabulary (the keys of BOARD_EXAM_TIPS and
+# the curriculum `level` field). Set deterministically when extracting specs so the
+# model never guesses a level that would miss its exam tips.
+BOARD_TO_LEVEL: dict[str, str] = {
+    "AP (College Board)": "AP",
+    "Cambridge IGCSE": "IGCSE",
+    "Edexcel A-Level": "A-Level",
+    "SAT (College Board)": "SAT",
+    "AMC (MAA)": "AMC 10",
+}
+
+
+def board_to_level(board: str) -> str:
+    """The `level` label for a board string (deterministic; feeds exam_tips_for). Falls
+    back to a best-effort read of the board string for a board not yet in the map."""
+    if board in BOARD_TO_LEVEL:
+        return BOARD_TO_LEVEL[board]
+    b = (board or "").lower()
+    for key, lvl in (("igcse", "IGCSE"), ("a-level", "A-Level"), ("a level", "A-Level"),
+                     ("amc", "AMC 10"), ("sat", "SAT"), ("ap", "AP")):
+        if key in b:
+            return lvl
+    return board
