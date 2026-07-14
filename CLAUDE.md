@@ -7,9 +7,9 @@ Guidance for Claude Code (claude.ai/code) when working in this repository.
 A curriculum-grounded **class-notes generator** for AP / IGCSE / SAT / A-Level / AMC.
 Feed a topic id; a multi-stage Gemini pipeline (outline → draft interactive section
 blocks → enforce coverage → fetch images → practice ladder → finalize) writes an
-INTERACTIVE lesson to `out/<topic_id>.v2.json` (the source of truth) +
-`<topic_id>.interactive.html` (a self-contained page that embeds that JSON and
-renders it client-side — opens straight from disk, no server). Sister project to
+INTERACTIVE lesson to `out/<board>/<subject>/<topic_id>.v2.json` (the source of truth)
++ a sibling `<topic_id>.interactive.html` (a self-contained page that embeds that JSON
+and renders it client-side — opens straight from disk, no server). Sister project to
 `../Grader` — same single-vendor Gemini stack and `config / schemas / helpers /
 prompts` split; the notes are grounded in the same curriculum the Grader assesses
 against.
@@ -42,7 +42,7 @@ Offline self-tests live in `tests/` (no key/network), each the fast regression c
 
 **Re-render existing notes without regenerating** (apply render/CSS changes, no API):
 ```bash
-py -3 -c "import sys; sys.path.insert(0, 'src'); from pathlib import Path; from schemas_v2 import InteractiveNotes; from pipeline_v2 import save_interactive_notes; [save_interactive_notes(InteractiveNotes.model_validate_json(Path(p).read_text(encoding='utf-8'))) for p in sorted(Path('out').glob('*.v2.json'))]"
+py -3 -c "import sys; sys.path.insert(0, 'src'); from pathlib import Path; from schemas_v2 import InteractiveNotes; from pipeline_v2 import save_interactive_notes; [save_interactive_notes(InteractiveNotes.model_validate_json(Path(p).read_text(encoding='utf-8'))) for p in sorted(Path('out').rglob('*.v2.json'))]"
 ```
 Everything (including embedded `image_src` base64) is stored in the JSON, so
 `render_interactive_html` is a pure function of the saved `InteractiveNotes` —
@@ -55,8 +55,8 @@ A single-scroll INTERACTIVE lesson: progress tracking, flip-card definitions, MC
 with per-option feedback, step-reveal worked examples, live sims, drag-to-bucket
 sorts, parameterized energy-profile / Hess SVGs, a numeric practice ladder with
 tolerance + diagnostic wrong-answers + mark schemes, a spec checklist, and a curated
-exam-map + past-paper panel. `notes.py <id>` writes `out/<id>.v2.json` +
-`<id>.interactive.html`. Target design contract: `enthalpy-interactive-full.html`.
+exam-map + past-paper panel. `notes.py <id>` writes `out/<board>/<subject>/<id>.v2.json`
++ a sibling `<id>.interactive.html`. Target design contract: `enthalpy-interactive-full.html`.
 
 - `schemas_v2.py` — the block vocabulary: an ordered list of typed `Block`s per
   `InteractiveSection` (prose / callout / table / flip_cards / mcq / step_reveal /
@@ -158,7 +158,7 @@ src/             the application — run: py -3 src/notes.py <id>
   prompts/         outline / verify / v2_* / past_papers_* / spec_ground / spec_extract
 tests/           offline self-tests (_smoke_*.py; no key/network)
 curriculum/      the grounding store (TopicSpec JSON per topic)
-out/             generated notes (gitignored)
+out/             generated notes, grouped <board>/<subject>/<id>.{v2.json,interactive.html} (gitignored)
 ```
 
 `generate_interactive_notes(client, spec)` orchestrates (all structured output via
@@ -186,7 +186,8 @@ out/             generated notes (gitignored)
    already been fixed-or-failed by the gates — see Enforcement gates above).
 
 Then `save_interactive_notes` writes the `.v2.json` (source of truth) +
-`.interactive.html` (embeds the JSON, rendered client-side by `render_v2._JS`).
+`.interactive.html` (embeds the JSON, rendered client-side by `render_v2._JS`) into
+`out/<board>/<subject>/` (both segments filesystem-sanitised by `_fs_safe`).
 
 ## Rendering & safety doctrine (render_v2.py)
 

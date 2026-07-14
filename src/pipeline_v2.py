@@ -372,10 +372,24 @@ def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.Inte
     return notes
 
 
+# Characters Windows/most filesystems reject in a path segment. Board/subject names
+# may contain spaces and parentheses ("AP (College Board)") — those are fine to keep.
+_FS_ILLEGAL = '<>:"/\\|?*'
+
+
+def _fs_safe(name: str) -> str:
+    """One human-readable, filesystem-safe path segment from a board/subject name:
+    drop illegal characters, collapse whitespace, trim trailing dots/spaces."""
+    cleaned = "".join(" " if c in _FS_ILLEGAL else c for c in (name or ""))
+    return " ".join(cleaned.split()).rstrip(". ") or "unknown"
+
+
 def save_interactive_notes(n: v2.InteractiveNotes, out_dir: str | None = None) -> None:
     from pathlib import Path
     from render_v2 import render_interactive_html
-    d = Path(out_dir or CONFIG["out_dir"])
+    # Group on disk by board then subject:
+    #   out/<board>/<subject>/<topic_id>.{v2.json,interactive.html}
+    d = Path(out_dir or CONFIG["out_dir"]) / _fs_safe(n.board) / _fs_safe(n.subject)
     d.mkdir(parents=True, exist_ok=True)
     (d / f"{n.topic_id}.v2.json").write_text(n.model_dump_json(indent=2), encoding="utf-8")
     (d / f"{n.topic_id}.interactive.html").write_text(render_interactive_html(n), encoding="utf-8")

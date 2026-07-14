@@ -2,8 +2,8 @@
 """Class Notes generator — entry point.
 
 Feed a topic; get grounded, board-aligned INTERACTIVE class notes: the block
-structure as ``out/<id>.v2.json`` (the source of truth) plus a self-contained
-``out/<id>.interactive.html`` that renders it client-side.
+structure as ``out/<board>/<subject>/<id>.v2.json`` (the source of truth) plus a
+self-contained sibling ``<id>.interactive.html`` that renders it client-side.
 
     python notes.py --list                       # show seeded topics
     python notes.py ap-bio-cellular-respiration  # generate one topic

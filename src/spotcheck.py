@@ -7,8 +7,8 @@ out/ and bundles each with a reviewer checklist into out/spotcheck/, so a subjec
 tutor reviews a stable, reproducible slice — the SAME pages every run (re-running
 never reshuffles the sample), and it scales as the corpus grows.
 
-    py -3 spotcheck.py            # sample ~1/20 of out/*.v2.json
-    py -3 spotcheck.py --rate 10  # sample ~1/10 instead
+    py -3 src/spotcheck.py            # sample ~1/20 of out/**/*.v2.json
+    py -3 src/spotcheck.py --rate 10  # sample ~1/10 instead
 """
 from __future__ import annotations
 
@@ -75,26 +75,33 @@ def main() -> None:
     args = ap.parse_args()
 
     out = Path(CONFIG["out_dir"])
-    ids = sorted(p.name[: -len(".v2.json")] for p in out.glob("*.v2.json"))
+    dest = out / "spotcheck"
+    # Notes are grouped on disk as out/<board>/<subject>/<id>.v2.json — discover them
+    # recursively (skipping our own bundle dir) and remember each id's path so the
+    # sibling .interactive.html can be found next to it.
+    by_id: "dict[str, Path]" = {}
+    for p in sorted(out.rglob("*.v2.json")):
+        if "spotcheck" in p.relative_to(out).parts:
+            continue
+        by_id[p.name[: -len(".v2.json")]] = p
+    ids = sorted(by_id)
     if not ids:
-        print(f"No generated notes in {out}/ (looking for *.v2.json). Generate some first.")
+        print(f"No generated notes in {out}/ (looking for **/*.v2.json). Generate some first.")
         return
     sample = select_sample(ids, args.rate)
-    dest = out / "spotcheck"
     dest.mkdir(parents=True, exist_ok=True)
     for tid in sample:
-        html = out / f"{tid}.interactive.html"
+        jpath = by_id[tid]
+        html = jpath.with_name(f"{tid}.interactive.html")
         if html.exists():
             shutil.copyfile(html, dest / html.name)
         else:
             print(f"  (no interactive.html for {tid}; writing checklist only)")
         flags: "list[str]" = []
-        jpath = out / f"{tid}.v2.json"
-        if jpath.exists():
-            try:
-                flags = json.loads(jpath.read_text(encoding="utf-8")).get("review_flags") or []
-            except Exception:  # noqa: BLE001 — a malformed JSON must not abort the bundle
-                flags = []
+        try:
+            flags = json.loads(jpath.read_text(encoding="utf-8")).get("review_flags") or []
+        except Exception:  # noqa: BLE001 — a malformed JSON must not abort the bundle
+            flags = []
         (dest / f"{tid}.review.md").write_text(review_template(tid, flags), encoding="utf-8")
     print(f"Sampled {len(sample)}/{len(ids)} page(s) (~1 in {args.rate}, deterministic) -> {dest}/")
     for tid in sample:

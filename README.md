@@ -41,7 +41,7 @@ topic ─► outline ─► draft section ─► ENFORCE ─► fetch images ─
 
 ## What's in a generated lesson
 
-A single-scroll **interactive** page (`out/<id>.interactive.html`):
+A single-scroll **interactive** page (`out/<board>/<subject>/<id>.interactive.html`):
 
 - **Sticky progress tracker** across the interactive blocks.
 - **Flip-card definitions** for word-for-word recall.
@@ -81,13 +81,14 @@ py -3 src/notes.py --all                             # every topic
 py -3 tests/_smoke_v2.py                             # offline self-test (no API key)
 ```
 
-Outputs land in `out/<topic_id>.v2.json` (source of truth) + `<topic_id>.interactive.html`.
-The `.html` **embeds that JSON and renders it in the browser**, so you can just
-**double-click it** (no server needed).
+Outputs are grouped by board then subject:
+`out/<board>/<subject>/<topic_id>.v2.json` (source of truth) + a sibling
+`<topic_id>.interactive.html`. The `.html` **embeds that JSON and renders it in the
+browser**, so you can just **double-click it** (no server needed).
 
 > **Re-render without regenerating** (apply render/CSS changes to existing notes, no API cost):
 > ```bash
-> py -3 -c "import sys; sys.path.insert(0, 'src'); from pathlib import Path; from schemas_v2 import InteractiveNotes; from pipeline_v2 import save_interactive_notes; [save_interactive_notes(InteractiveNotes.model_validate_json(Path(p).read_text(encoding='utf-8'))) for p in sorted(Path('out').glob('*.v2.json'))]"
+> py -3 -c "import sys; sys.path.insert(0, 'src'); from pathlib import Path; from schemas_v2 import InteractiveNotes; from pipeline_v2 import save_interactive_notes; [save_interactive_notes(InteractiveNotes.model_validate_json(Path(p).read_text(encoding='utf-8'))) for p in sorted(Path('out').rglob('*.v2.json'))]"
 > ```
 
 ## Seeded topics (12 — five subjects across five boards)
@@ -137,7 +138,7 @@ src/             the application (run: py -3 src/notes.py <id>)
   notes.py         CLI entry point
 tests/           offline self-tests (_smoke_*.py; no API key)
 curriculum/      one TopicSpec JSON per topic — the grounding store
-out/             generated notes (gitignored)
+out/             generated notes, grouped <board>/<subject>/ (gitignored)
 ```
 
 See **[CLAUDE.md](CLAUDE.md)** for architecture details and the conventions specific
