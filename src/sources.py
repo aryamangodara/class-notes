@@ -186,19 +186,45 @@ _REGISTRY: "dict[str, BoardSources]" = {
 }
 
 
-# Official spec / CED PDFs, keyed (board, subject) — used by ground_specs.py (Phase C).
-# Seeded from official sites (verified via the live sites); a (board, subject) with no
-# entry is skipped by the grounder (reported, never guessed).
+# Official spec / CED PDFs, keyed (board, subject) — used by extract_specs.py (fetch) and
+# ground_specs.py (verify). Seeded from official sites; a (board, subject) with no entry is
+# skipped (reported, never guessed). A URL is registered ONLY after confirming it resolves
+# to a real PDF (never invented — the grounding moat).
+
+# Every AP (College Board) subject with an official CED PDF, each URL verified to resolve at
+# the standard apcentral pattern. "Physics" = AP Physics 1 (matches the existing sample);
+# Calculus AB & BC share one combined CED.
+_AP_CED = "https://apcentral.collegeboard.org/media/pdf/ap-{}-course-and-exam-description.pdf"
+_AP_SUBJECTS: "dict[str, str]" = {
+    "Biology": "biology",
+    "Chemistry": "chemistry",
+    "Physics": "physics-1",
+    "Physics 2": "physics-2",
+    "Physics C: Mechanics": "physics-c-mechanics",
+    "Physics C: Electricity and Magnetism": "physics-c-electricity-and-magnetism",
+    "Calculus AB and BC": "calculus-ab-and-bc",
+    "Precalculus": "precalculus",
+    "Statistics": "statistics",
+    "Computer Science A": "computer-science-a",
+    "Computer Science Principles": "computer-science-principles",
+    "Microeconomics": "microeconomics",
+    "Macroeconomics": "macroeconomics",
+    "Psychology": "psychology",
+    "Human Geography": "human-geography",
+    "Environmental Science": "environmental-science",
+    "United States History": "us-history",
+    "World History: Modern": "world-history-modern",
+    "European History": "european-history",
+    "United States Government and Politics": "us-government-and-politics",
+    "Comparative Government and Politics": "comparative-government-and-politics",
+    "English Language and Composition": "english-language-and-composition",
+    "English Literature and Composition": "english-literature-and-composition",
+}
+
 _SPEC_SOURCES: "dict[tuple[str, str], SpecSource]" = {
-    ("AP (College Board)", "Chemistry"): SpecSource(
-        "https://apcentral.collegeboard.org/media/pdf/ap-chemistry-course-and-exam-description.pdf",
-        "AP Chemistry Course and Exam Description (College Board)"),
-    ("AP (College Board)", "Biology"): SpecSource(
-        "https://apcentral.collegeboard.org/media/pdf/ap-biology-course-and-exam-description.pdf",
-        "AP Biology Course and Exam Description (College Board)"),
-    ("AP (College Board)", "Physics"): SpecSource(
-        "https://apcentral.collegeboard.org/media/pdf/ap-physics-1-course-and-exam-description.pdf",
-        "AP Physics 1 Course and Exam Description (College Board)"),
+    **{("AP (College Board)", _subj): SpecSource(
+        _AP_CED.format(_slug), f"AP {_subj} Course and Exam Description (College Board)")
+       for _subj, _slug in _AP_SUBJECTS.items()},
     ("Edexcel A-Level", "Chemistry"): SpecSource(
         "https://qualifications.pearson.com/content/dam/pdf/A%20Level/Chemistry/2015/"
         "Specification%20and%20sample%20assessments/a-level-chemistry-2015-specification.pdf",
