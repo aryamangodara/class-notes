@@ -3,5 +3,6 @@ pydantic>=2.7.0
 python-dotenv>=1.0.0
 pillow>=10.0.0                # vision-based selection of embedded diagram images
 pymupdf>=1.24.0              # fetch + slice official spec/paper PDFs (extract_specs.py, ground_specs.py, past_papers.py)
+langfuse>=3.0.0             # OPTIONAL cost/observability — no-op unless LANGFUSE_* is set in .env
 # Notes render with MathJax + Mermaid + marked loaded from CDN in the HTML,
 # so no Python markdown/JS dependency is required.

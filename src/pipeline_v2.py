@@ -107,6 +107,7 @@ def write_section_v2(client: genai.Client, spec: TopicSpec, section, outline,
     )
     return helpers.call_model(
         client, label=f"v2-section:{section.heading[:22]}", contents=prompt,
+        trace_meta=helpers.trace_meta(spec, "section"),
         **helpers._gen_config("model_write", "temperature_write", v2.InteractiveSection))
 
 
@@ -129,6 +130,7 @@ def write_practice_v2(client: genai.Client, spec: TopicSpec, sections,
         structural_feedback=structural_feedback)
     ps = helpers.call_model(
         client, label=f"v2-practice:{spec.topic_id}", contents=prompt,
+        trace_meta=helpers.trace_meta(spec, "practice"),
         **helpers._gen_config("model_write", "temperature_write", _PracticeSet))
     return list(ps.questions)
 
@@ -166,6 +168,7 @@ def finalize_v2(client: genai.Client, spec: TopicSpec, sections) -> _Finalize:
         sections=joined, checklist=checklist)
     return helpers.call_model(
         client, label=f"v2-finalize:{spec.topic_id}", contents=prompt,
+        trace_meta=helpers.trace_meta(spec, "finalize"),
         **helpers._gen_config("model_write", "temperature_write", _Finalize))
 
 
@@ -236,6 +239,7 @@ def verify_v2(client: genai.Client, spec: TopicSpec, sections) -> CoverageReport
     # the writer's reasoning, so it stays an independent second read of the output.
     return helpers.call_model(
         client, label=f"v2-verify:{spec.topic_id}", contents=prompt,
+        trace_meta=helpers.trace_meta(spec, "coverage"),
         **helpers._gen_config("model_coverage", "temperature_coverage", CoverageReport))
 
 

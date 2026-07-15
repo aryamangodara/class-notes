@@ -26,7 +26,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import socket
 import sys
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
@@ -36,7 +39,80 @@ from dotenv import load_dotenv
 
 import batch
 from config import CONFIG
-from helpers import discover_topics, get_gemini_client
+from helpers import discover_topics, flush_langfuse, get_gemini_client
+
+# Live-progress files (written during a batch; read by --status). The durable truth
+# is the .v2.json count on disk; these add the current run's in-flight/rate/ETA view.
+_PROGRESS_LOCK = threading.Lock()
+
+
+def _status_path() -> Path:
+    return Path(CONFIG["out_dir"]) / "run-status.json"
+
+
+def _progress_path() -> Path:
+    return Path(CONFIG["out_dir"]) / "run-progress.jsonl"
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _read_json(path: Path):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def _read_events(path: Path) -> list:
+    try:
+        text = path.read_text(encoding="utf-8")
+    except Exception:
+        return []
+    events = []
+    for line in text.splitlines():
+        line = line.strip()
+        if line:
+            try:
+                events.append(json.loads(line))
+            except Exception:
+                pass  # tolerate a half-written trailing line mid-append
+    return events
+
+
+def _write_status(st: dict) -> None:
+    try:
+        _status_path().write_text(json.dumps(st, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    except Exception:
+        pass  # status/progress I/O must NEVER break a generation run
+
+
+def _append_progress(event: dict) -> None:
+    rec = {**event, "at": _now_iso()}
+    try:
+        with _PROGRESS_LOCK, open(_progress_path(), "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+
+def _begin_run(to_gen, *, jobs: int, selector: dict) -> None:
+    """Stamp the run header + start a fresh progress window for this run."""
+    Path(CONFIG["out_dir"]).mkdir(parents=True, exist_ok=True)
+    try:
+        _progress_path().write_text("", encoding="utf-8")
+    except Exception:
+        pass
+    _write_status({"active": True, "pid": os.getpid(), "host": socket.gethostname(),
+                   "started_at": _now_iso(), "ended_at": None,
+                   "to_generate": len(to_gen), "jobs": jobs, "selector": selector})
+
+
+def _end_run() -> None:
+    st = _read_json(_status_path()) or {}
+    st.update(active=False, ended_at=_now_iso())
+    _write_status(st)
 
 
 def _print_topics(topics) -> None:
@@ -91,13 +167,25 @@ def _existing_output_ids(out_dir: str) -> "set[str]":
             if "spotcheck" not in p.relative_to(root).parts}
 
 
+def _run_one_tracked(client, spec) -> "batch.TopicResult":
+    """run_one + emit start/end progress events so --status can show the live run.
+    The event I/O is best-effort and never raises (see _append_progress)."""
+    _append_progress({"t": "start", "topic_id": spec.topic_id,
+                      "board": spec.board, "subject": spec.subject})
+    res = run_one(client, spec)
+    _append_progress({"t": "end", "topic_id": res.topic_id, "outcome": res.outcome,
+                      "board": res.board, "subject": res.subject,
+                      "elapsed_s": round(res.elapsed_s, 1)})
+    return res
+
+
 def run_batch(client, specs, *, jobs: int) -> "list[batch.TopicResult]":
     """Generate a list of topics: sequential (jobs<=1, unchanged behavior) or across an
     outer pool of ``jobs`` workers. In parallel mode stdout is wrapped so each worker's
     top-level lines are tagged with its topic_id. run_one never raises, so no future
     here errors."""
     if jobs <= 1:
-        return [run_one(client, s) for s in specs]
+        return [_run_one_tracked(client, s) for s in specs]
     results: "list[batch.TopicResult]" = []
     real_stdout = sys.stdout
     tagged = batch.TaggedStdout(real_stdout)
@@ -105,7 +193,7 @@ def run_batch(client, specs, *, jobs: int) -> "list[batch.TopicResult]":
 
     def _work(s):
         tagged.set_tag(s.topic_id)
-        return run_one(client, s)
+        return _run_one_tracked(client, s)
 
     try:
         with ThreadPoolExecutor(max_workers=jobs) as ex:
@@ -173,16 +261,55 @@ def _run_batch_mode(args, topics) -> int:
     jobs = args.jobs if args.jobs is not None else CONFIG.get("max_parallel_topics", 1)
     jobs = max(1, min(jobs, len(to_gen)))
     client = get_gemini_client()  # fail fast (clear message) if no key BEFORE we start
-    print(f"generating {len(to_gen)} topic(s), --jobs {jobs} ...")
+    print(f"generating {len(to_gen)} topic(s), --jobs {jobs} ... (progress: py -3 src/notes.py --status)")
     results = list(skipped)
+    selector = {"board": args.board, "subject": args.subject, "level": args.level}
+    _begin_run(to_gen, jobs=jobs, selector=selector)
     t0 = time.monotonic()
     try:
         results += run_batch(client, to_gen, jobs=jobs)
     finally:
         elapsed = time.monotonic() - t0
+        _end_run()         # close the live-progress window
+        flush_langfuse()   # send buffered cost/observability events before we report
         _write_manifest(results, jobs=jobs, selected=len(selected), elapsed=elapsed)
         print(batch.format_summary(results, elapsed_s=elapsed))
     return 1 if batch.any_failures(results) else 0
+
+
+def _run_status(topics, *, watch: int) -> int:
+    """Print the live generation dashboard (read-only; no API key needed). ``--watch
+    SECS`` refreshes it in place until Ctrl-C — a live view over SSH during a run."""
+    def _render() -> str:
+        on_disk = _existing_output_ids(CONFIG["out_dir"]) & set(topics)
+        by_total: "dict[str, int]" = {}
+        by_done: "dict[str, int]" = {}
+        for tid, s in topics.items():
+            by_total[s.subject] = by_total.get(s.subject, 0) + 1
+            if tid in on_disk:
+                by_done[s.subject] = by_done.get(s.subject, 0) + 1
+        subject_rows = sorted((subj, by_done.get(subj, 0), by_total[subj]) for subj in by_total)
+        hints = ["Logs:  tail -f the file the run was launched into (e.g. logs/gen-*.log)",
+                 "Live:  py -3 src/notes.py --status --watch 5"]
+        return batch.render_status(
+            total_curriculum=len(topics), existing_count=len(on_disk),
+            subject_rows=subject_rows, run_status=_read_json(_status_path()),
+            events=_read_events(_progress_path()), now=datetime.now(timezone.utc),
+            log_hints=hints)
+
+    if watch and watch > 0:
+        try:
+            while True:
+                sys.stdout.write("\033[2J\033[H")  # clear screen + home cursor
+                print(_render())
+                print(f"\n(refreshing every {watch}s — Ctrl-C to stop)")
+                sys.stdout.flush()
+                time.sleep(watch)
+        except KeyboardInterrupt:
+            print()
+            return 0
+    print(_render())
+    return 0
 
 
 def main() -> None:
@@ -195,6 +322,10 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Generate grounded, interactive class notes.")
     ap.add_argument("topic_id", nargs="?", help="single topic id (see --list)")
     ap.add_argument("--list", action="store_true", help="list discovered topics and exit")
+    ap.add_argument("--status", action="store_true",
+                    help="show the generation progress dashboard and exit (read-only; no key needed)")
+    ap.add_argument("--watch", type=int, default=0, metavar="SECS",
+                    help="with --status: refresh the dashboard every SECS (live view; Ctrl-C to stop)")
     ap.add_argument("--all", action="store_true", help="batch over every discovered topic")
     ap.add_argument("--board", help="batch filter: only this board")
     ap.add_argument("--subject", help="batch filter: only this subject")
@@ -213,6 +344,8 @@ def main() -> None:
     if args.list:
         _print_topics(topics)
         return
+    if args.status:
+        sys.exit(_run_status(topics, watch=args.watch))
     if not topics:
         sys.exit("No curriculum specs found in curriculum/.")
 

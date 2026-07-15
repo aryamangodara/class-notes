@@ -30,6 +30,7 @@ py -3 src/notes.py <topic_id>             # generate one topic (live Gemini call
 py -3 src/notes.py --all                  # generate all topics — skips existing + UNVERIFIED, isolates
                                           #   per-topic failures, parallel (--jobs). --force / --dry-run.
 py -3 src/notes.py --subject Chemistry --dry-run   # plan a board/subject/level slice; ZERO Gemini calls
+py -3 src/notes.py --status [--watch 5]            # live progress dashboard (read-only; no key/network)
 py -3 src/extract_specs.py --list         # curriculum-extraction CLI: official spec/CED PDF -> many TopicSpecs
                                           #   (--board/--subject or --all; DRY RUN by default; --apply writes)
 py -3 src/ground_specs.py --list          # spec-grounding CLI: verify codes vs official spec PDFs
@@ -153,6 +154,11 @@ notes + contract, never the writer's reasoning, so it stays an independent read.
   - `GEMINI_API_KEY=...` (AI Studio), or
   - `GOOGLE_APPLICATION_CREDENTIALS` + `GOOGLE_CLOUD_PROJECT` (Vertex AI).
   `get_gemini_client()` prefers the key and falls back to Vertex.
+- **Optional cost tracking:** set `LANGFUSE_PUBLIC_KEY` + `LANGFUSE_SECRET_KEY` (+ `LANGFUSE_HOST`)
+  in `.env` and every Gemini call is logged to Langfuse as a generation with token usage —
+  it prices the models itself, so total/per-subject/per-stage cost rolls up (grouped by a
+  deterministic trace per `topic_id`). The hook is in `helpers.call_model` (the single call
+  site); it is a strict no-op when the keys are absent and NEVER breaks a run. `pip install langfuse`.
 - `curriculum/*.json` — one `TopicSpec` per topic, self-describing (carries its
   own board/subject/level); discovered automatically by `discover_topics()`. Author
   them by hand, or grow the store from official spec PDFs with `extract_specs.py`

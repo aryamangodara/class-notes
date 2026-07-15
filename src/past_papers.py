@@ -116,6 +116,7 @@ def generate_candidates(client, spec, pdf_part, paper_label: str) -> CandidateCi
         spec_block=helpers._spec_block(spec), paper_label=paper_label)
     return helpers.call_model(
         client, label=f"pp-cand:{spec.topic_id}", contents=[prompt, pdf_part],
+        trace_meta=helpers.trace_meta(spec, "past_papers"),
         **helpers._gen_config("model_write", "temperature_verify", CandidateCitations))
 
 
@@ -128,6 +129,7 @@ def verify_candidates(client, spec, pdf_part, candidates) -> VerificationReport:
         spec_block=helpers._spec_block(spec), candidates=listing)
     return helpers.call_model(
         client, label=f"pp-verify:{spec.topic_id}", contents=[prompt, pdf_part],
+        trace_meta=helpers.trace_meta(spec, "past_papers"),
         **helpers._gen_config("model_paper_verify", "temperature_verify", VerificationReport))
 
 

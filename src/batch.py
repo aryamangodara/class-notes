@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import threading
 from dataclasses import dataclass
+from datetime import datetime
 
 
 # ---------------------------------------------------------------------------
@@ -158,6 +159,126 @@ def format_summary(results, *, elapsed_s: float = 0.0) -> str:
         for r in fails:
             lines.append(f"    x {r.topic_id} [{r.outcome}] {r.detail[:90]}")
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# live progress dashboard (READ side is pure; notes.py owns the file I/O)
+#
+# A long batch writes two files under out/ as it runs: run-status.json (a header
+# stamped at start, closed at end) and run-progress.jsonl (one start/end event per
+# topic). `--status` folds them into a dashboard. The DURABLE truth is still the
+# count of .v2.json on disk (crash-proof, resumable); the events add the live view
+# (in-flight, rate, ETA) of the CURRENT run. Everything here is pure over parsed
+# input + an injected `now`, so `_smoke_notes_batch.py` renders it without a clock.
+# ---------------------------------------------------------------------------
+
+def summarize_progress(events) -> dict:
+    """Fold progress events (dicts with ``t`` = 'start' | 'end') into live tallies.
+    Later events win (a topic's 'end' supersedes its 'start'); a started id with no
+    end is in flight. Unknown/missing fields are tolerated (the file is append-only
+    and may be mid-write)."""
+    started, ended = {}, {}
+    for e in events:
+        tid = e.get("topic_id")
+        if not tid:
+            continue
+        if e.get("t") == "start":
+            started[tid] = e
+        elif e.get("t") == "end":
+            ended[tid] = e
+    in_flight = [tid for tid in started if tid not in ended]
+    n_written = sum(1 for e in ended.values() if e.get("outcome") == OUTCOME_WRITTEN)
+    failed = [e for e in ended.values() if e.get("outcome") in FAILURE_OUTCOMES]
+    return {"started": started, "ended": ended, "in_flight": in_flight,
+            "n_ended": len(ended), "n_written": n_written,
+            "n_failed": len(failed), "failed": failed}
+
+
+def _bar(done: int, total: int, width: int = 22) -> str:
+    frac = 0.0 if total <= 0 else max(0.0, min(1.0, done / total))
+    filled = int(round(frac * width))
+    return f"[{'#' * filled}{'-' * (width - filled)}] {frac * 100:5.1f}%"
+
+
+def _fmt_dur(seconds) -> str:
+    s = int(max(0, seconds))
+    h, rem = divmod(s, 3600)
+    m, sec = divmod(rem, 60)
+    if h:
+        return f"{h}h{m:02d}m"
+    if m:
+        return f"{m}m{sec:02d}s"
+    return f"{sec}s"
+
+
+def _parse_iso(s):
+    try:
+        return datetime.fromisoformat(s or "")
+    except Exception:
+        return None
+
+
+def render_status(*, total_curriculum: int, existing_count: int, subject_rows,
+                  run_status, events, now: datetime, log_hints=()) -> str:
+    """Render the generation dashboard. ``subject_rows`` is an iterable of
+    ``(subject, done, total)``; ``run_status`` is the run header dict (or None);
+    ``events`` is the parsed run-progress.jsonl. ``now`` is injected (tz-aware) so
+    this stays pure/testable."""
+    prog = summarize_progress(events)
+    L = [f"=== Class Notes — generation status @ {now.strftime('%Y-%m-%d %H:%M:%S UTC')} ==="]
+
+    if run_status:
+        started = _parse_iso(run_status.get("started_at"))
+        to_gen, jobs = run_status.get("to_generate"), run_status.get("jobs")
+        if run_status.get("active"):
+            age = f" · started {_fmt_dur((now - started).total_seconds())} ago" if started else ""
+            L.append(f"Run: ACTIVE (pid {run_status.get('pid')} on {run_status.get('host', '?')})"
+                     f"{age} · --jobs {jobs} · {to_gen} to generate this run")
+        else:
+            ended = _parse_iso(run_status.get("ended_at"))
+            fin = f" · ended {_fmt_dur((now - ended).total_seconds())} ago" if ended else ""
+            L.append(f"Run: idle (last run: {to_gen} topic(s), --jobs {jobs}){fin}")
+        sel = run_status.get("selector") or {}
+        L.append("Target: " + (" · ".join(f"{k}={v}" for k, v in sel.items() if v) or "all topics"))
+    else:
+        L.append("Run: none recorded yet")
+
+    remaining = max(0, total_curriculum - existing_count)
+    L += ["", f"Curriculum: {total_curriculum} spec(s)",
+          f"On disk:    {existing_count} generated · {remaining} remaining  "
+          f"{_bar(existing_count, total_curriculum)}"]
+
+    if events:
+        L += ["", f"This run:   written {prog['n_written']} | failed {prog['n_failed']} | "
+              f"in-flight {len(prog['in_flight'])}"]
+        if prog["in_flight"]:
+            more = f" (+{len(prog['in_flight']) - 6} more)" if len(prog["in_flight"]) > 6 else ""
+            L.append(f"In flight:  {', '.join(prog['in_flight'][:6])}{more}")
+        started = _parse_iso((run_status or {}).get("started_at"))
+        if started and prog["n_ended"] > 0:
+            rate = prog["n_ended"] / max(1e-6, (now - started).total_seconds() / 60.0)
+            line = f"Rate:       ~{rate:.1f} topic/min"
+            if isinstance(to_gen, int) and to_gen > 0 and rate > 0:
+                left = max(0, to_gen - prog["n_ended"])
+                line += f" · ETA ~{_fmt_dur(left / rate * 60.0)} for {left} left"
+            L.append(line)
+        if prog["failed"]:
+            bits = ", ".join(f"{e.get('topic_id')} [{e.get('outcome', '').replace('_failed', '')}]"
+                             for e in prog["failed"][-5:])
+            L.append(f"Recent fail:{bits}")
+
+    rows = [r for r in subject_rows if r[2] > 0]
+    if rows:
+        width = max(len(r[0]) for r in rows)
+        L.append("")
+        L.append("By subject:")
+        for subj, done, tot in rows:
+            L.append(f"  {subj:<{width}}  {done:>4}/{tot:<4}  {_bar(done, tot, 14)}")
+
+    if log_hints:
+        L.append("")
+        L += list(log_hints)
+    return "\n".join(L)
 
 
 # ---------------------------------------------------------------------------

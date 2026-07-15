@@ -13,6 +13,7 @@ The rendering + assembly of the notes themselves lives in the v2 modules
 """
 from __future__ import annotations
 
+import atexit
 import base64
 import json
 import os
@@ -39,6 +40,86 @@ PROMPTS_DIR = Path(__file__).parent / "prompts"
 # sleeps — so a thread waiting for a permit never holds one. 0/absent => unlimited.
 _MAX_INFLIGHT = CONFIG.get("max_inflight_model_calls", 0) or 0
 _INFLIGHT_SEM = threading.BoundedSemaphore(_MAX_INFLIGHT) if _MAX_INFLIGHT > 0 else None
+
+
+# ---------------------------------------------------------------------------
+# Optional Langfuse cost / observability
+# ---------------------------------------------------------------------------
+# Every Gemini call flows through call_model, so logging one generation here captures the
+# WHOLE pipeline's token usage (generation AND extraction/grounding). Fully optional: a
+# no-op unless LANGFUSE_PUBLIC_KEY + LANGFUSE_SECRET_KEY are set (loaded from .env by the
+# CLI before the first call). Langfuse prices the models itself (gemini-3.1-pro-preview /
+# gemini-3.5-flash are in its table), so cost is computed from the token counts we send.
+# Any error here NEVER breaks a run — cost tracking is strictly best-effort.
+_LF = "uninit"           # "uninit" -> not yet built; None -> disabled; else the client
+_LF_LOCK = threading.Lock()
+_LF_WARNED = False
+
+
+def _langfuse():
+    """Lazily build the Langfuse client from env (after load_dotenv). None if the keys are
+    absent or the SDK isn't installed."""
+    global _LF
+    if _LF == "uninit":
+        with _LF_LOCK:
+            if _LF == "uninit":
+                _LF = None
+                if os.environ.get("LANGFUSE_PUBLIC_KEY") and os.environ.get("LANGFUSE_SECRET_KEY"):
+                    try:
+                        from langfuse import Langfuse
+                        _LF = Langfuse()
+                        atexit.register(flush_langfuse)
+                        print("    Langfuse cost tracking: ON")
+                    except Exception as exc:  # noqa: BLE001
+                        print(f"    Langfuse cost tracking OFF (init failed: {exc})")
+                        _LF = None
+    return _LF
+
+
+def _log_generation(label: str, model, resp, trace_meta=None) -> None:
+    """Record one Gemini call as a Langfuse generation (model + token usage -> cost).
+    Generations sharing a topic_id roll up under one deterministic trace."""
+    lf = _langfuse()
+    if lf is None:
+        return
+    global _LF_WARNED
+    try:
+        um = getattr(resp, "usage_metadata", None)
+        usage = None
+        if um is not None:
+            usage = {"input": int(getattr(um, "prompt_token_count", 0) or 0),
+                     "output": int(getattr(um, "candidates_token_count", 0) or 0)}
+        meta = dict(trace_meta or {})
+        trace_ctx = None
+        tid = meta.get("topic_id")
+        if tid:
+            # Deterministic trace per topic — all its stages roll up under one trace and
+            # its total cost. Thread-safe: derived from a seed, not OTel context.
+            trace_ctx = {"trace_id": lf.create_trace_id(seed=str(tid))}
+        lf.start_observation(name=label or "gemini", as_type="generation", model=model,
+                             usage_details=usage, metadata=meta or None,
+                             trace_context=trace_ctx).end()
+    except Exception as exc:  # noqa: BLE001 — cost tracking must NEVER break a run
+        if not _LF_WARNED:
+            print(f"    Langfuse logging error (further errors suppressed): {exc}")
+            _LF_WARNED = True
+
+
+def flush_langfuse() -> None:
+    """Send buffered Langfuse events. Call at the end of a batch (also runs atexit) so a
+    CLI doesn't exit before the tail of the trace uploads."""
+    lf = _LF
+    if lf and lf != "uninit":
+        try:
+            lf.flush()
+        except Exception:  # noqa: BLE001
+            pass
+
+
+def trace_meta(spec, stage: str) -> dict:
+    """Langfuse metadata for a pipeline call — groups cost by topic / subject / stage."""
+    return {"topic_id": spec.topic_id, "board": spec.board, "subject": spec.subject,
+            "level": spec.level, "stage": stage}
 
 
 # ---------------------------------------------------------------------------
@@ -99,7 +180,7 @@ def _transient(exc: Exception) -> bool:
 
 
 def call_model(client: genai.Client, *, label: str = "", max_attempts: int = 4,
-               base_delay: float = 2.0, **kwargs):
+               base_delay: float = 2.0, trace_meta: "dict | None" = None, **kwargs):
     """Call ``client.models.generate_content`` with retry, returning the parsed
     Pydantic object (``response.parsed``).
 
@@ -122,6 +203,9 @@ def call_model(client: genai.Client, *, label: str = "", max_attempts: int = 4,
             time.sleep(delay)
             continue
 
+        # Cost tracking: log token usage for every response we got (even a truncated one
+        # consumed tokens). Best-effort; never raises.
+        _log_generation(label, kwargs.get("model"), resp, trace_meta)
         parsed = getattr(resp, "parsed", None)
         if parsed is None:
             if attempt == max_attempts:
@@ -206,6 +290,7 @@ def _spec_block(spec: TopicSpec) -> str:
 def generate_outline(client: genai.Client, spec: TopicSpec) -> NotesOutline:
     prompt = load_prompt("outline.txt").format(house_style=HOUSE_STYLE, spec_block=_spec_block(spec))
     return call_model(client, label=f"outline:{spec.topic_id}", contents=prompt,
+                      trace_meta=trace_meta(spec, "outline"),
                       **_gen_config("model_plan", "temperature_plan", NotesOutline))
 
 

@@ -66,9 +66,13 @@ construction.
 ## Setup
 
 ```bash
-pip install -r requirements.txt         # google-genai, pydantic, pillow, python-dotenv, pymupdf
+pip install -r requirements.txt         # google-genai, pydantic, pillow, python-dotenv, pymupdf, langfuse
 cp .env.example .env                     # add GEMINI_API_KEY (the Grader's key works; Vertex also supported)
 ```
+
+**Optional cost tracking:** set `LANGFUSE_PUBLIC_KEY` + `LANGFUSE_SECRET_KEY` (+ `LANGFUSE_HOST`)
+in `.env` and every Gemini call is logged to Langfuse with token usage — it prices the models
+and rolls up total / per-subject / per-stage cost (one trace per topic). No-op if unset.
 
 ## Run
 
@@ -81,7 +85,22 @@ py -3 src/notes.py alevel-chem-enthalpy-changes      # one topic (live Gemini)
 py -3 src/notes.py --all                             # generate all — skips existing, parallel (--jobs)
 py -3 src/notes.py --subject Chemistry --dry-run     # plan a slice; zero Gemini calls
 py -3 src/notes.py --all --force --jobs 3            # regenerate everything, 3 topics at a time
+py -3 src/notes.py --status                          # progress dashboard (read-only; no key needed)
+py -3 src/notes.py --status --watch 5                # live view: refresh every 5s (great over SSH)
 py -3 tests/_smoke_v2.py                             # offline self-test (no API key)
+```
+
+**Watch a long run.** A batch stamps its progress into `out/run-status.json` +
+`out/run-progress.jsonl` as it goes, so `--status` shows a live dashboard — total
+generated vs. remaining (counted from the `.v2.json` on disk, so it's crash-proof and
+resumable), the current run's in-flight topics, throughput, ETA, recent failures, and a
+per-subject breakdown. Pair it with the run's log for detail:
+
+```bash
+# launch detached with a log (server), then watch both from anywhere:
+mkdir -p logs && screen -dmS notesgen bash -c 'python3 src/notes.py --all --jobs 3 > logs/gen.log 2>&1'
+py -3 src/notes.py --status --watch 5    # progress    (Ctrl-C to stop watching)
+tail -f logs/gen.log                     # detailed logs
 ```
 
 **Fetch once, generate repeatedly.** Curriculum is fetched separately (`extract_specs` →
