@@ -36,6 +36,8 @@ LOG="logs/run-${TS}.log"
 # global in-flight model calls LOW by default (config.py reads this). Too high => 429
 # RESOURCE_EXHAUSTED storms that also starve the Grader. Override by exporting it before launch.
 export CLASSNOTES_MAX_INFLIGHT="${CLASSNOTES_MAX_INFLIGHT:-3}"
+# Stream python stdout unbuffered so `tail -f` on the log is live, not chunked.
+export PYTHONUNBUFFERED=1
 
 printf 'board  : %s\nsubject: %s\njobs   : %s\ninflight: %s\npython : %s\nlog    : %s\n\n' \
   "$BOARD" "${SUBJECT:-<all subjects>}" "$JOBS" "$CLASSNOTES_MAX_INFLIGHT" "$PY" "$LOG"
