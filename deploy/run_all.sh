@@ -10,8 +10,10 @@
 # Runs four phases non-interactively. A phase failure is LOGGED, not fatal (no set -e),
 # so one bad spec/topic never aborts the run:
 #   1. extract_specs <sel> --apply    official CED PDF(s) -> grounded TopicSpecs (UNVERIFIED)
-#   2. ground_specs  --all  --apply    verify spec codes vs the SAME PDFs; auto-correct (corpus-wide;
-#                                       the CLI has no subject filter — harmless re-check of others)
+#   2. ground_specs  --all  --apply    OPT-IN (RUN_GROUND=1). SKIPPED by default: re-verifying
+#                                       auto-extracted codes re-sends the full CED per spec (~$0.25
+#                                       each) and confirms what extraction already pulled from that
+#                                       same PDF. Worth it for hand-seeded specs, not extracted ones.
 #   3. approve_specs <sel> --apply    auto-clear UNVERIFIED  (the human git-diff review is post-hoc)
 #   4. notes.py      <sel> --jobs J   generate; skips existing, isolates per-topic failures
 # where <sel> = --board "<board>" [--subject "<subject>"].
@@ -53,7 +55,11 @@ phase() {                                          # phase <n/N> <label> <cmd...
 
 LABEL="${BOARD}${SUBJECT:+ / $SUBJECT}"
 phase "1/4" "extract ${LABEL}"          "$PY" src/extract_specs.py "${SEL[@]}" --apply
-phase "2/4" "ground corpus"             "$PY" src/ground_specs.py --all --apply
+if [ "${RUN_GROUND:-0}" = "1" ]; then
+  phase "2/4" "ground corpus"           "$PY" src/ground_specs.py --all --apply
+else
+  echo "=== $(date -u '+%F %T') UTC  PHASE 2/4: ground SKIPPED (extraction is PDF-grounded; RUN_GROUND=1 to include) ===" | tee -a "$LOG"
+fi
 phase "3/4" "approve (auto) ${LABEL}"   "$PY" src/approve_specs.py "${SEL[@]}" --apply
 phase "4/4" "generate ${LABEL} j=${JOBS}" "$PY" src/notes.py "${SEL[@]}" --jobs "$JOBS"
 
