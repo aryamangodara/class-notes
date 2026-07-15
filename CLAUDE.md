@@ -25,29 +25,43 @@ against.
 Use **`py -3`**, NOT bare `python` (see Conventions):
 
 ```bash
-py -3 src/notes.py --list           # list discovered topics
-py -3 src/notes.py <topic_id>       # generate one topic (live Gemini calls)
-py -3 src/notes.py --all            # generate every topic
-py -3 src/extract_specs.py --list   # curriculum-extraction CLI: official spec/CED PDF -> many TopicSpecs
-                                    #   (--board/--subject or --all; DRY RUN by default; --apply writes)
-py -3 src/ground_specs.py --list    # spec-grounding CLI: verify codes vs official spec PDFs
-                                    #   (DRY RUN by default; --apply writes; --all = corpus)
-py -3 src/spotcheck.py              # bundle a deterministic ~1-in-20 tutor spot-check into out/spotcheck/
-py -3 tests/_smoke_v2.py            # OFFLINE self-test — no key/network
+py -3 src/notes.py --list                 # list discovered topics
+py -3 src/notes.py <topic_id>             # generate one topic (live Gemini calls)
+py -3 src/notes.py --all                  # generate all topics — skips existing + UNVERIFIED, isolates
+                                          #   per-topic failures, parallel (--jobs). --force / --dry-run.
+py -3 src/notes.py --subject Chemistry --dry-run   # plan a board/subject/level slice; ZERO Gemini calls
+py -3 src/extract_specs.py --list         # curriculum-extraction CLI: official spec/CED PDF -> many TopicSpecs
+                                          #   (--board/--subject or --all; DRY RUN by default; --apply writes)
+py -3 src/ground_specs.py --list          # spec-grounding CLI: verify codes vs official spec PDFs
+                                          #   (DRY RUN by default; --apply writes; --all = corpus)
+py -3 src/approve_specs.py --list         # clear the UNVERIFIED marker after review (fetch -> generate handoff)
+py -3 src/spotcheck.py                    # bundle a deterministic ~1-in-20 tutor spot-check into out/spotcheck/
+py -3 tests/_smoke_v2.py                  # OFFLINE self-test — no key/network
 ```
 
-The curriculum store is **grown from the source of record**: `extract_specs.py` fetches a
-subject's official spec/CED PDF, enumerates its topics, and extracts one grounded `TopicSpec`
-per topic into `curriculum/`. Extraction is PDF-grounded but **stamped UNVERIFIED** — the
-pipeline is `extract_specs --apply` → `ground_specs --apply` (verify codes vs the SAME PDF) →
-review `git diff` → `notes.py --all`. It only pulls (board, subject) pairs registered in
-`sources._SPEC_SOURCES`; widen coverage by adding entries there.
+**Fetch and generate are separate, repeatable commands.** The curriculum store is
+**grown from the source of record** (fetch): `extract_specs.py` fetches a subject's official
+spec/CED PDF, enumerates its topics, and extracts one grounded `TopicSpec` per topic into
+`curriculum/`. Extraction is PDF-grounded but **stamped UNVERIFIED** — the fetch pipeline is
+`extract_specs --apply` → `ground_specs --apply` (verify codes vs the SAME PDF) → review
+`git diff` → `approve_specs --apply` (clear the marker) → then `notes.py` will generate it.
+It only pulls (board, subject) pairs registered in `sources._SPEC_SOURCES`; widen by adding entries.
+
+**Generation** (`notes.py`) then runs over `curriculum/` again and again. `--all` is a production
+batch runner: **skips already-generated output** (`--force` to regenerate) and **UNVERIFIED specs**
+(`--include-unverified` to include), **isolates per-topic failures** (one bad topic never aborts the
+run — outcomes land in `out/run-manifest.json`), accepts `--board`/`--subject`/`--level` selectors,
+and generates topics **in parallel** (`--jobs`, default `CONFIG["max_parallel_topics"]`). Parallelism
+is pure — same models/stages/gates, only overlapped — bounded globally by
+`CONFIG["max_inflight_model_calls"]` (a semaphore in `helpers.call_model`), so it never trades quality
+for speed. Batch pure logic lives in `batch.py` (genai-free).
 
 Offline self-tests live in `tests/` (no key/network), each the fast regression check for its area:
 `tests/_smoke_v2.py` (renderer↔schema parity + coverage/structural gate + prompt brace-safety),
 `tests/_smoke_past_papers.py` (two-pass + URL/render safety), `tests/_smoke_ground_specs.py`
 (confidence gating + in-place patch), `tests/_smoke_extract_specs.py` (id convention + skip-existing
-+ UNVERIFIED stamping), `tests/_smoke_spotcheck.py` (deterministic sampling).
++ UNVERIFIED stamping + cross-module gate sync), `tests/_smoke_notes_batch.py` (select/plan/provenance
+gate + manifest + tagged output), `tests/_smoke_spotcheck.py` (deterministic sampling).
 **Run the relevant one after touching its module.**
 
 **Re-render existing notes without regenerating** (apply render/CSS changes, no API):
@@ -154,10 +168,13 @@ src/             the application — run: py -3 src/notes.py <id>
                    ExamMapCell, PastPapers, SpecChecklistItem, LOCoverage / CoverageReport, ImageChoice,
                    OutlineSection / NotesOutline. Field descriptions are Gemini response_schema surface.
   schemas_v2.py    the v2 block vocabulary + the assembled InteractiveNotes
-  helpers.py       shared utilities: Gemini client + retry (call_model -> response.parsed), _gen_config,
-                   load_prompt, curriculum grounding (_spec_block), the outline stage, image search + vision
+  helpers.py       shared utilities: Gemini client + retry (call_model -> response.parsed, with a global
+                   in-flight concurrency governor), _gen_config, load_prompt, grounding (_spec_block),
+                   the outline stage, image search + vision
   coverage_gate.py deterministic, genai-free gate logic — coverage (CoverageError) + block-completeness
                    tier (StructuralError, defect_feedback_by_section, structural_feedback_block)
+  batch.py         deterministic, genai-free batch-runner logic — TopicResult + outcome vocabulary,
+                   select_specs / plan_batch (skip-existing + UNVERIFIED gate), manifest, TaggedStdout
   sources.py       curated per-board source registry (paper/spec PDF URLs) + resolve_sources
   past_papers.py   PDF-grounded past-paper stage (two-pass: generate + verify against the fetched PDF)
   pipeline_v2.py   the pipeline: generate_interactive_notes + save_interactive_notes
@@ -166,9 +183,12 @@ src/             the application — run: py -3 src/notes.py <id>
   extract_specs.py standalone CLI: official subject spec/CED PDF -> many TopicSpec JSONs (enumerate topics ->
                    extract one grounded spec each; DRY RUN default; stamps every spec UNVERIFIED for review)
   ground_specs.py  standalone CLI: verify + auto-correct curriculum codes vs official spec/CED PDFs
+  approve_specs.py standalone CLI: clear the UNVERIFIED marker on reviewed specs (fetch -> generate handoff;
+                   DRY RUN default; --apply writes) — the human-trust step notes.py gates on
   spotcheck.py     standalone CLI: deterministic 1-in-20 tutor spot-check bundle (surfaces each page's
                    advisory review_flags for human adjudication)
-  notes.py         CLI entry point
+  notes.py         CLI entry point + batch runner (run_one -> TopicResult; selectors; skip-existing;
+                   --jobs parallelism; per-topic failure isolation; out/run-manifest.json)
   prompts/         outline / verify / v2_* / past_papers_* / spec_ground / spec_extract / spec_enumerate
 tests/           offline self-tests (_smoke_*.py; no key/network)
 curriculum/      the grounding store (TopicSpec JSON per topic; hand-authored or extract_specs-grown)
@@ -240,7 +260,11 @@ regress** (`_smoke_v2.py` asserts most):
   objectives are pulled from the fetched spec PDF (never memory), the controlled
   identity fields (board/level/id) are stamped deterministically not model-guessed,
   the curated exam-format layer is left empty for a human, and every extracted spec is
-  marked UNVERIFIED until `ground_specs.py` + a human `git diff` clear it.
+  marked UNVERIFIED. That marker is a **generation gate**: `notes.py` skips UNVERIFIED
+  specs (`batch.is_unverified`) so an un-reviewed extract can't ship notes. It is cleared
+  only by `approve_specs.py` — the explicit human-trust step AFTER `ground_specs.py` +
+  `git diff` review — never automatically (grounding is automated, so clearing it there
+  would collapse the gate). `_smoke_extract_specs.py` asserts the stamp and the gate token stay in sync.
 - **Curriculum is self-describing.** Add a topic = drop a `curriculum/<id>.json`;
   no code change (hand-author it, or extract it with `extract_specs.py`). New board's
   exam strategy = a `BOARD_EXAM_TIPS[level]` entry (add a `BOARD_SUBJECT_EXAM_TIPS[(level,

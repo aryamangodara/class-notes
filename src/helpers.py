@@ -18,9 +18,11 @@ import json
 import os
 import random
 import re
+import threading
 import time
 import urllib.parse
 import urllib.request
+from contextlib import nullcontext
 from pathlib import Path
 
 from google import genai
@@ -30,6 +32,13 @@ from config import CONFIG, HOUSE_STYLE
 from schemas import ImageChoice, NotesOutline, TopicSpec
 
 PROMPTS_DIR = Path(__file__).parent / "prompts"
+
+# Global concurrency governor: caps simultaneous Gemini calls across the WHOLE process
+# (batch --jobs x the intra-topic section/stage pools) so aggregate load can't exceed
+# provider quota. Acquired only around the API call itself — never held during backoff
+# sleeps — so a thread waiting for a permit never holds one. 0/absent => unlimited.
+_MAX_INFLIGHT = CONFIG.get("max_inflight_model_calls", 0) or 0
+_INFLIGHT_SEM = threading.BoundedSemaphore(_MAX_INFLIGHT) if _MAX_INFLIGHT > 0 else None
 
 
 # ---------------------------------------------------------------------------
@@ -68,10 +77,20 @@ def get_gemini_client(timeout_ms: int = 300_000) -> genai.Client:
 
 
 _RETRYABLE = {408, 429, 499, 500, 502, 503, 504}
-_RETRYABLE_WORDS = ("UNAVAILABLE", "DEADLINE", "RESOURCE_EXHAUSTED", "INTERNAL", "CANCELLED", "ABORTED")
+_RETRYABLE_WORDS = ("UNAVAILABLE", "DEADLINE", "RESOURCE_EXHAUSTED", "INTERNAL", "CANCELLED",
+                    "ABORTED", "CONNECTION RESET", "FORCIBLY CLOSED", "CONNECTION ABORTED",
+                    "BROKEN PIPE", "10054")
+# httpx / socket transport failures — common under parallel load when the provider drops
+# a connection mid-call. These are transient, so retry rather than fail the whole topic
+# (a dropped connection once killed a topic in an otherwise-good --jobs 3 batch).
+_RETRYABLE_EXC_NAMES = ("ReadError", "WriteError", "ConnectError", "ConnectTimeout",
+                        "ReadTimeout", "PoolTimeout", "RemoteProtocolError",
+                        "ConnectionError", "ConnectionResetError")
 
 
 def _transient(exc: Exception) -> bool:
+    if type(exc).__name__ in _RETRYABLE_EXC_NAMES:
+        return True
     code = getattr(exc, "code", None)
     blob = str(exc).upper()
     if isinstance(code, int) and code in _RETRYABLE:
@@ -92,7 +111,9 @@ def call_model(client: genai.Client, *, label: str = "", max_attempts: int = 4,
     tag = f" [{label}]" if label else ""
     for attempt in range(1, max_attempts + 1):
         try:
-            resp = client.models.generate_content(**kwargs)
+            # Bound total in-flight calls across all batch/section/stage threads.
+            with (_INFLIGHT_SEM if _INFLIGHT_SEM is not None else nullcontext()):
+                resp = client.models.generate_content(**kwargs)
         except Exception as exc:  # noqa: BLE001 — classify then re-raise
             if attempt == max_attempts or not _transient(exc):
                 raise

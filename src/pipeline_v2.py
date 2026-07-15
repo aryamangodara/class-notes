@@ -169,39 +169,62 @@ def finalize_v2(client: genai.Client, spec: TopicSpec, sections) -> _Finalize:
         **helpers._gen_config("model_write", "temperature_write", _Finalize))
 
 
+def _fetch_one_image(client: genai.Client, d, width: int):
+    """Search + download + vision-select for ONE figure slot. Returns the chosen
+    candidate dict (with `_bytes`) or None. Independent per slot, so this is the unit
+    the image stage fans out across figures — same searches/vision as before."""
+    query = (d.content or d.caption or "").strip()
+    if not query:
+        return None
+    cands = helpers._search_images(query, n=8, width=width)[:6]
+    for c in cands:
+        try:
+            c["_bytes"] = helpers._http_get(c["thumb"])
+        except Exception:
+            c["_bytes"] = b""
+    cands = [c for c in cands if c.get("_bytes")]
+    if not cands:
+        print(f"    image: nothing usable for '{query[:40]}'")
+        return None
+    idx = helpers._select_image(client, query, d.caption, cands) if CONFIG.get("image_vision_select") else 0
+    if idx < 0:
+        print(f"    image: no suitable match for '{query[:40]}'")
+        return None
+    return cands[idx]
+
+
 def fetch_images_for_blocks(client: genai.Client, sections, *, max_images: int, width: int) -> int:
-    """Search/select/embed images for `figure` blocks (kind='image') in place."""
+    """Search/select/embed images for `figure` blocks (kind='image') in place.
+
+    The per-figure search+vision is fanned out across slots (each independent), then the
+    successful picks are embedded IN SLOT ORDER up to ``max_images`` — the exact same
+    selection the old sequential loop made, only concurrent.
+    """
     slots = [b.diagram for s in sections for b in s.blocks
              if b.type == "figure" and b.diagram.kind == "image" and not b.diagram.image_src]
+    if not slots:
+        return 0
+    picks: list = [None] * len(slots)
+    workers = min(len(slots), CONFIG.get("max_parallel_sections", 4))
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futs = {ex.submit(_fetch_one_image, client, d, width): i for i, d in enumerate(slots)}
+        for fut in as_completed(futs):
+            i = futs[fut]
+            try:
+                picks[i] = fut.result()
+            except Exception as exc:  # noqa: BLE001
+                print(f"    image fetch failed: {exc}")
+                picks[i] = None
     embedded = 0
-    for d in slots:
+    for d, c in zip(slots, picks):
         if embedded >= max_images:
             break
-        query = (d.content or d.caption or "").strip()
-        if not query:
+        if not c:
             continue
-        try:
-            cands = helpers._search_images(query, n=8, width=width)[:6]
-            for c in cands:
-                try:
-                    c["_bytes"] = helpers._http_get(c["thumb"])
-                except Exception:
-                    c["_bytes"] = b""
-            cands = [c for c in cands if c.get("_bytes")]
-            if not cands:
-                print(f"    image: nothing usable for '{query[:40]}'")
-                continue
-            idx = helpers._select_image(client, query, d.caption, cands) if CONFIG.get("image_vision_select") else 0
-            if idx < 0:
-                print(f"    image: no suitable match for '{query[:40]}'")
-                continue
-            c = cands[idx]
-            d.image_src = helpers._data_uri(c["_bytes"], c["mime"])
-            d.attribution = helpers._attribution(c)
-            embedded += 1
-            print(f"    image: '{query[:38]}' -> {c['title'][:36]} ({c['license']})")
-        except Exception as exc:  # noqa: BLE001
-            print(f"    image fetch failed for '{query[:40]}': {exc}")
+        d.image_src = helpers._data_uri(c["_bytes"], c["mime"])
+        d.attribution = helpers._attribution(c)
+        embedded += 1
+        print(f"    image: '{(d.content or d.caption)[:38]}' -> {c['title'][:36]} ({c['license']})")
     return embedded
 
 
@@ -290,47 +313,62 @@ def enforce_coverage_v2(client: genai.Client, spec: TopicSpec, outline, sections
 # ---------------------------------------------------------------------------
 
 def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.InteractiveNotes:
-    print(f"[1/6] outline    {spec.topic_id}")
+    print(f"[1/5] outline    {spec.topic_id}")
     outline = helpers.generate_outline(client, spec)
     print(f"      planned {len(outline.sections)} section(s)")
 
-    print(f"[2/6] blocks     {len(outline.sections)} section(s) in parallel")
+    print(f"[2/5] blocks     {len(outline.sections)} section(s) in parallel")
     sections = write_sections_v2(client, spec, outline)
 
     # Coverage GATE — settle sections against the contract BEFORE spending
     # image/practice/finalize calls on them. Hard-fails (raises CoverageError) if a
     # gap cannot be closed, so nothing under-covered is ever assembled or written.
-    print(f"[3/6] coverage   enforcing coverage of {len(spec.learning_objectives)} objective(s)")
+    print(f"[3/5] coverage   enforcing coverage of {len(spec.learning_objectives)} objective(s)")
     coverage = enforce_coverage_v2(client, spec, outline, sections)
 
-    if CONFIG.get("image_search"):
-        print("[img]  fetching images for figure blocks")
+    # Post-coverage stages — images, practice, finalize, past-papers — depend only on the
+    # now-settled sections/spec and are mutually independent (images touch only figure
+    # blocks; _block_text ignores figures, so practice/finalize never read what images
+    # writes). Run them CONCURRENTLY, bounded globally by the call_model governor. Same
+    # models/stages/gates as before — only overlapped — so output is unaffected and
+    # wall-clock shrinks. Images & past-papers never fail a topic; practice & finalize
+    # propagate (a broken ladder must still hard-fail via the structural gate).
+    def _stage_images():
+        if not CONFIG.get("image_search"):
+            return
         try:
             k = fetch_images_for_blocks(client, sections,
                                         max_images=CONFIG["max_images_per_topic"], width=CONFIG["image_width"])
             print(f"       embedded {k} image(s)")
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001 — images never fail a topic
             print(f"       image stage skipped: {exc}")
 
-    print("[4/6] practice   5-6 question ladder")
-    practice = write_practice_v2(client, spec, sections)
-    practice = enforce_practice_structure_v2(client, spec, sections, practice)
+    def _stage_practice():
+        p = write_practice_v2(client, spec, sections)
+        return enforce_practice_structure_v2(client, spec, sections, p)
 
-    print("[5/6] finalize   hero, hook, command words, mistakes, recaps")
-    fin = finalize_v2(client, spec, sections)
+    def _stage_past_papers():
+        pp = spec.past_papers
+        if CONFIG.get("generate_past_papers") and not (pp and pp.verified):
+            try:
+                from past_papers import build_past_papers
+                return build_past_papers(client, spec) or pp
+            except Exception as exc:  # noqa: BLE001 — never let the paper stage fail a topic
+                print(f"       past-paper stage skipped: {exc}")
+        return pp
 
-    # Past papers: generate PDF-grounded citations for topics WITHOUT hand-verified
-    # curated ones (never clobber human-verified data); degrades to resources-only.
-    past_papers = spec.past_papers
-    if CONFIG.get("generate_past_papers") and not (past_papers and past_papers.verified):
-        print("[pp]   past papers  fetch + two-pass verify")
-        try:
-            from past_papers import build_past_papers
-            past_papers = build_past_papers(client, spec) or past_papers
-        except Exception as exc:  # noqa: BLE001 — never let the paper stage fail a topic
-            print(f"       past-paper stage skipped: {exc}")
+    print("[4/5] stages     images | practice | finalize | past-papers (parallel)")
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        f_img = ex.submit(_stage_images)
+        f_practice = ex.submit(_stage_practice)
+        f_finalize = ex.submit(finalize_v2, client, spec, sections)
+        f_pp = ex.submit(_stage_past_papers)
+        f_img.result()                    # images mutate sections in place; just join
+        practice = f_practice.result()    # propagates StructuralError/RuntimeError -> topic fails
+        fin = f_finalize.result()         # propagates
+        past_papers = f_pp.result()
 
-    print("[6/6] assemble   interactive notes")
+    print("[5/5] assemble   interactive notes")
     # curated passthrough (never generated)
     exam_map = v2.ExamMap(cells=spec.exam_map) if spec.exam_map else None
     checklist = None

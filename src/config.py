@@ -34,6 +34,14 @@ CONFIG = {
     "out_dir": str(_REPO_ROOT / "out"),
     # Concurrency for per-section drafting (mirrors grade_questions_parallel).
     "max_parallel_sections": 4,
+    # Cross-topic batch parallelism (notes.py --jobs default): how many topics generate
+    # at once. Pure throughput — same models/stages/gates per topic, only overlapped.
+    "max_parallel_topics": 3,
+    # Global governor: the max Gemini calls in flight across the WHOLE process, so
+    # --jobs x the intra-topic pools can't exceed provider quota. Bounds aggregate load;
+    # all parallelism auto-balances under it (call_model acquires it around each API
+    # call). 0 => unlimited. Keep >= max_parallel_sections so a single topic isn't throttled.
+    "max_inflight_model_calls": 12,
     # v2 coverage gate: targeted section re-draws before a topic hard-fails.
     "max_coverage_retries": 2,
     # v2 structural gate: deterministic per-block completeness (every MCQ option

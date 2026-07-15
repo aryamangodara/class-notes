@@ -13,6 +13,7 @@ offline smoke can exercise them without a key (see ``_smoke_past_papers.py``).
 """
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import urlparse
 
 from google.genai import types
@@ -130,28 +131,45 @@ def verify_candidates(client, spec, pdf_part, candidates) -> VerificationReport:
         **helpers._gen_config("model_paper_verify", "temperature_verify", VerificationReport))
 
 
+def _process_one_paper(client, spec, paper, allowlist) -> "list[VerifiedPaper]":
+    """Fetch + two-pass verify ONE paper. Returns its confirmed VerifiedPaper entries
+    (may be empty). NEVER raises — one bad paper must not kill the topic — so it is the
+    safe unit the stage fans out across papers."""
+    pdf = fetch_pdf(paper.url, allowlist)
+    if pdf is None:
+        return []
+    try:
+        part = types.Part.from_bytes(data=pdf, mime_type="application/pdf")
+        cands = generate_candidates(client, spec, part, paper.label).items
+        if not cands:
+            print(f"    paper '{paper.label}': no topic questions found")
+            return []
+        verdicts = verify_candidates(client, spec, part, cands).items
+        got = confirmed_to_verified(cands, verdicts, paper, allowlist)
+        print(f"    paper '{paper.label}': {len(cands)} candidate(s) -> {len(got)} verified")
+        return got
+    except Exception as exc:  # noqa: BLE001 — one bad paper must not kill the topic
+        print(f"    paper '{paper.label}' skipped: {exc}")
+        return []
+
+
 def build_past_papers(client, spec) -> "PastPapers | None":
     """Full stage — NEVER raises. Returns a resources-only panel when no lawful paper
-    is fetchable, or None when the board is not in the registry (panel omitted)."""
+    is fetchable, or None when the board is not in the registry (panel omitted). Papers
+    are fetched+verified CONCURRENTLY (each independent); results are collected in paper
+    order so the panel is identical to the sequential build."""
     resolved = resolve_sources(spec)
     if resolved is None:
         return None
+    papers = list(resolved.papers[:CONFIG.get("max_papers_per_topic", 3)])
     verified: "list[VerifiedPaper]" = []
-    for paper in resolved.papers[:CONFIG.get("max_papers_per_topic", 3)]:
-        pdf = fetch_pdf(paper.url, resolved.fetch_allowlist)
-        if pdf is None:
-            continue
-        try:
-            part = types.Part.from_bytes(data=pdf, mime_type="application/pdf")
-            cands = generate_candidates(client, spec, part, paper.label).items
-            if not cands:
-                print(f"    paper '{paper.label}': no topic questions found")
-                continue
-            verdicts = verify_candidates(client, spec, part, cands).items
-            got = confirmed_to_verified(cands, verdicts, paper, resolved.fetch_allowlist)
-            verified.extend(got)
-            print(f"    paper '{paper.label}': {len(cands)} candidate(s) -> {len(got)} verified")
-        except Exception as exc:  # noqa: BLE001 — one bad paper must not kill the topic
-            print(f"    paper '{paper.label}' skipped: {exc}")
-            continue
+    if papers:
+        collected: list = [None] * len(papers)
+        with ThreadPoolExecutor(max_workers=len(papers)) as ex:
+            futs = {ex.submit(_process_one_paper, client, spec, p, resolved.fetch_allowlist): i
+                    for i, p in enumerate(papers)}
+            for fut in as_completed(futs):
+                collected[futs[fut]] = fut.result()
+        for got in collected:
+            verified.extend(got or [])
     return assemble(resolved.intro, resolved.where_to_get, verified, resolved.disclaimer)

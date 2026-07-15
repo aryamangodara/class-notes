@@ -75,12 +75,22 @@ cp .env.example .env                     # add GEMINI_API_KEY (the Grader's key 
 Use **`py -3`** on this machine (bare `python` lacks the deps — see CLAUDE.md):
 
 ```bash
-py -3 src/extract_specs.py --list                    # grow the curriculum from official spec PDFs
-py -3 src/notes.py --list                            # the seeded topics
+py -3 src/extract_specs.py --list                    # grow the curriculum from official spec PDFs (fetch)
+py -3 src/notes.py --list                            # the discovered topics
 py -3 src/notes.py alevel-chem-enthalpy-changes      # one topic (live Gemini)
-py -3 src/notes.py --all                             # every topic
+py -3 src/notes.py --all                             # generate all — skips existing, parallel (--jobs)
+py -3 src/notes.py --subject Chemistry --dry-run     # plan a slice; zero Gemini calls
+py -3 src/notes.py --all --force --jobs 3            # regenerate everything, 3 topics at a time
 py -3 tests/_smoke_v2.py                             # offline self-test (no API key)
 ```
+
+**Fetch once, generate repeatedly.** Curriculum is fetched separately (`extract_specs` →
+`ground_specs` → review `git diff` → `approve_specs`); `notes.py` then generates from it.
+`notes.py --all` is a batch runner: it **skips already-generated topics** (`--force` to
+regenerate) and **UNVERIFIED specs**, **isolates per-topic failures** (one bad topic never
+aborts the run; outcomes go to `out/run-manifest.json`), takes `--board`/`--subject`/`--level`
+selectors, and generates topics **in parallel** (`--jobs`) — pure parallelism, same
+models/stages/gates, so speed never costs quality.
 
 Outputs are grouped by board then subject:
 `out/<board>/<subject>/<topic_id>.v2.json` (source of truth) + a sibling
@@ -120,7 +130,8 @@ calibration is the point of grounding.
 - **Topics at scale (extract):** `py -3 src/extract_specs.py --board "…" --subject …
   --apply` fetches the official spec/CED PDF, enumerates its topics, and extracts one
   grounded `TopicSpec` per topic. Extraction is stamped **UNVERIFIED** — verify with
-  `ground_specs.py --apply` and review the `git diff` before generating. Register a new
+  `ground_specs.py --apply`, review the `git diff`, then clear the marker with
+  `approve_specs.py --apply` (until then `notes.py` skips it). Register a new
   (board, subject)'s spec PDF in `sources._SPEC_SOURCES` to make it extractable.
 - **Exam strategy for a new board:** add a `BOARD_EXAM_TIPS[level]` entry in
   `config.py` (and a `BOARD_SUBJECT_EXAM_TIPS[(level, subject)]` overlay when the facts
@@ -135,13 +146,14 @@ src/             the application (run: py -3 src/notes.py <id>)
   schemas.py       Pydantic — TopicSpec (grounding) + shared output parts (Diagram, PastPapers,
                    LOCoverage, ExamMapCell, SpecChecklistItem, ImageChoice, NotesOutline)
   schemas_v2.py    Pydantic — the block vocabulary + InteractiveNotes
-  helpers.py       gemini client + retry, prompt loading, grounding, the outline stage, image search
+  helpers.py       gemini client + retry (+ global in-flight governor), prompts, grounding, outline, images
   coverage_gate.py deterministic, genai-free coverage-gate logic (CoverageError + helpers)
-  pipeline_v2.py   the pipeline (generate_interactive_notes + save_interactive_notes)
+  batch.py         deterministic, genai-free batch logic (TopicResult, select/plan, UNVERIFIED gate, manifest)
+  pipeline_v2.py   the pipeline (generate_interactive_notes + save_interactive_notes; parallel stages)
   render_v2.py     the interactive renderer + validate_interactives
-  sources.py / past_papers.py / ground_specs.py / extract_specs.py / spotcheck.py — sources registry + grounding/extraction CLIs
+  sources.py / past_papers.py / extract_specs.py / ground_specs.py / approve_specs.py / spotcheck.py — sources + grounding CLIs
   prompts/         outline / verify / v2_* / spec_extract  (plain text, edit freely)
-  notes.py         CLI entry point
+  notes.py         CLI entry point + batch runner (selectors, skip-existing, --jobs, failure isolation)
 tests/           offline self-tests (_smoke_*.py; no API key)
 curriculum/      one TopicSpec JSON per topic — the grounding store
 out/             generated notes, grouped <board>/<subject>/ (gitignored)
@@ -153,14 +165,17 @@ image/licence policy, the `py -3` interpreter, etc.).
 
 ## Roadmap
 
-Recently shipped: **curriculum extraction** (`extract_specs.py`) — official spec/CED PDF →
-many grounded `TopicSpec` JSONs, so `notes.py --all` can cover a whole subject from one
-command (extraction is UNVERIFIED-until-grounded, human-gated); enforced gates tiered by
-trust — coverage (regenerate-or-hard-fail) + per-command-word structural evidence + per-block
-completeness (unexplained option, missing mark scheme), with the model verifier's opinions
-kept advisory and routed to the tutor spot-check; PDF-grounded past papers (`sources.py` +
-`past_papers.py`); spec-code grounding (`ground_specs.py`); and a deterministic tutor
-spot-check (`spotcheck.py`).
+Recently shipped: a **production batch runner** — `notes.py --all` generates all subjects
+of all boards from one command, skipping already-generated and UNVERIFIED specs, isolating
+per-topic failures (one bad topic never aborts the run) into `out/run-manifest.json`, with
+`--board`/`--subject`/`--level` selectors and **parallel generation** (`--jobs`) that never
+trades quality for speed (same models/stages/gates, bounded by a global concurrency governor);
+plus a `approve_specs.py` human-trust handoff and **curriculum extraction** (`extract_specs.py`)
+— official spec/CED PDF → many grounded `TopicSpec` JSONs (UNVERIFIED-until-approved, human-gated);
+enforced gates tiered by trust — coverage (regenerate-or-hard-fail) + per-command-word structural
+evidence + per-block completeness — with the model verifier's opinions kept advisory and routed to
+the tutor spot-check; PDF-grounded past papers; spec-code grounding (`ground_specs.py`); and a
+deterministic tutor spot-check (`spotcheck.py`).
 
 - **PDF / DOCX export** — printable, teacher-editable notes.
 - **S3 distribution** — reuse the Grader's `upload_to_s3.py`.

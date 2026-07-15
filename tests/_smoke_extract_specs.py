@@ -71,6 +71,15 @@ spec = TopicSpec.model_validate(stamped)  # the guard that runs before every wri
 assert spec.learning_objectives[0].code == "1.1", "extracted objective survives the round-trip"
 print("stamp_extracted OK (identity forced; curated layer cleared; UNVERIFIED; validates)")
 
+# 4b. cross-module token sync: the generation-side provenance gate (batch.is_unverified)
+#     MUST recognise the exact marker extract_specs stamps, or extracted specs would
+#     silently ship. Guards against the token drifting between the two modules.
+import batch  # noqa: E402
+assert batch.is_unverified(NS(source=stamped["source"])), "batch.is_unverified must match the extract stamp"
+assert not batch.is_unverified(NS(source=batch.clear_unverified_marker(stamped["source"]))), \
+    "clearing the marker (approve_specs) must flip the gate off"
+print("cross-module token sync OK (batch gate matches the extract stamp; approve clears it)")
+
 # 5. prompt brace-safety: both extraction prompts str.format cleanly with their call-site keys.
 from pathlib import Path as _Path  # noqa: E402
 
