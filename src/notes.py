@@ -277,10 +277,12 @@ def _run_batch_mode(args, topics) -> int:
     return 1 if batch.any_failures(results) else 0
 
 
-def _run_status(topics, *, watch: int) -> int:
+def _run_status(*, watch: int) -> int:
     """Print the live generation dashboard (read-only; no API key needed). ``--watch
-    SECS`` refreshes it in place until Ctrl-C — a live view over SSH during a run."""
+    SECS`` refreshes it in place until Ctrl-C — a live view over SSH during a run.
+    Re-discovers curriculum each render so the total climbs live during extraction too."""
     def _render() -> str:
+        topics = discover_topics()
         on_disk = _existing_output_ids(CONFIG["out_dir"]) & set(topics)
         by_total: "dict[str, int]" = {}
         by_done: "dict[str, int]" = {}
@@ -345,7 +347,7 @@ def main() -> None:
         _print_topics(topics)
         return
     if args.status:
-        sys.exit(_run_status(topics, watch=args.watch))
+        sys.exit(_run_status(watch=args.watch))
     if not topics:
         sys.exit("No curriculum specs found in curriculum/.")
 
