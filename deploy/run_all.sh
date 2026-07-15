@@ -32,8 +32,13 @@ mkdir -p logs
 TS="$(date -u +%Y%m%d-%H%M%S)"
 LOG="logs/run-${TS}.log"
 
-printf 'board  : %s\nsubject: %s\njobs   : %s\npython : %s\nlog    : %s\n\n' \
-  "$BOARD" "${SUBJECT:-<all subjects>}" "$JOBS" "$PY" "$LOG"
+# Shared-quota safety: the server's Vertex project is shared with the live Grader, so cap
+# global in-flight model calls LOW by default (config.py reads this). Too high => 429
+# RESOURCE_EXHAUSTED storms that also starve the Grader. Override by exporting it before launch.
+export CLASSNOTES_MAX_INFLIGHT="${CLASSNOTES_MAX_INFLIGHT:-3}"
+
+printf 'board  : %s\nsubject: %s\njobs   : %s\ninflight: %s\npython : %s\nlog    : %s\n\n' \
+  "$BOARD" "${SUBJECT:-<all subjects>}" "$JOBS" "$CLASSNOTES_MAX_INFLIGHT" "$PY" "$LOG"
 printf 'watch progress : %s src/notes.py --status --watch 5\ntail logs      : tail -f %s\n\n' "$PY" "$LOG"
 
 phase() {                                          # phase <n/N> <label> <cmd...>

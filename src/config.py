@@ -8,11 +8,23 @@ models, concurrency, or the house style applied across every board.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 # Anchor data dirs to the repo root (this file lives in src/) so the CLI works
 # regardless of the current working directory.
 _REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _env_int(name: str, default: int) -> int:
+    """Read an int knob from the SHELL env (set BEFORE python starts, e.g. by
+    deploy/run_all.sh — config is imported before load_dotenv, so .env is too late).
+    Lets a shared-quota server dial concurrency down without forking the repo default."""
+    try:
+        v = int(os.environ.get(name, "") or "")
+        return v if v > 0 else default
+    except ValueError:
+        return default
 
 CONFIG = {
     # Models — same split as the Grader: a heavy model where reasoning/quality
@@ -36,12 +48,16 @@ CONFIG = {
     "max_parallel_sections": 4,
     # Cross-topic batch parallelism (notes.py --jobs default): how many topics generate
     # at once. Pure throughput — same models/stages/gates per topic, only overlapped.
-    "max_parallel_topics": 3,
+    # Override with CLASSNOTES_JOBS in the shell env (shared-quota servers dial it down).
+    "max_parallel_topics": _env_int("CLASSNOTES_JOBS", 3),
     # Global governor: the max Gemini calls in flight across the WHOLE process, so
     # --jobs x the intra-topic pools can't exceed provider quota. Bounds aggregate load;
     # all parallelism auto-balances under it (call_model acquires it around each API
     # call). 0 => unlimited. Keep >= max_parallel_sections so a single topic isn't throttled.
-    "max_inflight_model_calls": 12,
+    # Override with CLASSNOTES_MAX_INFLIGHT in the shell env — the master throttle when the
+    # Vertex/AI-Studio quota is shared (e.g. the server's project is shared with the Grader);
+    # too high => 429 RESOURCE_EXHAUSTED storms that also starve the co-tenant.
+    "max_inflight_model_calls": _env_int("CLASSNOTES_MAX_INFLIGHT", 12),
     # v2 coverage gate: targeted section re-draws before a topic hard-fails.
     "max_coverage_retries": 2,
     # v2 structural gate: deterministic per-block completeness (every MCQ option
