@@ -1,0 +1,44 @@
+{
+  "topic_id": "ap-chem-3-4-ideal-gas-law",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.4 Ideal Gas Law",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.4.A",
+      "statement": "Explain the relationship between the macroscopic properties of a sample of gas or mixture of gases using the ideal gas law.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand how the macroscopic properties of ideal gases are related through the ideal gas law (PV = nRT). The topic extends to mixtures of ideal gases, requiring students to know that the partial pressure of each component is independent of the others. Students must be able to calculate partial pressure using mole fractions (PA = Ptotal × XA) and understand that the total pressure of a sample is the sum of its partial pressures. Additionally, students are required to interpret and utilize graphical representations of the relationships between pressure (P), volume (V), temperature (T), and number of moles (n) to describe gas behavior.",
+  "assessment_notes": "This topic is primarily assessed using the suggested skill 5.C (Mathematical Routines): 'Explain the relationship between variables within an equation when one variable changes.' As noted in the unit overview, students should be able to explain relationships between variables in the ideal gas law and estimate the approximate value of one variable when the value of another variable changes.",
+  "reference_data": "Ideal gas law: PV = nRT\nPartial pressure: PA = Ptotal × XA, where XA = moles A / total moles\nTotal pressure: Ptotal = PA + PB + PC + ...\nGas constant, R = 8.314 J mol^-1 K^-1 = 0.08206 L atm mol^-1 K^-1\nSTP = 273.15 K and 1.0 atm\nIdeal gas at STP = 22.4 L mol^-1\nTemperature conversion: K = °C + 273.15",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.4.A.1",
+      "can_do": "The macroscopic properties of ideal gases are related through the ideal gas law: EQN: PV = nRT.",
+      "recap": ""
+    },
+    {
+      "code": "3.4.A.2",
+      "can_do": "In a sample containing a mixture of ideal gases, the pressure exerted by each component (the partial pressure) is independent of the other components. Therefore, the partial pressure of a gas within the mixture is proportional to its mole fraction (X), and the total pressure of the sample is the sum of the partial pressures. EQN: PA = Ptotal × XA, where XA = moles A/total moles; EQN: Ptotal = PA + PB + PC + …",
+      "recap": ""
+    },
+    {
+      "code": "3.4.A.3",
+      "can_do": "Graphical representations of the relationships between P, V, T, and n are useful to describe gas behavior.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1 (© 2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

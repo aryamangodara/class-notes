@@ -1,0 +1,36 @@
+{
+  "topic_id": "ap-chem-8-4-acid-base-reactions-and-buffers",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 8: Acids and Bases",
+  "topic": "8.4 Acid-Base Reactions and Buffers",
+  "prerequisites": [
+    "Chemical equilibrium (Unit 7)"
+  ],
+  "learning_objectives": [
+    {
+      "code": "8.4.A",
+      "statement": "Explain the relationship among the concentrations of major species in a mixture of weak and strong acids and bases.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand the quantitative reactions that occur when mixing acids and bases. For strong acid and strong base mixtures, they must determine the pH based on the concentration of the excess reagent. For mixtures of a weak acid and a strong base (or weak base and strong acid), students must evaluate the stoichiometry to determine the resulting solution type: if the weak species is in excess, a buffer is formed and pH is determined using the Henderson-Hasselbalch equation; if the strong species is in excess, pH is determined by the moles of excess hydronium or hydroxide; if they are equimolar, the pH is determined by the equilibrium of the resulting conjugate base (slightly basic) or conjugate acid (slightly acidic). Students must also recognize that mixing a weak acid and a weak base results in an equilibrium state represented by HA(aq) + B(aq) ⇌ A⁻(aq) + HB⁺(aq).",
+  "assessment_notes": "This topic is assessed under the suggested skill 5.C (Mathematical Routines), requiring students to calculate, estimate, or predict unknown quantities by selecting a logical computational pathway and attending to significant figures. On the AP Exam, students often struggle with calculations involving these mixtures, particularly confusing the half-equivalence point, equivalence point, and endpoint. Common pitfalls include unit conversion errors and failing to recognize whether a mixture results in a buffer (excess weak species) or a hydrolysis scenario (equimolar amounts).",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "8.4.A",
+      "can_do": "I can explain the relationship among the concentrations of major species in a mixture of weak and strong acids and bases.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1 (2024)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

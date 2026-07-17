@@ -1,0 +1,39 @@
+{
+  "topic_id": "ap-chem-9-4-thermodynamic-and-kinetic-control",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.4 Thermodynamic and Kinetic Control",
+  "prerequisites": [
+    "Kinetics and activation energy",
+    "Thermodynamic favorability",
+    "Chemical equilibrium"
+  ],
+  "learning_objectives": [
+    {
+      "code": "9.4.A",
+      "statement": "Explain, in terms of kinetics, why a thermodynamically favored reaction might not occur at a measurable rate.",
+      "tier": null,
+      "command_words": [
+        "explain",
+        "justify"
+      ]
+    }
+  ],
+  "depth_profile": "Many processes that are thermodynamically favored do not occur to any measurable extent, or they occur at extremely slow rates. Processes that are thermodynamically favored, but do not proceed at a measurable rate, are under 'kinetic control.' High activation energy is a common reason for a process to be under kinetic control. The fact that a process does not proceed at a noticeable rate does not mean that the chemical system is at equilibrium. If a process is known to be thermodynamically favored, and yet does not occur at a measurable rate, it is reasonable to conclude that the process is under kinetic control.",
+  "assessment_notes": "Students are expected to provide reasoning to justify a claim using connections between particulate and macroscopic scales or levels (Science Practice 6.E: Argumentation). They must be able to explain, in terms of kinetics, why a thermodynamically favored reaction might not occur at a measurable rate, specifically citing kinetic control and high activation energy.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.4.A",
+      "can_do": "I can explain, in terms of kinetics, why a thermodynamically favored reaction might not occur at a measurable rate.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

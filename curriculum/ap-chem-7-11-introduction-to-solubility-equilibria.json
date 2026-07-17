@@ -1,0 +1,85 @@
+{
+  "topic_id": "ap-chem-7-11-introduction-to-solubility-equilibria",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.11 Introduction to Solubility Equilibria",
+  "prerequisites": [
+    "Solubility rules (Topic 4.7)"
+  ],
+  "learning_objectives": [
+    {
+      "code": "7.11.A",
+      "statement": "Calculate the solubility of a salt based on the value of Ksp for the salt.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    },
+    {
+      "code": "7.11.A.1",
+      "statement": "The dissolution of a salt is a reversible process whose extent can be described by Ksp, the solubility-product constant.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "7.11.A.2",
+      "statement": "The solubility of a substance can be calculated from the Ksp for the dissolution process. This relationship can also be used to predict the relative solubility of different substances.",
+      "tier": null,
+      "command_words": [
+        "Calculate",
+        "Predict"
+      ]
+    },
+    {
+      "code": "7.11.A.3",
+      "statement": "The solubility rules (see 4.7.A.5) can be quantitatively related to Ksp, in which Ksp values >1 correspond to soluble salts.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "7.11.A.4",
+      "statement": "The molar solubility of one or more species in a saturated solution can be used to calculate the Ksp of a substance.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand the dissolution of a salt as a reversible equilibrium process governed by the solubility-product constant, Ksp. The required depth includes calculating molar solubility from Ksp (and vice versa) for saturated solutions, and using Ksp values to predict the relative solubility of different salts. Students must also conceptually link Ksp to the qualitative solubility rules learned previously, specifically recognizing that a Ksp value greater than 1 corresponds to a 'soluble' salt.",
+  "assessment_notes": "This topic is heavily quantitative and is paired with the mathematical routine skill of identifying appropriate mathematical relationships to solve problems (Skill 5.B). Exam questions frequently require setting up an ICE table (or equivalent mathematical relationship) to calculate molar solubility from Ksp, or determining Ksp given the concentration of one or more ions in a saturated solution. Students should be careful with stoichiometry when expressing Ksp (e.g., [2x]^2 for a 1:2 salt) as this is a common pitfall.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.11.A",
+      "can_do": "I can calculate the solubility of a salt based on the value of its Ksp.",
+      "recap": ""
+    },
+    {
+      "code": "7.11.A.1",
+      "can_do": "I can describe the dissolution of a salt as a reversible process using the solubility-product constant, Ksp.",
+      "recap": ""
+    },
+    {
+      "code": "7.11.A.2",
+      "can_do": "I can calculate the solubility of a substance from its Ksp and use this to predict the relative solubility of different substances.",
+      "recap": ""
+    },
+    {
+      "code": "7.11.A.3",
+      "can_do": "I can relate solubility rules to Ksp, recognizing that Ksp values >1 correspond to soluble salts.",
+      "recap": ""
+    },
+    {
+      "code": "7.11.A.4",
+      "can_do": "I can calculate the Ksp of a substance using the molar solubility of one or more species in a saturated solution.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1 (2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,44 @@
+{
+  "topic_id": "ap-chem-2-2-intramolecular-force-and-potential-energy",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 2: Compound Structure and Properties",
+  "topic": "2.2 Intramolecular Force and Potential Energy",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "2.2.A",
+      "statement": "Represent the relationship between potential energy and distance between atoms, based on factors that influence the interaction strength.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to interpret and construct graphs of potential energy versus internuclear distance to describe interactions between atoms. They must be able to identify the equilibrium bond length (the separation at which potential energy is lowest) and the bond energy (the energy required to separate the atoms) from these graphs. The topic requires understanding that covalent bond length and energy are influenced by the size of the atom's core and the bond order, with higher-order bonds being shorter and having larger bond energies. Additionally, students must qualitatively apply Coulomb's law to understand that the strength of interactions between cations and anions is directly proportional to the charge on each ion and inversely proportional to the distance between the centers of the ions (meaning smaller ions lead to stronger interactions).",
+  "assessment_notes": "This topic is typically assessed by having students represent chemical phenomena using appropriate graphing techniques, including correct scale and units (Suggested Skill 3.A). Students may be asked to interpret simple graphical representations of changes in potential energy as two atoms approach each other to explain optimal bond length and why bonds may or may not occur. They may also need to compare the interaction strengths of different ionic or covalent bonds by applying Coulomb's law or analyzing bond order and atomic size.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "2.2.A.1",
+      "can_do": "A graph of potential energy versus the distance between atoms (internuclear distance) is a useful representation for describing the interactions between atoms. Such graphs illustrate both the equilibrium bond length (the separation between atoms at which the potential energy is lowest) and the bond energy (the energy required to separate the atoms).",
+      "recap": ""
+    },
+    {
+      "code": "2.2.A.2",
+      "can_do": "In a covalent bond, the bond length is influenced by both the size of the atom’s core and the bond order (i.e., single, double, triple). Bonds with a higher order are shorter and have larger bond energies.",
+      "recap": ""
+    },
+    {
+      "code": "2.2.A.3",
+      "can_do": "Coulomb’s law can be used to understand the strength of interactions between cations and anions. i. Because the interaction strength is proportional to the charge on each ion, larger charges lead to stronger interactions. ii. Because the interaction strength increases as the distance between the centers of the ions (nuclei) decreases, smaller ions lead to stronger interactions.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

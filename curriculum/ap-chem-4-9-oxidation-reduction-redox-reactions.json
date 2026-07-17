@@ -1,0 +1,47 @@
+{
+  "topic_id": "ap-chem-4-9-oxidation-reduction-redox-reactions",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 4: Chemical Reactions",
+  "topic": "4.9 Oxidation-Reduction (Redox) Reactions",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "4.9.A",
+      "statement": "Represent a balanced redox reaction equation using half-reactions.",
+      "tier": null,
+      "command_words": [
+        "represent"
+      ]
+    },
+    {
+      "code": "4.9.A.1",
+      "statement": "Balanced chemical equations for redox reactions can be constructed from half-reactions.",
+      "tier": null,
+      "command_words": [
+        "construct"
+      ]
+    }
+  ],
+  "depth_profile": "The topic focuses strictly on the construction and representation of balanced chemical equations for oxidation-reduction (redox) reactions by combining and balancing half-reactions.",
+  "assessment_notes": "This topic is assessed under the 'Mathematical Routines' practice (Skill 5.E). Students will be expected to determine a balanced chemical equation for a given chemical phenomenon. On the AP Exam, students must demonstrate proficiency in writing and balancing chemical equations.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "4.9.A",
+      "can_do": "I can represent a balanced redox reaction equation using half-reactions.",
+      "recap": ""
+    },
+    {
+      "code": "4.9.A.1",
+      "can_do": "I can construct balanced chemical equations for redox reactions from half-reactions.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

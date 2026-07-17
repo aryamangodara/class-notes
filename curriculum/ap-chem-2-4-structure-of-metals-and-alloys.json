@@ -1,0 +1,67 @@
+{
+  "topic_id": "ap-chem-2-4-structure-of-metals-and-alloys",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 2: Compound Structure and Properties",
+  "topic": "2.4 Structure of Metals and Alloys",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "2.4.A",
+      "statement": "Represent a metallic solid and/or alloy using a model to show essential characteristics of the structure and interactions present in the substance.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    },
+    {
+      "code": "2.4.A.1",
+      "statement": "Metallic bonding can be represented as an array of positive metal ions surrounded by delocalized valence electrons (i.e., a “sea of electrons”).",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "2.4.A.2",
+      "statement": "Interstitial alloys form between atoms of significantly different radii, where the smaller atoms fill the interstitial spaces between the larger atoms (e.g., with steel in which carbon occupies the interstices in iron).",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "2.4.A.3",
+      "statement": "Substitutional alloys form between atoms of comparable radius, where one atom substitutes for the other in the lattice. (e.g., in certain brass alloys, other elements, usually zinc, substitute for copper.)",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must be able to conceptualize and represent metallic bonding using the 'sea of electrons' model. The topic requires a clear distinction between interstitial and substitutional alloys based on the relative atomic radii of the constituent elements. Students should know that interstitial alloys form when atoms have significantly different radii (e.g., carbon in iron to make steel), whereas substitutional alloys form when atoms have comparable radii (e.g., zinc replacing copper in brass). The focus is on particulate-level structural characteristics and interactions.",
+  "assessment_notes": "This topic is assessed under Suggested Skill 4.C (Model Analysis). Students will be expected to explain the connection between particulate-level models of metals/alloys and their macroscopic properties. Exam questions frequently ask students to identify or draw the correct particulate model for a given alloy (interstitial vs. substitutional) based on the relative sizes of the atoms involved. A common pitfall is confusing the two types of alloys or failing to accurately represent the 'sea of electrons' in pure metallic solids.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "2.4.A",
+      "can_do": "Represent a metallic solid and/or alloy using a model to show essential characteristics of the structure and interactions present in the substance.",
+      "recap": ""
+    },
+    {
+      "code": "2.4.A.1",
+      "can_do": "Metallic bonding can be represented as an array of positive metal ions surrounded by delocalized valence electrons (i.e., a “sea of electrons”).",
+      "recap": ""
+    },
+    {
+      "code": "2.4.A.2",
+      "can_do": "Interstitial alloys form between atoms of significantly different radii, where the smaller atoms fill the interstitial spaces between the larger atoms (e.g., with steel in which carbon occupies the interstices in iron).",
+      "recap": ""
+    },
+    {
+      "code": "2.4.A.3",
+      "can_do": "Substitutional alloys form between atoms of comparable radius, where one atom substitutes for the other in the lattice. (e.g., in certain brass alloys, other elements, usually zinc, substitute for copper.)",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

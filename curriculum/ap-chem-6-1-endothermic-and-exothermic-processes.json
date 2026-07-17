@@ -1,0 +1,80 @@
+{
+  "topic_id": "ap-chem-6-1-endothermic-and-exothermic-processes",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 6: Thermochemistry",
+  "topic": "6.1 Endothermic and Exothermic Processes",
+  "prerequisites": [
+    "Intermolecular and interparticle forces"
+  ],
+  "learning_objectives": [
+    {
+      "code": "6.1.A",
+      "statement": "Explain the relationship between experimental observations and energy changes associated with a chemical or physical transformation.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "6.1.A.1",
+      "statement": "Temperature changes in a system indicate energy changes.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "6.1.A.2",
+      "statement": "Energy changes in a system can be described as endothermic and exothermic processes such as the heating or cooling of a substance, phase changes, or chemical transformations.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "6.1.A.3",
+      "statement": "When a chemical reaction occurs, the energy of the system either decreases (exothermic reaction), increases (endothermic reaction), or remains the same. For exothermic reactions, the energy lost by the reacting species (system) is gained by the surroundings, as heat transfer from or work done by the system. Likewise, for endothermic reactions, the system gains energy from the surroundings by heat transfer to or work done on the system.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "6.1.A.4",
+      "statement": "The formation of a solution may be an exothermic or endothermic process, depending on the relative strengths of intermolecular/interparticle interactions before and after the dissolution process.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must understand that temperature changes in a system indicate energy changes, which can be classified as endothermic or exothermic. This applies to heating/cooling, phase changes, chemical transformations, and the formation of solutions. For chemical reactions, students must track the direction of energy transfer between the system (reacting species) and the surroundings via heat transfer or work. For dissolution, the overall energy change depends on the relative strengths of intermolecular and interparticle interactions before and after the process.",
+  "assessment_notes": "The primary skill assessed is Argumentation (Skill 6.D). Students are expected to provide reasoning to justify a claim using chemical principles or laws, or using mathematical justification. They must be able to justify claims about the direction of thermal energy transfer between a system and its surroundings based on experimental observations like temperature changes.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "6.1.A",
+      "can_do": "Explain the relationship between experimental observations and energy changes associated with a chemical or physical transformation.",
+      "recap": ""
+    },
+    {
+      "code": "6.1.A.1",
+      "can_do": "Temperature changes in a system indicate energy changes.",
+      "recap": ""
+    },
+    {
+      "code": "6.1.A.2",
+      "can_do": "Energy changes in a system can be described as endothermic and exothermic processes such as the heating or cooling of a substance, phase changes, or chemical transformations.",
+      "recap": ""
+    },
+    {
+      "code": "6.1.A.3",
+      "can_do": "When a chemical reaction occurs, the energy of the system either decreases (exothermic reaction), increases (endothermic reaction), or remains the same. For exothermic reactions, the energy lost by the reacting species (system) is gained by the surroundings, as heat transfer from or work done by the system. Likewise, for endothermic reactions, the system gains energy from the surroundings by heat transfer to or work done on the system.",
+      "recap": ""
+    },
+    {
+      "code": "6.1.A.4",
+      "can_do": "The formation of a solution may be an exothermic or endothermic process, depending on the relative strengths of intermolecular/interparticle interactions before and after the dissolution process.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1 (2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

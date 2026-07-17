@@ -1,0 +1,55 @@
+{
+  "topic_id": "ap-chem-1-7-periodic-trends",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 1: Atomic Structure and Properties",
+  "topic": "1.7 Periodic Trends",
+  "prerequisites": [
+    "Ground-state electron configurations",
+    "The shell model of the atom",
+    "Coulomb's law",
+    "Shielding and effective nuclear charge"
+  ],
+  "learning_objectives": [
+    {
+      "code": "1.7.A",
+      "statement": "Explain the relationship between trends in atomic properties of elements and electronic structure and periodicity.",
+      "tier": null,
+      "command_words": [
+        "Explain",
+        "Predict"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand the organization of the periodic table based on recurring properties, ground-state electron configurations, and completely or partially filled shells. They must be able to predict and qualitatively explain trends in ionization energy, atomic and ionic radii, electron affinity, and electronegativity using Coulomb's law, the shell model, shielding, and effective nuclear charge. They should also use periodicity to estimate property values when data is absent. Writing the electron configuration of elements that are exceptions to the aufbau principle is explicitly excluded and will not be assessed.",
+  "assessment_notes": "Students often struggle by merely memorizing periodic trends rather than explaining the underlying electrostatic interactions. Exam questions will require students to justify claims with evidence, connecting periodic trends to the shell model, Coulomb's law, and elements of quantum theory. Explaining exceptions to trends using these principles is also a common area of difficulty that examiners will test.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "1.7.A.1",
+      "can_do": "The organization of the periodic table is based on patterns of recurring properties of the elements, which are explained by patterns of ground-state electron configurations and the presence of completely or partially filled shells (and subshells) of electrons in atoms.",
+      "recap": ""
+    },
+    {
+      "code": "1.7.A.2",
+      "can_do": "Trends in atomic properties within the periodic table (periodicity) can be predicted by the position of the element on the periodic table and qualitatively understood using Coulomb’s law, the shell model, and the concepts of shielding and effective nuclear charge. These properties include: \ni. Ionization energy \nii. Atomic and ionic radii \niii. Electron affinity \niv. Electronegativity.",
+      "recap": ""
+    },
+    {
+      "code": "1.7.A.2",
+      "can_do": "I can qualitatively explain periodic trends using Coulomb's law, the shell model, shielding, and effective nuclear charge.",
+      "recap": ""
+    },
+    {
+      "code": "1.7.A.3",
+      "can_do": "The periodicity (in 1.7.A.2) is useful to predict/estimate values of properties in the absence of data.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1 (2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

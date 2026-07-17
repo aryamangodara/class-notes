@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-9-6-free-energy-of-dissolution",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.6 Free Energy of Dissolution",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "9.6.A",
+      "statement": "Explain the relationship between the solubility of a salt and changes in the enthalpy and entropy that occur in the dissolution process.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to understand that the free energy change (ΔG°) for the dissolution of a substance reflects three main factors: the breaking of intermolecular interactions that hold the solid together, the reorganization of the solvent around the dissolved species, and the interaction of the dissolved species with the solvent. Students must be able to estimate the sign and relative magnitude of the enthalpic and entropic contributions to each of these factors. However, the specification explicitly notes that making predictions for the total change in free energy of dissolution can be challenging due to cancellations among the free energies associated with these three factors; therefore, predicting the overall total change is not expected.",
+  "assessment_notes": "Students may be assessed on their ability to explain the relationship between salt solubility and changes in enthalpy and entropy. This topic is paired with the science practice of Model Analysis (Skill 4.D), meaning students should be prepared to explain the degree to which a given model or representation describes the connection between particulate-level properties (such as intermolecular interactions and solvent reorganization) and macroscopic properties (such as solubility).",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.6.A",
+      "can_do": "I can explain the relationship between the solubility of a salt and changes in the enthalpy and entropy that occur in the dissolution process.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Topic 9.6",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

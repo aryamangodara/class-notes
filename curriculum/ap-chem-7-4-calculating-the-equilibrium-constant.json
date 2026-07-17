@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-7-4-calculating-the-equilibrium-constant",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.4 Calculating the Equilibrium Constant",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.4.A",
+      "statement": "Calculate Kc or Kp based on experimental observations of concentrations or pressures at equilibrium.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that equilibrium constants can be determined from experimental measurements of the concentrations or partial pressures of the reactants and products at equilibrium. This includes constructing the correct equilibrium expression for a given gaseous or aqueous equilibrium process that can ultimately be used to calculate Kc or Kp.",
+  "assessment_notes": "This topic is assessed using Mathematical Routines (Suggested Skill 5.C). Students may be required to explain the relationship between variables within an equation when one variable changes, in addition to calculating the numerical value of Kc or Kp from given experimental equilibrium concentrations or partial pressures.",
+  "reference_data": "Equilibrium Constants:\nKc = [C]^c[D]^d / [A]^a[B]^b, where a A + b B ⇌ c C + d D\nKp = (PC)^c(PD)^d / (PA)^a(PB)^b",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.4.A",
+      "can_do": "I can calculate Kc or Kp based on experimental observations of concentrations or pressures at equilibrium.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

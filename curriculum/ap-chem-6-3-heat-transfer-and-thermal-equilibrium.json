@@ -1,0 +1,44 @@
+{
+  "topic_id": "ap-chem-6-3-heat-transfer-and-thermal-equilibrium",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 6: Thermochemistry",
+  "topic": "6.3 Heat Transfer and Thermal Equilibrium",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "6.3.A",
+      "statement": "Explain the relationship between the transfer of thermal energy and molecular collisions.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand heat transfer at the particulate level. They need to know that particles in a warmer body possess a greater average kinetic energy than those in a cooler body. The transfer of energy (heat transfer or heat exchange) occurs through collisions between particles in thermal contact. Students must also understand that this process continues until thermal equilibrium is reached, which is defined as the point where the average kinetic energy of both bodies is the same, resulting in identical temperatures.",
+  "assessment_notes": "Students are expected to provide reasoning to justify claims using connections between the particulate and macroscopic scales (Suggested Skill 6.E). They should be prepared to explain macroscopic thermal energy transfer explicitly in terms of molecular collisions and average kinetic energy.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "6.3.A.1",
+      "can_do": "The particles in a warmer body have a greater average kinetic energy than those in a cooler body.",
+      "recap": ""
+    },
+    {
+      "code": "6.3.A.2",
+      "can_do": "Collisions between particles in thermal contact can result in the transfer of energy. This process is called “heat transfer,” “heat exchange,” or “transfer of energy as heat.”",
+      "recap": ""
+    },
+    {
+      "code": "6.3.A.3",
+      "can_do": "Eventually, thermal equilibrium is reached as the particles continue to collide. At thermal equilibrium, the average kinetic energy of both bodies is the same, and hence, their temperatures are the same.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

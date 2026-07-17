@@ -1,0 +1,39 @@
+{
+  "topic_id": "ap-chem-3-10-solubility",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.10 Solubility",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.10.A",
+      "statement": "Explain the relationship between the solubility of ionic and molecular compounds in aqueous and nonaqueous solvents, and the intermolecular interactions between particles.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to understand that substances with similar intermolecular interactions tend to be miscible or soluble in one another. The focus is on explaining the solubility of both ionic and molecular compounds in aqueous and nonaqueous solvents by analyzing the intermolecular interactions between particles.",
+  "assessment_notes": "Students will be assessed on their ability to explain the degree to which a model or representation describes the connection between particulate-level properties and macroscopic properties (Skill 4.D). This may involve analyzing particulate models of mixtures to determine if substances will be miscible or soluble based on their intermolecular forces.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.10.A",
+      "can_do": "I can explain the relationship between the solubility of ionic and molecular compounds in aqueous and nonaqueous solvents, and the intermolecular interactions between particles.",
+      "recap": ""
+    },
+    {
+      "code": "3.10.A.1",
+      "can_do": "I can state that substances with similar intermolecular interactions tend to be miscible or soluble in one another.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

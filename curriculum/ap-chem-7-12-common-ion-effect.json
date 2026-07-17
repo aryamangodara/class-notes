@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-7-12-common-ion-effect",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.12 Common-Ion Effect",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.12.A",
+      "statement": "Identify the solubility of a salt, and/or the value of Ksp for the salt, based on the concentration of a common ion already present in solution.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that the solubility of a salt is reduced when it is dissolved into a solution that already contains one of the ions present in the salt. The impact of this 'common-ion effect' on solubility must be understood qualitatively using Le Châtelier's principle, and students must be able to calculate it quantitatively from the Ksp for the dissolution process.",
+  "assessment_notes": "This topic is assessed alongside the science practice skill 2.F (Explain how modifications to an experimental procedure will alter results). Students may be asked to identify the solubility of a salt or the value of Ksp based on the concentration of a common ion already present in solution, and explain how the presence of that ion alters the experimental outcome.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.12.A",
+      "can_do": "I can identify the solubility of a salt, and/or the value of Ksp for the salt, based on the concentration of a common ion already present in solution.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

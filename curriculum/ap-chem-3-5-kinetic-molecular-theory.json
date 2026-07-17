@@ -1,0 +1,60 @@
+{
+  "topic_id": "ap-chem-3-5-kinetic-molecular-theory",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.5 Kinetic Molecular Theory",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.5.A",
+      "statement": "Explain the relationship between the motion of particles and the macroscopic properties of gases with: i. The kinetic molecular theory (KMT). ii. A particulate model. iii. A graphical representation.",
+      "tier": null,
+      "command_words": [
+        "Explain",
+        "Predict"
+      ]
+    }
+  ],
+  "depth_profile": "Students must relate the macroscopic properties of gases to the motions of particles using the kinetic molecular theory (KMT). They must understand that all particles in a sample are in continuous, random motion, and that the Kelvin temperature of a sample is directly proportional to the average kinetic energy of its particles. The topic requires the use of the equation KE = ½ mv² to relate average kinetic energy to average velocity. Furthermore, students must use Maxwell-Boltzmann distributions as graphical representations to describe the distribution of energies and velocities of particles at a given temperature.",
+  "assessment_notes": "This topic is assessed via the 'Model Analysis' skill (4.A), requiring students to predict and/or explain chemical properties or phenomena using given chemical theories, models, and representations. Questions may ask students to interpret particulate models or graphical representations, specifically Maxwell-Boltzmann distributions, to explain gas behavior and particle velocities at different temperatures.",
+  "reference_data": "EQN: KE = ½ mv²",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.5.A.1",
+      "can_do": "The kinetic molecular theory (KMT) relates the macroscopic properties of gases to motions of the particles in the gas. The Maxwell-Boltzmann distribution describes the distribution of the kinetic energies of particles at a given temperature.",
+      "recap": ""
+    },
+    {
+      "code": "3.5.A.1",
+      "can_do": "I can describe the distribution of kinetic energies of particles at a given temperature using a Maxwell-Boltzmann distribution.",
+      "recap": ""
+    },
+    {
+      "code": "3.5.A.2",
+      "can_do": "All the particles in a sample of matter are in continuous, random motion. The average kinetic energy of a particle is related to its average velocity by the equation:\nEQN: KE = ½ mv2.",
+      "recap": ""
+    },
+    {
+      "code": "3.5.A.2",
+      "can_do": "I can relate the average kinetic energy of a particle to its average velocity using the equation KE = ½ mv².",
+      "recap": ""
+    },
+    {
+      "code": "3.5.A.3",
+      "can_do": "The Kelvin temperature of a sample of matter is proportional to the average kinetic energy of the particles in the sample.",
+      "recap": ""
+    },
+    {
+      "code": "3.5.A.4",
+      "can_do": "The Maxwell-Boltzmann distribution provides a graphical representation of the energies/velocities of particles at a given temperature.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1 (© 2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

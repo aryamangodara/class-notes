@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-1-6-photoelectron-spectroscopy",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 1: Atomic Structure and Properties",
+  "topic": "1.6 Photoelectron Spectroscopy",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "1.6.A",
+      "statement": "Explain the relationship between the photoelectron spectrum of an atom or ion and: i. The ground-state electron configuration of the species. ii. The interactions between the electrons and the nucleus.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that the energies of electrons in a given shell can be measured experimentally using photoelectron spectroscopy (PES). The depth of this topic requires connecting the features of a PES spectrum to atomic structure: specifically, that the position of each peak relates to the energy required to remove an electron from the corresponding subshell, and the relative height of each peak is ideally proportional to the number of electrons in that subshell. There are no explicit exclusion statements for this topic, but the focus is strictly on interpreting these spectra in the context of ground-state electron configurations and electron-nucleus interactions.",
+  "assessment_notes": "Exam questions frequently provide a complete photoelectron spectrum (often with binding energy on a logarithmic scale decreasing from left to right) and require students to write the complete electron configuration of the element. Students are expected to use Coulomb's law to justify peak positions, such as explaining that the peak with the highest binding energy corresponds to electrons closest to the nucleus because the strength of attraction is greatest when the distance is least. A common free-response task asks students to draw or predict the peak(s) for an element with a different number of protons (e.g., one more proton), requiring them to correctly shift the peak to a higher binding energy (due to greater effective nuclear charge) and adjust the peak height to reflect the correct number of valence electrons.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "1.6.A",
+      "can_do": "I can explain the relationship between the photoelectron spectrum of an atom or ion and its ground-state electron configuration, as well as the interactions between its electrons and the nucleus.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

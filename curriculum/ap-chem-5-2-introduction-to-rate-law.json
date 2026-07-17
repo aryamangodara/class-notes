@@ -1,0 +1,57 @@
+{
+  "topic_id": "ap-chem-5-2-introduction-to-rate-law",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.2 Introduction to Rate Law",
+  "prerequisites": [
+    "Symbolic and quantitative information from chemical reactions",
+    "Particulate and macroscopic representations of chemical phenomena"
+  ],
+  "learning_objectives": [
+    {
+      "code": "5.2.A",
+      "statement": "Represent experimental data with a consistent rate law expression.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that experimental methods are used to monitor reactant or product amounts over time to determine reaction rates. They need to know that a rate law expresses the rate as proportional to reactant concentrations raised to a power (the order). The overall order is the sum of these individual powers. Students must understand that the rate constant (k) is temperature-dependent and that its units reflect the overall reaction order. A key required method at this stage is comparing initial rates of a reaction to determine the order with respect to each reactant.",
+  "assessment_notes": "Assessed via Skill 5.C (Mathematical Routines), requiring students to explain relationships between variables within an equation when one changes. Students must navigate between experimental data (tabular or graphed) and a constructed rate law. A common pitfall identified by examiners is students confusing the units of graphs with the units represented in the chemical equation. Students are expected to determine the rate law from the dependence of initial rate on initial concentrations (the method of initial rates).",
+  "reference_data": "k = rate constant\nt = time",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.2.A.1",
+      "can_do": "Experimental methods can be used to monitor the amounts of reactants and/or products of a reaction over time and to determine the rate of the reaction.",
+      "recap": ""
+    },
+    {
+      "code": "5.2.A.2",
+      "can_do": "The rate law expresses the rate of a reaction as proportional to the concentration of each reactant raised to a power.",
+      "recap": ""
+    },
+    {
+      "code": "5.2.A.3",
+      "can_do": "The power of each reactant in the rate law is the order of the reaction with respect to that reactant. The sum of the powers of the reactant concentrations in the rate law is the overall order of the reaction.",
+      "recap": ""
+    },
+    {
+      "code": "5.2.A.4",
+      "can_do": "The proportionality constant in the rate law is called the rate constant. The value of this constant is temperature dependent and the units reflect the overall reaction order.",
+      "recap": ""
+    },
+    {
+      "code": "5.2.A.5",
+      "can_do": "Comparing initial rates of a reaction is a method to determine the order with respect to each reactant.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

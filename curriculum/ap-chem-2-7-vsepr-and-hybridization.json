@@ -1,0 +1,53 @@
+{
+  "topic_id": "ap-chem-2-7-vsepr-and-hybridization",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 2: Compound Structure and Properties",
+  "topic": "2.7 VSEPR and Hybridization",
+  "prerequisites": [
+    "Lewis diagrams",
+    "Bond orders",
+    "Bond polarities"
+  ],
+  "learning_objectives": [
+    {
+      "code": "2.7.A",
+      "statement": "Based on the relationship between Lewis diagrams, VSEPR theory, bond orders, and bond polarities: i. Explain structural properties of molecules. ii. Explain electron properties of molecules.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must use VSEPR theory, based on Coulombic repulsion, to predict the arrangement of electron pairs. Required molecular geometries include linear, trigonal planar, tetrahedral, trigonal pyramidal, bent, trigonal bipyramidal, seesaw, T-shaped, octahedral, square pyramidal, and square planar. Students must predict bond angles, relative bond energies (based on bond order), relative bond lengths (considering multiple bonds and atomic radius), dipole moments, and hybridization (sp, sp2, sp3) with ideal bond angles of 180°, 120°, and 109.5° respectively. The course includes the distinction between sigma and pi bonding, noting that sigma overlap is stronger and that pi bonds prevent rotation, leading to geometric isomers. Exclusions: An understanding of the derivation and depiction of hybrid orbitals will not be assessed. Hybridization involving d orbitals will not be assessed; when an atom has more than four pairs of electrons, students are only responsible for the shape of the resulting molecule. Molecular orbital theory (including MO diagrams, filling of MOs, and the distinction between bonding, nonbonding, and antibonding orbitals) will not be assessed.",
+  "assessment_notes": "Assessed via Suggested Skill 6.C: Support a claim with evidence from representations or models at the particulate level. On the AP Exam, students often struggle to predict the correct molecular shape or bond angle based on VSEPR. Common mistakes include using the incorrect number of valence electrons, violating the octet rule, or confusing molecular geometry with bond angles. Students must be able to predict and describe molecular shapes, bond angles, and polarities directly from Lewis structures.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "2.7.A.1",
+      "can_do": "VSEPR theory uses the Coulombic repulsion between electrons as a basis for predicting the arrangement of electron pairs around a central atom.",
+      "recap": ""
+    },
+    {
+      "code": "2.7.A.2",
+      "can_do": "Both Lewis diagrams and VSEPR theory must be used for predicting electronic and structural properties of many covalently bonded molecules and polyatomic ions, including the following:\n i. Molecular geometry (linear, trigonal planar, tetrahedral, trigonal pyramidal, bent, trigonal bipyramidal, seesaw, T-shaped, octahedral, square pyramidal, square planar)\n ii. Bond angles\niii. Relative bond energies based on bond order\niv. Relative bond lengths (multiple bonds, effects of atomic radius)\n v. Presence of a dipole moment\nvi. Hybridization of valence orbitals for atoms within a molecule or polyatomic ion",
+      "recap": ""
+    },
+    {
+      "code": "2.7.A.3",
+      "can_do": "The terms “hybridization” and “hybrid atomic orbital” are used to describe the arrangement of electrons around a central atom. When the central atom is sp hybridized, its ideal bond angles are 180°; for sp2 hybridized atoms the bond angles are 120°; and for sp3 hybridized atoms the bond angles are 109.5°.",
+      "recap": ""
+    },
+    {
+      "code": "2.7.A.4",
+      "can_do": "Bond formation is associated with overlap between atomic orbitals. In multiple bonds, such overlap leads to the formation of both sigma and pi bonds. The overlap is stronger in sigma than pi bonds, which is reflected in sigma bonds having greater bond energy than pi bonds. The presence of a pi bond also prevents the rotation of the bond and leads to geometric isomers.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1 (2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

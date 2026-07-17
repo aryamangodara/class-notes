@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-8-2-ph-and-poh-of-strong-acids-and-bases",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 8: Acids and Bases",
+  "topic": "8.2 pH and pOH of Strong Acids and Bases",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "8.2.A",
+      "statement": "Calculate pH and pOH based on concentrations of all species in a solution of a strong acid or a strong base.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    }
+  ],
+  "depth_profile": "Students must know that strong acids (specifically HCl, HBr, HI, HClO4, H2SO4, and HNO3) completely ionize in aqueous solutions to produce hydronium ions and their conjugate bases. Consequently, the concentration of H3O+ is equal to the initial concentration of the strong acid. Similarly, strong bases (Group I and II hydroxides) completely dissociate to produce hydroxide ions. The concentration of OH- equals the initial concentration for Group I hydroxides, and double the initial concentration for Group II hydroxides. This direct relationship allows for the straightforward calculation of pH and pOH.",
+  "assessment_notes": "This topic is assessed under the suggested skill of Mathematical Routines (5.B: Identify an appropriate theory, definition, or mathematical relationship to solve a problem). Students are expected to calculate pH and pOH directly from initial concentrations. A key expectation and potential pitfall is correctly accounting for the stoichiometry of Group II hydroxides, which produce two moles of hydroxide ions per mole of base dissolved.",
+  "reference_data": "Strong acids: HCl, HBr, HI, HClO4, H2SO4, and HNO3.\nStrong bases: Group I and II hydroxides.",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "8.2.A",
+      "can_do": "I can calculate the pH and pOH of a strong acid or strong base solution based on its initial concentration.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

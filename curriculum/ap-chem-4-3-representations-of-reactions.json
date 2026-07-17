@@ -1,0 +1,39 @@
+{
+  "topic_id": "ap-chem-4-3-representations-of-reactions",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 4: Chemical Reactions",
+  "topic": "4.3 Representations of Reactions",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "4.3.A",
+      "statement": "Represent a given chemical reaction or physical process with a consistent particulate model.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to translate balanced chemical equations in their various forms into symbolic particulate representations. The focus is on ensuring that the particulate model consistently and accurately reflects the given chemical reaction or physical process.",
+  "assessment_notes": "Questions will likely assess the skill of representing data and phenomena, specifically asking students to represent chemical substances or phenomena with appropriate diagrams or models. Students must ensure their particulate representations are consistent with the balanced chemical equation.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "4.3.A",
+      "can_do": "I can represent a given chemical reaction or physical process with a consistent particulate model.",
+      "recap": ""
+    },
+    {
+      "code": "4.3.A.1",
+      "can_do": "I can translate balanced chemical equations in their various forms into symbolic particulate representations.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

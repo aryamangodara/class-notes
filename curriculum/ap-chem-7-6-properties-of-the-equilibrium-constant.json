@@ -1,0 +1,78 @@
+{
+  "topic_id": "ap-chem-7-6-properties-of-the-equilibrium-constant",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.6 Properties of the Equilibrium Constant",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.6.A",
+      "statement": "Represent a multistep process with an overall equilibrium expression, using the constituent K expressions for each individual reaction.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    },
+    {
+      "code": "7.6.A.1",
+      "statement": "When a reaction is reversed, K is inverted.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "7.6.A.2",
+      "statement": "When the stoichiometric coefficients of a reaction are multiplied by a factor c, K is raised to the power c.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "7.6.A.3",
+      "statement": "When reactions are added together, the K of the resulting overall reaction is the product of the K's for the reactions that were summed.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "7.6.A.4",
+      "statement": "Since the expressions for K and Q have identical mathematical forms, all valid algebraic manipulations of K also apply to Q.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students are expected to understand and apply the mathematical properties of the equilibrium constant (K) and reaction quotient (Q) when manipulating chemical equations. This includes knowing that reversing a reaction inverts K, multiplying coefficients by a factor c raises K to the power of c, and adding reactions together requires multiplying their respective K values to find the overall K. Students must also recognize that these identical algebraic manipulations apply to Q.",
+  "assessment_notes": "This topic is assessed alongside the suggested skill of Mathematical Routines (5.A), where students must identify quantities needed to solve a problem from given information (e.g., text, mathematical expressions, graphs, or tables). Students should be prepared to derive an overall equilibrium expression or calculate an overall K value from a series of constituent reactions.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.6.A",
+      "can_do": "I can represent a multistep process with an overall equilibrium expression, using the constituent K expressions for each individual reaction.",
+      "recap": ""
+    },
+    {
+      "code": "7.6.A.1",
+      "can_do": "I can invert the value of K when a chemical reaction is reversed.",
+      "recap": ""
+    },
+    {
+      "code": "7.6.A.2",
+      "can_do": "I can raise K to the power of c when the stoichiometric coefficients of a reaction are multiplied by a factor c.",
+      "recap": ""
+    },
+    {
+      "code": "7.6.A.3",
+      "can_do": "I can calculate the K of an overall reaction by multiplying the K values of the individual reactions that were summed together.",
+      "recap": ""
+    },
+    {
+      "code": "7.6.A.4",
+      "can_do": "I can apply all valid algebraic manipulations of K to the reaction quotient Q.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1 (2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

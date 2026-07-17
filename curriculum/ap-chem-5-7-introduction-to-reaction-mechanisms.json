@@ -1,0 +1,81 @@
+{
+  "topic_id": "ap-chem-5-7-introduction-to-reaction-mechanisms",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.7 Introduction to Reaction Mechanisms",
+  "prerequisites": [
+    "Balanced chemical equations",
+    "Particulate and macroscopic representations of chemical phenomena"
+  ],
+  "learning_objectives": [
+    {
+      "code": "5.7.A",
+      "statement": "Identify the components of a reaction mechanism.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    },
+    {
+      "code": "5.7.A.1",
+      "statement": "A reaction mechanism consists of a series of elementary reactions, or steps, that occur in sequence. The components may include reactants, intermediates, products, and catalysts.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.7.A.2",
+      "statement": "The elementary steps when combined should align with the overall balanced equation of a chemical reaction.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.7.A.3",
+      "statement": "A reaction intermediate is produced by some elementary steps and consumed by others, such that it is present only while a reaction is occurring.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.7.A.4",
+      "statement": "Experimental detection of a reaction intermediate is a common way to build evidence in support of one reaction mechanism over an alternative mechanism.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must understand that a reaction mechanism is a sequence of elementary steps that must sum to the overall balanced chemical equation. They must be able to identify the various components of a mechanism, specifically distinguishing between reactants, products, catalysts, and intermediates. Intermediates are explicitly defined as species produced in one step and consumed in a subsequent step. While students should know that experimental detection of intermediates supports a proposed mechanism, the actual collection of data pertaining to the detection of a reaction intermediate is explicitly excluded from the AP Exam.",
+  "assessment_notes": "Students are assessed on their ability to describe the components of models and representations (Skill 1.B). They will likely be asked to identify intermediates and catalysts from a given multi-step mechanism, or to verify that the elementary steps add up to the overall balanced equation. A common task is distinguishing between an intermediate (produced then consumed) and a catalyst (consumed then produced). Questions will not require students to collect or analyze raw data regarding the experimental detection of intermediates.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.7.A",
+      "can_do": "I can identify the components of a reaction mechanism.",
+      "recap": ""
+    },
+    {
+      "code": "5.7.A.1",
+      "can_do": "I can recognize that a reaction mechanism consists of a series of elementary reactions or steps, which may include reactants, intermediates, products, and catalysts.",
+      "recap": ""
+    },
+    {
+      "code": "5.7.A.2",
+      "can_do": "I can verify that the elementary steps of a mechanism combine to yield the overall balanced chemical equation.",
+      "recap": ""
+    },
+    {
+      "code": "5.7.A.3",
+      "can_do": "I can identify a reaction intermediate as a species produced in one elementary step and consumed in another.",
+      "recap": ""
+    },
+    {
+      "code": "5.7.A.4",
+      "can_do": "I can understand that detecting a reaction intermediate provides experimental evidence to support a proposed reaction mechanism.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,45 @@
+{
+  "topic_id": "ap-chem-8-9-henderson-hasselbalch-equation",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 8: Acids and Bases",
+  "topic": "8.9 Henderson-Hasselbalch Equation",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "8.9.A",
+      "statement": "Identify the pH of a buffer solution based on the identity and concentrations of the conjugate acid-base pair used to create the buffer.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    },
+    {
+      "code": "8.9.A.1",
+      "statement": "The pH of the buffer is related to the pKa of the acid and the concentration ratio of the conjugate acid-base pair. This relation is a consequence of the equilibrium expression associated with the dissociation of a weak acid, and is described by the Henderson-Hasselbalch equation. Adding small amounts of acid or base to a buffered solution does not significantly change the ratio of [A−]/[HA] and thus does not significantly change the solution pH. The change in pH on addition of acid or base to a buffered solution is therefore much less than it would have been in the absence of the buffer.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must understand the relationship between the pH of a buffer, the pKa of the acid, and the concentration ratio of the conjugate acid-base pair, as described by the Henderson-Hasselbalch equation. They should recognize that adding small amounts of acid or base to a buffered solution does not significantly change the [A−]/[HA] ratio, meaning the pH change is much less than it would be in an unbuffered solution. The AP Exam explicitly excludes the computation of the change in pH resulting from the addition of an acid or a base to a buffer, as well as the derivation of the Henderson-Hasselbalch equation.",
+  "assessment_notes": "This topic is assessed under the Mathematical Routines skill category (Skill 5.F). Students may be asked to calculate, estimate, or predict an unknown quantity from known quantities by selecting and following a logical computational pathway and attending to precision (e.g., performing dimensional analysis and attending to significant figures). Examiners will not assess the computation of the change in pH resulting from the addition of an acid or a base to a buffer, nor will they assess the derivation of the Henderson-Hasselbalch equation.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "8.9.A",
+      "can_do": "I can identify the pH of a buffer solution based on the identity and concentrations of the conjugate acid-base pair used to create the buffer.",
+      "recap": ""
+    },
+    {
+      "code": "8.9.A.1",
+      "can_do": "I can explain how the pH of a buffer is related to the pKa and the concentration ratio of the conjugate acid-base pair using the Henderson-Hasselbalch equation, and understand why adding small amounts of acid or base does not significantly change the pH.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

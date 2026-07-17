@@ -1,0 +1,56 @@
+{
+  "topic_id": "ap-chem-5-4-elementary-reactions",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.4 Elementary Reactions",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "5.4.A",
+      "statement": "Represent an elementary reaction as a rate law expression using stoichiometry.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    },
+    {
+      "code": "5.4.A.1",
+      "statement": "The rate law of an elementary reaction can be inferred from the stoichiometry of the particles participating in a collision.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.4.A.2",
+      "statement": "Elementary reactions involving the simultaneous collision of three or more particles are rare.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must be able to represent an elementary reaction as a rate law expression using stoichiometry. The depth of understanding requires knowing that the rate law of an elementary reaction can be inferred directly from the stoichiometry of the colliding particles. Furthermore, students must understand that elementary reactions involving the simultaneous collision of three or more particles are rare. There are no explicit exclusion statements for this topic.",
+  "assessment_notes": "This topic is associated with the suggested skill 5.E (Mathematical Routines), which requires students to determine a balanced chemical equation for a given chemical phenomena. Assessment will likely involve using the stoichiometry of an elementary reaction to write its corresponding rate law expression.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.4.A",
+      "can_do": "I can represent an elementary reaction as a rate law expression using stoichiometry.",
+      "recap": ""
+    },
+    {
+      "code": "5.4.A.1",
+      "can_do": "I can infer the rate law of an elementary reaction from the stoichiometry of the particles participating in a collision.",
+      "recap": ""
+    },
+    {
+      "code": "5.4.A.2",
+      "can_do": "I know that elementary reactions involving the simultaneous collision of three or more particles are rare.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

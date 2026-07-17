@@ -1,0 +1,44 @@
+{
+  "topic_id": "ap-chem-4-2-net-ionic-equations",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 4: Chemical Reactions",
+  "topic": "4.2 Net Ionic Equations",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "4.2.A",
+      "statement": "Represent changes in matter with a balanced chemical or net ionic equation: i. For physical changes. ii. For given information about the identity of the reactants and/or product. iii. For ions in a given chemical reaction.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that all physical and chemical processes can be represented symbolically by balanced equations. They are expected to know that chemical equations represent chemical changes resulting from the rearrangement of atoms, and must demonstrate the conservation of mass and charge by containing equal numbers of atoms of every element before and after the change. Students must be able to use balanced molecular, complete ionic, and net ionic equations, and understand that the form used to represent the reaction depends on the context in which it is to be used.",
+  "assessment_notes": "Assessed under Science Practice 5.E (Mathematical Routines). Students will be required to determine a balanced chemical equation for a given chemical phenomenon. Tasks may include transforming a molecular equation into a net ionic equation for a particular chemical phenomenon, such as writing the net ionic equation for a precipitation reaction given the reactants (e.g., silver nitrate and sodium chloride).",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "4.2.A.1",
+      "can_do": "All physical and chemical processes can be represented symbolically by balanced equations.",
+      "recap": ""
+    },
+    {
+      "code": "4.2.A.2",
+      "can_do": "Chemical equations represent chemical changes. These changes are the result of a rearrangement of atoms into new combinations; thus, any representation of a chemical change must contain equal numbers of atoms of every element before and after the change occurred. Equations thus demonstrate that mass and charge are conserved in chemical reactions.",
+      "recap": ""
+    },
+    {
+      "code": "4.2.A.3",
+      "can_do": "Balanced molecular, complete ionic, and net ionic equations are differing symbolic forms used to represent a chemical reaction. The form used to represent the reaction depends on the context in which it is to be used.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

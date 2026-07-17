@@ -1,0 +1,48 @@
+{
+  "topic_id": "ap-chem-4-6-introduction-to-titration",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 4: Chemical Reactions",
+  "topic": "4.6 Introduction to Titration",
+  "prerequisites": [
+    "Balancing chemical equations",
+    "Stoichiometry and the mole concept"
+  ],
+  "learning_objectives": [
+    {
+      "code": "4.6.A",
+      "statement": "Identify the equivalence point in a titration based on the amounts of the titrant and analyte, assuming the titration reaction goes to completion.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    },
+    {
+      "code": "4.6.A.1",
+      "statement": "Titrations may be used to determine the amount of an analyte in solution. The titrant has a known concentration of a species that reacts specifically and quantitatively with the analyte. The equivalence point of the titration occurs when the analyte is totally consumed by the reacting species in the titrant. The equivalence point is often indicated by a change in a property (such as color) that occurs when the equivalence point is reached. This observable event is called the endpoint of the titration.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "This topic introduces the fundamental principles of titrations as an analytical method to determine the amount of an analyte in solution. Students must understand the roles of the titrant (known concentration) and the analyte. The core conceptual depth lies in distinguishing between the equivalence point (the theoretical point where the analyte is totally consumed by the titrant) and the endpoint (the observable macroscopic event, such as a color change, that indicates the equivalence point has been reached). The scope is limited to identifying the equivalence point based on the amounts of titrant and analyte, assuming the reaction goes to completion.",
+  "assessment_notes": "Students are assessed on their ability to represent chemical phenomena using appropriate graphing techniques, including correct scale and units (Science Practice 3.A). Exam questions may require students to connect particulate-level representations of a chemical system to different points on a titration curve (e.g., before titrant is added, at the half-equivalence point, at the equivalence point, and beyond the equivalence point). A common pitfall in related stoichiometric calculations is comparing mass to mass instead of mole to mole when determining limiting reactants or amounts consumed.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "4.6.A",
+      "can_do": "Identify the equivalence point in a titration based on the amounts of the titrant and analyte, assuming the titration reaction goes to completion.",
+      "recap": ""
+    },
+    {
+      "code": "4.6.A.1",
+      "can_do": "Titrations may be used to determine the amount of an analyte in solution. The titrant has a known concentration of a species that reacts specifically and quantitatively with the analyte. The equivalence point of the titration occurs when the analyte is totally consumed by the reacting species in the titrant. The equivalence point is often indicated by a change in a property (such as color) that occurs when the equivalence point is reached. This observable event is called the endpoint of the titration.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,78 @@
+{
+  "topic_id": "ap-chem-8-1-introduction-to-acids-and-bases",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 8: Acids and Bases",
+  "topic": "8.1 Introduction to Acids and Bases",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "8.1.A",
+      "statement": "Calculate the values of pH and pOH, based on Kw and the concentration of all species present in a neutral solution of water.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    },
+    {
+      "code": "8.1.A.1",
+      "statement": "The concentrations of hydronium ion and hydroxide ion are often reported as pH and pOH, respectively. EQN: pH = -log[H3O+] EQN: pOH = -log[OH-] The terms \"hydrogen ion\" and \"hydronium ion\" and the symbols H+(aq) and H3O+(aq) are often used interchangeably for the aqueous ion of hydrogen. Hydronium ion and H3O+(aq) are preferred, but H+(aq) is also accepted on the AP Exam.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "8.1.A.2",
+      "statement": "Water autoionizes with an equilibrium constant Kw. EQN: Kw = [H3O+][OH-] = 1.0 × 10^-14 at 25°C",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "8.1.A.3",
+      "statement": "In pure water, pH = pOH is called a neutral solution. At 25°C, pKw = 14.0 and thus pH = pOH = 7.0. EQN: pKw = 14 = pH + pOH at 25°C",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "8.1.A.4",
+      "statement": "The value of Kw is temperature dependent, so the pH of pure, neutral water will deviate from 7.0 at temperatures other than 25°C.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must understand the autoionization of water and the relationship between hydronium and hydroxide ion concentrations. The course prefers the use of 'hydronium ion' and H3O+(aq), but 'hydrogen ion' and H+(aq) are also accepted. A key conceptual point is that Kw is temperature-dependent; therefore, the pH of pure, neutral water will deviate from 7.0 at temperatures other than 25°C.",
+  "assessment_notes": "Questions may require calculating pH and pOH using Kw. Examiners will accept H+(aq) interchangeably with H3O+(aq) on the AP Exam. A common pitfall is assuming neutral water always has a pH of 7.0; students must recognize that neutral pH deviates from 7.0 at temperatures other than 25°C due to the temperature dependence of Kw.",
+  "reference_data": "Kw = [H3O+][OH-] = 1.0 × 10^-14 at 25°C\npKw = 14 = pH + pOH at 25°C",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "8.1.A",
+      "can_do": "I can calculate the values of pH and pOH, based on Kw and the concentration of all species present in a neutral solution of water.",
+      "recap": ""
+    },
+    {
+      "code": "8.1.A.1",
+      "can_do": "I can calculate pH and pOH from hydronium and hydroxide ion concentrations using negative logarithms.",
+      "recap": ""
+    },
+    {
+      "code": "8.1.A.2",
+      "can_do": "I can use the autoionization constant of water (Kw = 1.0 × 10^-14 at 25°C) to relate hydronium and hydroxide concentrations.",
+      "recap": ""
+    },
+    {
+      "code": "8.1.A.3",
+      "can_do": "I can explain that a neutral solution is defined by pH = pOH, which is 7.0 at 25°C.",
+      "recap": ""
+    },
+    {
+      "code": "8.1.A.4",
+      "can_do": "I can explain that because Kw is temperature dependent, the pH of pure, neutral water will deviate from 7.0 at temperatures other than 25°C.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-5-8-reaction-mechanism-and-rate-law",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.8 Reaction Mechanism and Rate Law",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "5.8.A",
+      "statement": "Identify the rate law for a reaction from a mechanism in which the first step is rate limiting.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that for reaction mechanisms where each elementary step is irreversible, or where the first step is rate limiting, the overall rate law of the reaction is determined by the molecularity of the slowest elementary step (the rate-limiting step). The collection of data pertaining to the detection of a reaction intermediate is explicitly excluded and will not be assessed on the AP Exam.",
+  "assessment_notes": "Students are expected to identify appropriate theories, definitions, or mathematical relationships to solve problems (Skill 5.B). This typically involves determining the rate law directly from the stoichiometry of the slow, rate-limiting first step of a provided mechanism. Questions will not require students to collect data pertaining to the detection of reaction intermediates.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.8.A",
+      "can_do": "I can identify the rate law for a reaction from a mechanism in which the first step is rate limiting.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,39 @@
+{
+  "topic_id": "ap-chem-7-8-representations-of-equilibrium",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.8 Representations of Equilibrium",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.8.A",
+      "statement": "Represent a system undergoing a reversible reaction with a particulate model.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to use particulate representations to describe the relative numbers of reactant and product particles present both prior to and at equilibrium. The depth of understanding requires connecting these particulate models to the value of the equilibrium constant.",
+  "assessment_notes": "Exam questions will assess Science Practice 3.C (Representing Data and Phenomena). Students may be asked to visually represent the relationship between structures and interactions across multiple levels or scales (e.g., particulate to macroscopic). They must be able to draw or interpret particulate models of reversible reactions and relate them to the equilibrium constant.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.8.A",
+      "can_do": "I can represent a system undergoing a reversible reaction with a particulate model.",
+      "recap": ""
+    },
+    {
+      "code": "7.8.A.1",
+      "can_do": "I can use particulate representations to describe the relative numbers of reactant and product particles present prior to and at equilibrium, and relate them to the value of the equilibrium constant.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1 (© 2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

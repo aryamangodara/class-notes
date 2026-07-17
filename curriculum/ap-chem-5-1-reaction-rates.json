@@ -1,0 +1,73 @@
+{
+  "topic_id": "ap-chem-5-1-reaction-rates",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.1 Reaction Rates",
+  "prerequisites": [
+    "Chemical changes (Unit 4)",
+    "Chemical reactions and stoichiometry",
+    "Particulate and macroscopic representations of chemical phenomena"
+  ],
+  "learning_objectives": [
+    {
+      "code": "5.1.A",
+      "statement": "Explain the relationship between the rate of a chemical reaction and experimental parameters.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "5.1.A.1",
+      "statement": "The kinetics of a chemical reaction is defined as the rate at which an amount of reactants is converted to products per unit of time.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.1.A.2",
+      "statement": "The rates of change of reactant and product concentrations are determined by the stoichiometry in the balanced chemical equation.",
+      "tier": null,
+      "command_words": [
+        "Determine"
+      ]
+    },
+    {
+      "code": "5.1.A.3",
+      "statement": "The rate of a reaction is influenced by reactant concentrations, temperature, surface area, catalysts, and other environmental factors.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must understand that the kinetics of a chemical reaction is defined by the rate at which reactants are converted to products over time. They are expected to relate the rates of change of specific reactant and product concentrations directly to the stoichiometry of the balanced chemical equation. Furthermore, students must recognize and describe how macroscopic experimental parameters—specifically reactant concentrations, temperature, surface area, catalysts, and other environmental factors—influence the rate of a reaction. The focus in this topic is on foundational definitions and qualitative relationships, setting the stage for mathematical rate laws in subsequent topics.",
+  "assessment_notes": "This topic is primarily assessed through Science Practice 6.E (Argumentation), which requires students to provide reasoning to justify a claim using connections between particulate and macroscopic scales or levels. On the AP Exam, students may be asked to explain why a specific experimental parameter (such as temperature or surface area) changes the reaction rate, linking macroscopic observations to particulate-level interactions. Questions may appear in both the multiple-choice (50% of exam weight) and free-response (50% of exam weight) sections.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.1.A",
+      "can_do": "I can explain the relationship between the rate of a chemical reaction and experimental parameters.",
+      "recap": ""
+    },
+    {
+      "code": "5.1.A.1",
+      "can_do": "I can define the kinetics of a chemical reaction as the rate at which reactants are converted to products per unit of time.",
+      "recap": ""
+    },
+    {
+      "code": "5.1.A.2",
+      "can_do": "I can relate the rates of change of reactant and product concentrations to the stoichiometry of the balanced chemical equation.",
+      "recap": ""
+    },
+    {
+      "code": "5.1.A.3",
+      "can_do": "I can identify how reactant concentrations, temperature, surface area, catalysts, and other environmental factors influence the rate of a reaction.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

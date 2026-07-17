@@ -1,0 +1,58 @@
+{
+  "topic_id": "ap-chem-6-5-energy-of-phase-changes",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 6: Thermochemistry",
+  "topic": "6.5 Energy of Phase Changes",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "6.5.A",
+      "statement": "Explain changes in the heat q absorbed or released by a system undergoing a phase transition based on the amount of the substance in moles and the molar enthalpy of the phase transition.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "6.5.A.1",
+      "statement": "Energy must be transferred to a system to cause a substance to melt (or boil). The energy of the system therefore increases as the system undergoes a solid-to-liquid (or liquid-to-gas) phase transition. Likewise, a system releases energy when it freezes (or condenses). The energy of the system decreases as the system undergoes a liquid-to-solid (or gas-to-liquid) phase transition. The temperature of a pure substance remains constant during a phase change.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "6.5.A.2",
+      "statement": "The energy absorbed during a phase change is equal to the energy released during a complementary phase change in the opposite direction. For example, the molar enthalpy of condensation of a substance is equal to the negative of its molar enthalpy of vaporization. Similarly, the molar enthalpy of fusion can be used to calculate the energy absorbed when melting a substance and the energy released when freezing a substance.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    }
+  ],
+  "depth_profile": "At this level, students must quantitatively and qualitatively analyze phase changes. They are expected to calculate the heat (q) absorbed or released during a phase transition using the number of moles and the molar enthalpy of the transition (e.g., fusion, vaporization). Students must understand the direction of energy transfer: melting and boiling require energy input (increasing system energy), while freezing and condensation release energy (decreasing system energy). A critical conceptual requirement is knowing that the temperature of a pure substance remains constant during a phase change. Furthermore, students must apply the principle that complementary phase changes have equal but opposite energy changes (e.g., the molar enthalpy of condensation is the exact negative of the molar enthalpy of vaporization).",
+  "assessment_notes": "Examiners will assess the ability to explain heat changes during phase transitions and perform related calculations. Students may be asked to describe components of and quantitative information from models and representations that illustrate both particulate-level and macroscopic-level properties (Suggested Skill 1.B). A common expectation is correctly applying the sign of the enthalpy change depending on the direction of the phase transition (e.g., endothermic for melting/boiling, exothermic for freezing/condensing) and recognizing that temperature does not change during the transition itself.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "6.5.A",
+      "can_do": "I can explain changes in the heat q absorbed or released by a system undergoing a phase transition based on the amount of the substance in moles and the molar enthalpy of the phase transition.",
+      "recap": ""
+    },
+    {
+      "code": "6.5.A.1",
+      "can_do": "I can state that energy must be transferred to a system to melt or boil, and is released when freezing or condensing, while the temperature of a pure substance remains constant.",
+      "recap": ""
+    },
+    {
+      "code": "6.5.A.2",
+      "can_do": "I can use the molar enthalpy of a phase change to calculate energy absorbed or released, and recognize that complementary phase changes have equal but opposite energy changes.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

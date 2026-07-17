@@ -1,0 +1,48 @@
+{
+  "topic_id": "ap-chem-6-2-energy-diagrams",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 6: Thermochemistry",
+  "topic": "6.2 Energy Diagrams",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "6.2.A",
+      "statement": "Represent a chemical or physical transformation with an energy diagram.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    },
+    {
+      "code": "6.2.A.1",
+      "statement": "A physical or chemical process can be described with an energy diagram that shows the endothermic or exothermic nature of that process.",
+      "tier": null,
+      "command_words": [
+        "describe",
+        "show"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to understand and construct energy diagrams for physical and chemical processes. The primary requirement is that these diagrams must clearly show the endothermic or exothermic nature of the transformation.",
+  "assessment_notes": "This topic is assessed under Suggested Skill 3.A (Representing Data and Phenomena). Students may be required to represent chemical phenomena using appropriate graphing techniques, which includes using the correct scale and units when drawing energy diagrams.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "6.2.A",
+      "can_do": "I can represent a chemical or physical transformation with an energy diagram.",
+      "recap": ""
+    },
+    {
+      "code": "6.2.A.1",
+      "can_do": "I can describe a physical or chemical process using an energy diagram that shows whether it is endothermic or exothermic.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

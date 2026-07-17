@@ -1,0 +1,37 @@
+{
+  "topic_id": "ap-chem-5-10-multistep-reaction-energy-profile",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.10 Multistep Reaction Energy Profile",
+  "prerequisites": [
+    "Energetics of elementary reactions",
+    "Reaction mechanisms"
+  ],
+  "learning_objectives": [
+    {
+      "code": "5.10.A",
+      "statement": "Represent the activation energy and overall energy change in a multistep reaction with a reaction energy profile.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to construct and analyze energy profiles for multistep reactions. This requires applying knowledge of the energetics of each elementary reaction in a mechanism to accurately represent the activation energy and the overall energy change of the multistep process.",
+  "assessment_notes": "This topic is assessed under Science Practice 3.B (Representing Data and Phenomena). Students must be able to represent chemical phenomena with appropriate diagrams. Questions may require students to construct an energy profile from given mechanism energetics or to correctly label components (such as activation energies and overall energy changes) on a provided blank multistep reaction energy profile.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.10.A",
+      "can_do": "Represent the activation energy and overall energy change in a multistep reaction with a reaction energy profile.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

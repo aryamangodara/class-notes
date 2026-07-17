@@ -1,0 +1,115 @@
+{
+  "topic_id": "ap-chem-3-2-properties-of-solids",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.2 Properties of Solids",
+  "prerequisites": [
+    "Intramolecular forces and chemical bonding (ionic, covalent, metallic)",
+    "Intermolecular forces (London dispersion, dipole-dipole, hydrogen bonding)",
+    "Particulate-level representations of matter"
+  ],
+  "learning_objectives": [
+    {
+      "code": "3.2.A",
+      "statement": "Explain the relationship among the macroscopic properties of a substance, the particulate-level structure of the substance, and the interactions between these particles.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "3.2.A.1",
+      "statement": "Many properties of liquids and solids are determined by the strengths and types of intermolecular forces present. Because intermolecular interactions are overcome completely when a substance vaporizes, the vapor pressure and boiling point are directly related to the strength of those interactions. Melting points also tend to correlate with interaction strength, but because the interactions are only rearranged, in melting, the relations can be more subtle.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "3.2.A.2",
+      "statement": "Particulate-level representations, showing multiple interacting chemical species, are a useful means to communicate or understand how intermolecular interactions help to establish macroscopic properties.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "3.2.A.3",
+      "statement": "Due to strong interactions between ions, ionic solids tend to have low vapor pressures, high melting points, and high boiling points. They tend to be brittle due to the repulsion of like charges caused when one layer slides across another layer. They conduct electricity only when the ions are mobile, as when the ionic solid is melted (i.e., in a molten state) or dissolved in water or another solvent.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "3.2.A.4",
+      "statement": "In covalent network solids, the atoms are covalently bonded together into a three-dimensional network (e.g., diamond) or layers of two-dimensional networks (e.g., graphite). These are only formed from nonmetals and metalloids: elemental (e.g., diamond, graphite) or binary compounds (e.g., silicon dioxide and silicon carbide). Due to the strong covalent interactions, covalent solids have high melting points. Three-dimensional network solids are also rigid and hard, because the covalent bond angles are fixed. However, graphite is soft because adjacent layers can slide past each other relatively easily.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "3.2.A.5",
+      "statement": "Molecular solids are composed of distinct, individual units of covalently-bonded molecules attracted to each other through relatively weak intermolecular forces. Molecular solids generally have a low melting point because of the relatively weak intermolecular forces present between the molecules. They do not conduct electricity because their valence electrons are tightly held within the covalent bonds and the lone pairs of each constituent molecule. Molecular solids are sometimes composed of very large molecules or polymers.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "3.2.A.6",
+      "statement": "Metallic solids are good conductors of electricity and heat, due to the presence of free valence electrons. They also tend to be malleable and ductile, due to the ease with which the metal cores can rearrange their structure. In an interstitial alloy, interstitial atoms tend to make the lattice more rigid, decreasing malleability and ductility. Alloys typically retain a sea of mobile electrons and so remain conducting.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "3.2.A.7",
+      "statement": "In large biomolecules or polymers, noncovalent interactions may occur between different molecules or between different regions of the same large biomolecule. The functionality and properties of such molecules depend strongly on the shape of the molecule, which is largely dictated by noncovalent interactions.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must connect the macroscopic properties of solids (vapor pressure, boiling/melting points, brittleness, hardness, electrical conductivity, malleability, and ductility) to their particulate-level structure and the specific interactions between particles. The topic covers four main types of solids: ionic, covalent network, molecular, and metallic. Students must understand the specific behaviors of each, such as why ionic solids only conduct electricity when molten or aqueous, why covalent network solids (like diamond, graphite, SiO2, SiC) have high melting points and varying hardness, why molecular solids have low melting points and do not conduct electricity, and why metallic solids are conductive, malleable, and ductile. The effects of alloying (interstitial) on malleability and ductility are also included. Furthermore, students must recognize that in large biomolecules or polymers, noncovalent interactions dictate shape and functionality.",
+  "assessment_notes": "On the AP Exam, students are frequently asked to compare the physical properties of substances and relate them to the attractive forces between particles. A common pitfall is confusing intramolecular and intermolecular forces, or using vague terms like 'strong' and 'weak' instead of identifying the specific intermolecular force and explaining its relative strength. Students must be able to determine which forces are most important in explaining differences in properties like melting points, boiling points, and vapor pressures. Questions may also require students to explain the connection between particulate-level and macroscopic properties using models and representations (Skill 4.C).",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.2.A",
+      "can_do": "I can explain the relationship among the macroscopic properties of a substance, its particulate-level structure, and the interactions between its particles.",
+      "recap": ""
+    },
+    {
+      "code": "3.2.A.1",
+      "can_do": "I can relate the vapor pressure, boiling point, and melting point of a substance to the strengths and types of intermolecular forces present.",
+      "recap": ""
+    },
+    {
+      "code": "3.2.A.2",
+      "can_do": "I can use particulate-level representations to communicate how intermolecular interactions establish macroscopic properties.",
+      "recap": ""
+    },
+    {
+      "code": "3.2.A.3",
+      "can_do": "I can explain the properties of ionic solids, such as low vapor pressure, high melting/boiling points, brittleness, and conditional electrical conductivity, based on strong interactions between ions.",
+      "recap": ""
+    },
+    {
+      "code": "3.2.A.4",
+      "can_do": "I can describe the structure and properties of covalent network solids (e.g., diamond, graphite, silicon dioxide) and explain their high melting points and rigidity based on strong covalent interactions.",
+      "recap": ""
+    },
+    {
+      "code": "3.2.A.5",
+      "can_do": "I can explain why molecular solids generally have low melting points and do not conduct electricity, based on their weak intermolecular forces and tightly held valence electrons.",
+      "recap": ""
+    },
+    {
+      "code": "3.2.A.6",
+      "can_do": "I can explain the properties of metallic solids (conductivity, malleability, ductility) and alloys based on the presence of free valence electrons and the arrangement of metal cores.",
+      "recap": ""
+    },
+    {
+      "code": "3.2.A.7",
+      "can_do": "I can describe how noncovalent interactions dictate the shape, functionality, and properties of large biomolecules or polymers.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

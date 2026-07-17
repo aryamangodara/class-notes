@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-3-3-solids-liquids-and-gases",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.3 Solids, Liquids, and Gases",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.3.A",
+      "statement": "Represent the differences between solid, liquid, and gas phases using a particulate-level model.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to understand and represent the particulate-level differences between solid, liquid, and gas phases. For solids, they must distinguish between crystalline (regular three-dimensional structure) and amorphous (irregular arrangement) forms, noting that particle motion is limited without overall translation. For liquids, students should know that particles are in close contact, continually moving and colliding, with their arrangement influenced by intermolecular forces (e.g., polarity, hydrogen bonding) and temperature. A key concept is that solid and liquid phases of a substance typically have similar molar volumes because particles are in close contact in both phases. For gases, students must understand that particles are in constant motion, with spacing and collision frequencies dependent on temperature, pressure, and volume, resulting in no definite volume or shape. The curriculum explicitly excludes the understanding and interpretation of phase diagrams; this will not be assessed on the AP Exam.",
+  "assessment_notes": "Assessment focuses on the visual representation of structures and interactions across multiple scales (particulate to macroscopic), aligning with Science Practice 3.C. Students may be asked to draw, evaluate, or interpret particulate models of the three phases. They must be able to connect the nature and strength of interparticle forces to the arrangement and movement of particles. A common conceptual point tested is the similarity in molar volume between solid and liquid phases of the same substance due to close particle contact. Phase diagrams are strictly excluded and will not appear on the exam.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.3.A",
+      "can_do": "I can represent the differences between solid, liquid, and gas phases using a particulate-level model.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

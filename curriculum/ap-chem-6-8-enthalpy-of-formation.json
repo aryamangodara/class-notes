@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-6-8-enthalpy-of-formation",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 6: Thermochemistry",
+  "topic": "6.8 Enthalpy of Formation",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "6.8.A",
+      "statement": "Calculate the enthalpy change for a chemical or physical process based on the standard enthalpies of formation.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to calculate the enthalpy change for a chemical or physical process based on the standard enthalpies of formation. This involves using tables of standard enthalpies of formation to calculate the standard enthalpies of reactions using the equation: ΔH°reaction = ΣΔHf°products − ΣΔHf°reactants.",
+  "assessment_notes": "Questions will assess the ability to calculate, estimate, or predict an unknown quantity from known quantities by selecting and following a logical computational pathway and attending to precision (e.g., performing dimensional analysis and attending to significant figures).",
+  "reference_data": "ΔH°reaction = ΣΔHf°products − ΣΔHf°reactants",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "6.8.A",
+      "can_do": "I can calculate the enthalpy change for a chemical or physical process based on the standard enthalpies of formation.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,67 @@
+{
+  "topic_id": "ap-chem-5-5-collision-model",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.5 Collision Model",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "5.5.A",
+      "statement": "Explain the relationship between the rate of an elementary reaction and the frequency, energy, and orientation of particle collisions.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "5.5.A.1",
+      "statement": "For an elementary reaction to successfully produce products, reactants must successfully collide to initiate bond-breaking and bond-making events.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.5.A.2",
+      "statement": "In most reactions, only a small fraction of the collisions leads to a reaction. Successful collisions have both sufficient energy to overcome the activation energy requirements and orientations that allow the bonds to rearrange in the required manner.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.5.A.3",
+      "statement": "The Maxwell-Boltzmann distribution curve describes the distribution of particle energies; this distribution can be used to gain a qualitative estimate of the fraction of collisions with sufficient energy to lead to a reaction, and also how that fraction depends on temperature.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must understand the collision model at the particulate level, specifically that a reaction requires collisions with both sufficient energy (activation energy) and the correct spatial orientation to break and form bonds. The topic requires qualitative use of the Maxwell-Boltzmann distribution curve to estimate the fraction of particles with enough energy to react, and to explain how increasing temperature increases this fraction.",
+  "assessment_notes": "Students are expected to provide reasoning to justify claims using connections between particulate and macroscopic scales (Skill 6.E). They may be asked to explain why a reaction rate changes based on collision frequency, energy, or orientation, and to interpret or sketch Maxwell-Boltzmann distribution curves to show the effect of temperature changes on the fraction of successful collisions.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.5.A",
+      "can_do": "I can explain the relationship between the rate of an elementary reaction and the frequency, energy, and orientation of particle collisions.",
+      "recap": ""
+    },
+    {
+      "code": "5.5.A.1",
+      "can_do": "I can state that reactants must successfully collide to initiate bond-breaking and bond-making events.",
+      "recap": ""
+    },
+    {
+      "code": "5.5.A.2",
+      "can_do": "I can explain that successful collisions require both sufficient energy to overcome activation energy and the correct orientation.",
+      "recap": ""
+    },
+    {
+      "code": "5.5.A.3",
+      "can_do": "I can use the Maxwell-Boltzmann distribution curve to qualitatively estimate the fraction of collisions with sufficient energy and describe how this depends on temperature.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

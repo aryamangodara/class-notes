@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-5-9-pre-equilibrium-approximation",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.9 Pre-Equilibrium Approximation",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "5.9.A",
+      "statement": "Identify the rate law for a reaction from a mechanism in which the first step is not rate limiting.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that if the first elementary reaction in a mechanism is not the rate-limiting step, approximations (such as the pre-equilibrium approximation) must be made to determine the overall rate law expression.",
+  "assessment_notes": "This topic is assessed under the 'Mathematical Routines' skill (5.B), requiring students to identify an appropriate theory, definition, or mathematical relationship to solve a problem. On the AP Exam, students are expected to navigate between a proposed mechanism and a constructed rate law, applying the pre-equilibrium approximation to derive the rate law when the first step is fast and reversible.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.9.A",
+      "can_do": "I can identify the rate law for a reaction from a mechanism in which the first step is not rate limiting.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

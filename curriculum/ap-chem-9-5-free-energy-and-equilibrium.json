@@ -1,0 +1,37 @@
+{
+  "topic_id": "ap-chem-9-5-free-energy-and-equilibrium",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.5 Free Energy and Equilibrium",
+  "prerequisites": [
+    "Equilibrium constants (K)",
+    "Standard Gibbs free energy change (ΔG°)"
+  ],
+  "learning_objectives": [
+    {
+      "code": "9.5.A",
+      "statement": "Explain whether a process is thermodynamically favored using the relationships between K, ΔGo, and T.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must connect the thermodynamic favorability of a process to its equilibrium state. The phrase 'thermodynamically favored' (ΔG° < 0) means that products are favored at equilibrium (K > 1) under standard conditions. Conversely, processes with ΔG° > 0 favor reactants (K < 1). Students must relate the equilibrium constant to free energy using the equations K = e^(-ΔG°/RT) and ΔG° = -RT ln K. A key expectation is making qualitative connections through estimation: when ΔG° is near zero, the equilibrium constant will be close to 1. When ΔG° is much larger or much smaller than RT, the value of K deviates strongly from 1.",
+  "assessment_notes": "This topic is assessed under Science Practice 6.D (Argumentation), requiring students to provide reasoning to justify a claim using chemical principles, laws, or mathematical justification. Students are expected to explain whether a process is thermodynamically favored using the relationships between K, ΔG°, and T. The emphasis is on qualitative estimation and conceptual understanding of how the magnitude and sign of ΔG° relative to RT dictate the magnitude of K, rather than just algorithmic calculation.",
+  "reference_data": "ΔG° = -RT ln K\nK = e^(-ΔG°/RT)\nGas constant, R = 8.314 J mol^-1 K^-1",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.5.A",
+      "can_do": "I can explain whether a process is thermodynamically favored using the relationships between K, ΔG°, and T.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,100 @@
+{
+  "topic_id": "ap-chem-5-3-concentration-changes-over-time",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.3 Concentration Changes Over Time",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "5.3.A",
+      "statement": "Identify the rate law expression of a chemical reaction using data that show how the concentrations of reaction species change over time.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    },
+    {
+      "code": "5.3.A.1",
+      "statement": "The order of a reaction can be inferred from a graph of concentration of reactant versus time.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.3.A.2",
+      "statement": "If a reaction is first order with respect to a reactant being monitored, a plot of the natural log (ln) of the reactant concentration as a function of time will be linear.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.3.A.3",
+      "statement": "If a reaction is second order with respect to a reactant being monitored, a plot of the reciprocal of the concentration of that reactant versus time will be linear.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.3.A.4",
+      "statement": "The slopes of the concentration versus time data for zeroth, first, and second order reactions can be used to determine the rate constant for the reaction. Zeroth order: EQN: [A]t − [A]0 = −kt. First order: EQN: ln[A]t − ln[A]0 = −kt. Second order: EQN: 1/[A]t − 1/[A]0 = kt.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.3.A.5",
+      "statement": "Half-life is a critical parameter for first order reactions because the half-life is constant and related to the rate constant for the reaction by the equation: EQN: t1/2 = 0.693/k.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.3.A.6",
+      "statement": "Radioactive decay processes provide an important illustration of first order kinetics.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must be able to infer reaction order (zeroth, first, or second) from concentration versus time graphs. This requires knowing that a linear plot of [A] vs time indicates zeroth order, ln[A] vs time indicates first order, and 1/[A] vs time indicates second order. Students are expected to use the slopes of these linear plots to determine the rate constant, k. Furthermore, students must understand half-life as a constant parameter specifically for first-order reactions, calculate it using t_1/2 = 0.693/k, and recognize radioactive decay as a classic first-order process.",
+  "assessment_notes": "This topic is assessed under Suggested Skill 5.B (Identify an appropriate theory, definition, or mathematical relationship to solve a problem). Questions frequently present experimental concentration-time data or graphs and require students to identify the correct rate law expression, determine the reaction order, or calculate the rate constant from the slope. Students must also be prepared to apply the first-order half-life equation, particularly in the context of radioactive decay.",
+  "reference_data": "KINETICS:\n[A]_t - [A]_0 = -kt\nln[A]_t - ln[A]_0 = -kt\n1/[A]_t - 1/[A]_0 = kt\nt_1/2 = 0.693 / k\nk = rate constant\nt = time\nt_1/2 = half-life",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.3.A",
+      "can_do": "I can identify the rate law expression of a chemical reaction using concentration-time data.",
+      "recap": ""
+    },
+    {
+      "code": "5.3.A.1",
+      "can_do": "I can infer the order of a reaction from a graph of reactant concentration versus time.",
+      "recap": ""
+    },
+    {
+      "code": "5.3.A.2",
+      "can_do": "I can recognize that a linear plot of ln[reactant] versus time indicates a first-order reaction.",
+      "recap": ""
+    },
+    {
+      "code": "5.3.A.3",
+      "can_do": "I can recognize that a linear plot of 1/[reactant] versus time indicates a second-order reaction.",
+      "recap": ""
+    },
+    {
+      "code": "5.3.A.4",
+      "can_do": "I can determine the rate constant for zeroth, first, and second-order reactions using the slopes of their respective linear concentration-time graphs.",
+      "recap": ""
+    },
+    {
+      "code": "5.3.A.5",
+      "can_do": "I can calculate the half-life or rate constant for a first-order reaction using the equation t1/2 = 0.693/k.",
+      "recap": ""
+    },
+    {
+      "code": "5.3.A.6",
+      "can_do": "I can apply first-order kinetics principles to radioactive decay processes.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

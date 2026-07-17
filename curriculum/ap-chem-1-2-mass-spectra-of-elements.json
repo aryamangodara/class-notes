@@ -1,0 +1,60 @@
+{
+  "topic_id": "ap-chem-1-2-mass-spectra-of-elements",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 1: Atomic Structure and Properties",
+  "topic": "1.2 Mass Spectra of Elements",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "1.2.A",
+      "statement": "Explain the quantitative relationship between the mass spectrum of an element and the masses of the element's isotopes.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "1.2.A.1",
+      "statement": "The mass spectrum of a sample containing a single element can be used to determine the identity of the isotopes of that element and the relative abundance of each isotope in nature.",
+      "tier": null,
+      "command_words": [
+        "Determine"
+      ]
+    },
+    {
+      "code": "1.2.A.2",
+      "statement": "The average atomic mass of an element can be estimated from the weighted average of the isotopic masses using the mass of each isotope and its relative abundance.",
+      "tier": null,
+      "command_words": [
+        "Estimate"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand how to use the mass spectrum of a sample containing a single element to determine the identity of its isotopes and their relative abundances in nature. They must also be able to estimate the average atomic mass of an element from the weighted average of the isotopic masses. The AP Exam explicitly excludes interpreting mass spectra of samples containing multiple elements or peaks arising from species other than singly charged monatomic ions.",
+  "assessment_notes": "Students are expected to identify information presented graphically to solve problems (Skill 5.D). They may be asked to calculate the average atomic mass of an element from mass spectra data. Questions will be limited to samples containing a single element and peaks arising from singly charged monatomic ions.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "1.2.A",
+      "can_do": "I can explain the quantitative relationship between the mass spectrum of an element and the masses of the element's isotopes.",
+      "recap": ""
+    },
+    {
+      "code": "1.2.A.1",
+      "can_do": "I can use the mass spectrum of a single element to determine the identity and relative abundance of its isotopes.",
+      "recap": ""
+    },
+    {
+      "code": "1.2.A.2",
+      "can_do": "I can estimate the average atomic mass of an element from the weighted average of its isotopic masses and relative abundances.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

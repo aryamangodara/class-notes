@@ -1,0 +1,48 @@
+{
+  "topic_id": "ap-chem-2-3-structure-of-ionic-solids",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 2: Compound Structure and Properties",
+  "topic": "2.3 Structure of Ionic Solids",
+  "prerequisites": [
+    "Coulomb's law",
+    "Periodic trends"
+  ],
+  "learning_objectives": [
+    {
+      "code": "2.3.A",
+      "statement": "Represent an ionic solid with a particulate model that is consistent with Coulomb's law and the properties of the constituent ions.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    },
+    {
+      "code": "2.3.A.1",
+      "statement": "The cations and anions in an ionic crystal are arranged in a systematic, periodic 3-D array that maximizes the attractive forces among cations and anions while minimizing the repulsive forces.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must understand that cations and anions in an ionic crystal are arranged in a systematic, periodic 3-D array that maximizes attractive forces and minimizes repulsive forces. They must be able to represent this with a particulate model consistent with Coulomb's law and ion properties. Exclusion Statement: Knowledge of specific crystal structures is not essential to an understanding of the learning objective and will not be assessed on the AP Exam.",
+  "assessment_notes": "Assessed using Suggested Skill 4.C (Model Analysis): Explain the connection between particulate-level and macroscopic properties of a substance using models and representations. Questions may involve explaining macroscopic properties like malleability/brittleness, and why distorting an ionic crystal causes shattering based on Coulombic forces and the 3-D array structure.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "2.3.A",
+      "can_do": "I can represent an ionic solid with a particulate model that is consistent with Coulomb's law and the properties of the constituent ions.",
+      "recap": ""
+    },
+    {
+      "code": "2.3.A.1",
+      "can_do": "I can describe how cations and anions in an ionic crystal are arranged in a systematic, periodic 3-D array to maximize attractive forces and minimize repulsive forces.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1 (2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

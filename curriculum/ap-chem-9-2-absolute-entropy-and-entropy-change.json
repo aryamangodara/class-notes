@@ -1,0 +1,47 @@
+{
+  "topic_id": "ap-chem-9-2-absolute-entropy-and-entropy-change",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.2 Absolute Entropy and Entropy Change",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "9.2.A",
+      "statement": "Calculate the standard entropy change for a chemical or physical process based on the absolute entropies (standard molar entropies) of the species involved in the process.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    },
+    {
+      "code": "9.2.A.1",
+      "statement": "The entropy change for a process can be calculated from the absolute entropies of the species involved before and after the process occurs. EQN: ΔS°_reaction = ΣS°_products − ΣS°_reactants",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    }
+  ],
+  "depth_profile": "Students must be able to calculate the standard entropy change for a chemical or physical process based on the absolute entropies (standard molar entropies) of the species involved. This requires applying the equation ΔS°_reaction = ΣS°_products − ΣS°_reactants. The scope is strictly limited to calculating this change from given absolute entropies before and after the process occurs.",
+  "assessment_notes": "Assessed under Science Practice 5.F (Mathematical Routines). Students may be asked to calculate, estimate, or predict the standard entropy change. Mark schemes will expect students to select and follow a logical computational pathway, perform dimensional analysis, and strictly attend to precision and significant figures.",
+  "reference_data": "ΔS°_reaction = ΣS°_products − ΣS°_reactants",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.2.A",
+      "can_do": "I can calculate the standard entropy change for a chemical or physical process based on the absolute entropies of the species involved.",
+      "recap": ""
+    },
+    {
+      "code": "9.2.A.1",
+      "can_do": "I can use the equation ΔS°_reaction = ΣS°_products − ΣS°_reactants to calculate the entropy change for a process.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1, Page 167",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

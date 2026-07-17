@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-3-11-spectroscopy-and-the-electromagnetic-spectrum",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.11 Spectroscopy and the Electromagnetic Spectrum",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.11.A",
+      "statement": "Explain the relationship between a region of the electromagnetic spectrum and the types of molecular or electronic transitions associated with that region.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to relate differences in absorption or emission of photons in different spectral regions to specific types of molecular motion or electronic transitions. The required associations are strictly defined as: microwave radiation with transitions in molecular rotational levels, infrared radiation with transitions in molecular vibrational levels, and ultraviolet/visible radiation with transitions in electronic energy levels.",
+  "assessment_notes": "Students may be assessed on their ability to predict and/or explain chemical properties or phenomena (e.g., of atoms or molecules) using given chemical theories, models, and representations (Suggested Skill 4.A).",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.11.A",
+      "can_do": "I can explain the relationship between a region of the electromagnetic spectrum and the types of molecular or electronic transitions associated with that region.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

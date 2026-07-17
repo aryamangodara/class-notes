@@ -1,0 +1,40 @@
+{
+  "topic_id": "ap-chem-7-9-introduction-to-le-ch-telier-s-principle",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.9 Introduction to Le Châtelier’s Principle",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.9.A",
+      "statement": "Identify the response of a system at equilibrium to an external stress, using Le Châtelier's principle.",
+      "tier": null,
+      "command_words": [
+        "identify",
+        "explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to use Le Châtelier’s principle to predict the response of a system to stresses. These stresses include the addition or removal of a chemical species, changes in temperature, changes in volume or pressure of a gas-phase system, or the dilution of a reaction system. Furthermore, students must be able to predict the effect that a stress will have on experimentally measurable properties such as pH, temperature, and the color of a solution.",
+  "assessment_notes": "Students are assessed on their ability to identify the response of a system at equilibrium to an external stress. Questions may require students to apply the suggested skill of Argumentation (6.F) to explain the connection between experimental results and chemical concepts, processes, or theories.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.9.A.1",
+      "can_do": "I can predict the response of a system to stresses such as addition or removal of a chemical species, change in temperature, change in volume/pressure, or dilution using Le Châtelier’s principle.",
+      "recap": ""
+    },
+    {
+      "code": "7.9.A.2",
+      "can_do": "I can predict the effect that a stress will have on experimentally measurable properties such as pH, temperature, and color of a solution.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1 (© 2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

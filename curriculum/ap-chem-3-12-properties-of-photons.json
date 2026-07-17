@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-3-12-properties-of-photons",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.12 Properties of Photons",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.12.A",
+      "statement": "Explain the properties of an absorbed or emitted photon in relationship to an electronic transition in an atom or molecule.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that when a photon is absorbed or emitted by an atom or molecule, the energy of the species is increased or decreased by an amount exactly equal to the energy of the photon. The topic requires applying the equations c = λν and E = hν to relate the wavelength, frequency, and energy of electromagnetic waves.",
+  "assessment_notes": "Exam questions will assess mathematical routines (Skill 5.F), requiring students to calculate, estimate, or predict unknown quantities (such as energy, wavelength, or frequency) from known quantities. Students must demonstrate the ability to select and follow a logical computational pathway, perform dimensional analysis, and strictly attend to precision and significant figures.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.12.A",
+      "can_do": "I can explain the properties of an absorbed or emitted photon in relationship to an electronic transition in an atom or molecule.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

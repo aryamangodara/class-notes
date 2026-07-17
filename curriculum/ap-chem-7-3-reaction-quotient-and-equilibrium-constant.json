@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-7-3-reaction-quotient-and-equilibrium-constant",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.3 Reaction Quotient and Equilibrium Constant",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.3.A",
+      "statement": "Represent the reaction quotient Qc or Qp, for a reversible reaction, and the corresponding equilibrium expressions Kc = Qc or Kp = Qp.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students must be able to write expressions for the reaction quotient (Qc or Qp) and the equilibrium constant (Kc or Kp) using the law of mass action. They must understand that Qc describes relative concentrations at any time and tends toward Kc at equilibrium. Expressions must correctly omit solids and pure liquids, as their concentrations or partial pressures are independent of the amount present. The AP Exam explicitly excludes assessing the mathematical conversion between Kc and Kp, as well as equilibrium calculations on systems where a dissolved species is in equilibrium with that species in the gas phase.",
+  "assessment_notes": "Exam questions may use either Kc or Kp; students must be aware of the conceptual differences and pay close attention to which is being used in a given question. The associated skill (3.A) indicates students may be asked to represent chemical phenomena using appropriate graphing techniques, including correct scale and units.",
+  "reference_data": "Equilibrium Constants:\nKc = [C]^c [D]^d / ([A]^a [B]^b), where a A + b B ⇌ c C + d D\nKp = (P_C)^c (P_D)^d / ((P_A)^a (P_B)^b)",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.3.A",
+      "can_do": "I can represent the reaction quotient Qc or Qp, for a reversible reaction, and the corresponding equilibrium expressions Kc = Qc or Kp = Qp.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,58 @@
+{
+  "topic_id": "ap-chem-1-4-composition-of-mixtures",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 1: Atomic Structure and Properties",
+  "topic": "1.4 Composition of Mixtures",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "1.4.A",
+      "statement": "Explain the quantitative relationship between the elemental composition by mass and the composition of substances in a mixture.",
+      "tier": null,
+      "command_words": [
+        "explain"
+      ]
+    },
+    {
+      "code": "1.4.A.1",
+      "statement": "Pure substances contain atoms, molecules, or formula units of a single type. Mixtures contain atoms, molecules, or formula units of two or more types, whose relative proportions can vary.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "1.4.A.2",
+      "statement": "Elemental analysis can be used to determine the relative numbers of atoms in a substance and to determine its purity.",
+      "tier": null,
+      "command_words": [
+        "determine"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to understand the fundamental differences between pure substances (which contain atoms, molecules, or formula units of a single type) and mixtures (which contain two or more types whose relative proportions can vary). The core expectation is to explain the quantitative relationship between elemental composition by mass and the composition of substances in a mixture. Students must also know how to use elemental analysis to determine the relative numbers of atoms in a substance and to assess its purity.",
+  "assessment_notes": "This topic is paired with Science Practice 5.A (Mathematical Routines), meaning students will be assessed on their ability to identify quantities needed to solve a problem from given information such as text, mathematical expressions, graphs, or tables. On the AP Exam, students must be able to justify claims with evidence, which includes identifying the necessary evidence from elemental analysis data to support a claim about a mixture's purity or composition, and connecting that evidence to chemical theories.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "1.4.A",
+      "can_do": "Explain the quantitative relationship between the elemental composition by mass and the composition of substances in a mixture.",
+      "recap": ""
+    },
+    {
+      "code": "1.4.A.1",
+      "can_do": "Pure substances contain atoms, molecules, or formula units of a single type. Mixtures contain atoms, molecules, or formula units of two or more types, whose relative proportions can vary.",
+      "recap": ""
+    },
+    {
+      "code": "1.4.A.2",
+      "can_do": "Elemental analysis can be used to determine the relative numbers of atoms in a substance and to determine its purity.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

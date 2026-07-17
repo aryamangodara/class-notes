@@ -1,0 +1,59 @@
+{
+  "topic_id": "ap-chem-6-7-bond-enthalpies",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 6: Thermochemistry",
+  "topic": "6.7 Bond Enthalpies",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "6.7.A",
+      "statement": "Calculate the enthalpy change of a reaction based on the average bond energies of bonds broken and formed in the reaction.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    },
+    {
+      "code": "6.7.A.1",
+      "statement": "During a chemical reaction, bonds are broken and/or formed, and these events change the potential energy of the system.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "6.7.A.2",
+      "statement": "The average energy required to break all of the bonds in the reactant molecules can be estimated by adding up the average bond energies of all the bonds in the reactant molecules. Likewise, the average energy released in forming the bonds in the product molecules can be estimated. If the energy released is greater than the energy required, the reaction is exothermic. If the energy required is greater than the energy released, the reaction is endothermic.",
+      "tier": null,
+      "command_words": [
+        "Calculate",
+        "Estimate"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to understand that chemical reactions involve breaking bonds (which requires an input of energy) and forming bonds (which releases energy), thereby changing the potential energy of the system. They must be able to estimate the overall enthalpy change of a reaction by summing the average bond energies of all bonds broken in the reactants and comparing it to the sum of the average bond energies of all bonds formed in the products. The depth requires concluding whether a reaction is endothermic or exothermic based on which of these two energy quantities is greater.",
+  "assessment_notes": "On the AP Exam, students must be able to translate between a balanced chemical equation and a calculation involving the energies of bonds broken and formed. A common pitfall examiners note is that students often struggle to correctly determine the number and types of bonds that were broken and made in the reaction. Students must be able to accurately identify these bonds (often requiring them to draw or visualize Lewis structures) and apply mathematical routines to calculate or estimate the overall enthalpy of the reaction.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "6.7.A",
+      "can_do": "Calculate the enthalpy change of a reaction based on the average bond energies of bonds broken and formed in the reaction.",
+      "recap": ""
+    },
+    {
+      "code": "6.7.A.1",
+      "can_do": "During a chemical reaction, bonds are broken and/or formed, and these events change the potential energy of the system.",
+      "recap": ""
+    },
+    {
+      "code": "6.7.A.2",
+      "can_do": "The average energy required to break all of the bonds in the reactant molecules can be estimated by adding up the average bond energies of all the bonds in the reactant molecules. Likewise, the average energy released in forming the bonds in the product molecules can be estimated. If the energy released is greater than the energy required, the reaction is exothermic. If the energy required is greater than the energy released, the reaction is endothermic.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

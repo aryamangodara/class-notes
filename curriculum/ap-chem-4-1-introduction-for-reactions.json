@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-4-1-introduction-for-reactions",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 4: Chemical Reactions",
+  "topic": "4.1 Introduction for Reactions",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "4.1.A",
+      "statement": "Identify evidence of chemical and physical changes in matter.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to distinguish between physical and chemical changes based on macroscopic observations. Physical changes must be understood as changes in properties that do not alter the substance's composition; the specification explicitly includes phase changes (solid, liquid, gas) and the formation or separation of mixtures as common physical changes. Chemical changes must be understood as the transformation of substances into new substances, typically with different compositions. Students are required to know the specific macroscopic evidence that suggests a chemical change has occurred: the production of heat or light, the formation of a gas, the formation of a precipitate, and/or a color change.",
+  "assessment_notes": "This topic is paired with Science Practice 2.B (Formulate a hypothesis or predict the results of an experiment). Students may be asked to analyze experimental observations to predict or identify whether a physical or chemical change occurred. They must be able to justify their claims using the specific evidence outlined in the specification (e.g., noting that a precipitate or gas formation indicates a chemical reaction). A common conceptual hurdle is recognizing that the formation and separation of mixtures are physical changes, not chemical ones.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "4.1.A",
+      "can_do": "Identify evidence of chemical and physical changes in matter.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

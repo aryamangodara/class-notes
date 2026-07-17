@@ -1,0 +1,49 @@
+{
+  "topic_id": "ap-chem-4-8-introduction-to-acid-base-reactions",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 4: Chemical Reactions",
+  "topic": "4.8 Introduction to Acid-Base Reactions",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "4.8.A",
+      "statement": "Identify species as Brønsted-Lowry acids, bases, and/or conjugate acid-base pairs, based on proton-transfer involving those species.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    }
+  ],
+  "depth_profile": "The topic focuses strictly on the Brønsted-Lowry definitions of acids (proton donors) and bases (proton acceptors). Students must be able to identify conjugate acid-base pairs and compare their relative strengths when ionized in water. The curriculum emphasizes reactions in aqueous solutions, specifically highlighting water's molecular structure that allows it to both accept and donate protons. Lewis acid-base concepts are explicitly excluded and will not be assessed on the AP Exam.",
+  "assessment_notes": "Assessment will focus on identifying proton-transfer species in aqueous solutions. Questions may require students to describe the components of and quantitative information from models and representations that illustrate both particulate-level and macroscopic-level properties (Suggested Skill 1.B).",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "4.8.A",
+      "can_do": "Identify species as Brønsted-Lowry acids, bases, and/or conjugate acid-base pairs, based on proton-transfer involving those species.",
+      "recap": ""
+    },
+    {
+      "code": "4.8.A.1",
+      "can_do": "By definition, a Brønsted-Lowry acid is a proton donor and a Brønsted-Lowry base is a proton acceptor.",
+      "recap": ""
+    },
+    {
+      "code": "4.8.A.2",
+      "can_do": "Only in aqueous solutions, water plays an important role in many acid-base reactions, as its molecular structure allows it to accept protons from and donate protons to dissolved species.",
+      "recap": ""
+    },
+    {
+      "code": "4.8.A.3",
+      "can_do": "When an acid or base ionizes in water, the conjugate acid-base pairs can be identified and their relative strengths compared.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}
