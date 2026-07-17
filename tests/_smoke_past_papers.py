@@ -55,12 +55,15 @@ print("confirmed_to_verified OK (1/2 kept; url+label from registry)")
 _CAND, _VER = CandidateCitations(items=cands), VerificationReport(items=verds)
 
 
-def _stub_call_model(client, *, label="", **kwargs):
-    if label.startswith("pp-cand"):
+def _stub_call_model(client, *, trace, **kwargs):
+    # `trace` is REQUIRED (no default), so a stage that ever went out untraced would fail
+    # here with a TypeError rather than quietly stubbing. Keyed off the declared stage
+    # vocabulary — see tests/_smoke_tracing.py for the contract itself.
+    if trace["stage"] == "past_papers.candidates":
         return _CAND
-    if label.startswith("pp-verify"):
+    if trace["stage"] == "past_papers.verify":
         return _VER
-    raise AssertionError("unexpected call_model label: " + label)
+    raise AssertionError("unexpected call_model stage: " + trace["stage"])
 
 
 def _stub_http_ok(url, timeout=30, *, max_bytes=None, accept_types=None):

@@ -105,7 +105,9 @@ def enumerate_topics(client, board, subject, level, pdf_bytes) -> list:
     part = types.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf")
     prompt = helpers.load_prompt("spec_enumerate.txt").format(board=board, subject=subject, level=level)
     result = helpers.call_model(
-        client, label=f"spec-enum:{subject}", contents=[prompt, part],
+        client, trace=helpers.trace_spec_run("spec.enumerate", board=board, subject=subject,
+                                             level=level),
+        contents=[prompt, part],
         **helpers._gen_config("model_spec_enumerate", "temperature_verify", SpecTopicList))
     items = list(result.items)
     cap = CONFIG.get("max_topics_per_spec", 120)
@@ -123,7 +125,9 @@ def extract_topic(client, board, subject, level, entry, pdf_bytes) -> dict:
     prompt = helpers.load_prompt("spec_extract.txt").format(
         board=board, subject=subject, level=level, unit=entry.unit, topic=entry.topic)
     spec = helpers.call_model(
-        client, label=f"spec-extract:{entry.topic[:32]}", contents=[prompt, part],
+        client, trace=helpers.trace_spec_run("spec.extract", board=board, subject=subject,
+                                             level=level, item=entry.topic),
+        contents=[prompt, part],
         **helpers._gen_config("model_spec_extract", "temperature_verify", TopicSpec))
     return spec.model_dump()
 
