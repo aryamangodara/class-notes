@@ -106,8 +106,8 @@ def write_section_v2(client: genai.Client, spec: TopicSpec, section, outline,
         coverage_feedback=coverage_feedback,
     )
     return helpers.call_model(
-        client, label=f"v2-section:{section.heading[:22]}", contents=prompt,
-        trace_meta=helpers.trace_meta(spec, "section"),
+        client, trace=helpers.trace_topic(spec, "section", item=section.heading),
+        contents=prompt,
         **helpers._gen_config("model_write", "temperature_write", v2.InteractiveSection))
 
 
@@ -129,8 +129,7 @@ def write_practice_v2(client: genai.Client, spec: TopicSpec, sections,
         sections=joined, worked_examples=_worked_examples_text(sections),
         structural_feedback=structural_feedback)
     ps = helpers.call_model(
-        client, label=f"v2-practice:{spec.topic_id}", contents=prompt,
-        trace_meta=helpers.trace_meta(spec, "practice"),
+        client, trace=helpers.trace_topic(spec, "practice"), contents=prompt,
         **helpers._gen_config("model_write", "temperature_write", _PracticeSet))
     return list(ps.questions)
 
@@ -167,12 +166,11 @@ def finalize_v2(client: genai.Client, spec: TopicSpec, sections) -> _Finalize:
         house_style=HOUSE_STYLE, spec_block=helpers._spec_block(spec),
         sections=joined, checklist=checklist)
     return helpers.call_model(
-        client, label=f"v2-finalize:{spec.topic_id}", contents=prompt,
-        trace_meta=helpers.trace_meta(spec, "finalize"),
+        client, trace=helpers.trace_topic(spec, "finalize"), contents=prompt,
         **helpers._gen_config("model_write", "temperature_write", _Finalize))
 
 
-def _fetch_one_image(client: genai.Client, d, width: int):
+def _fetch_one_image(client: genai.Client, d, width: int, trace: dict):
     """Search + download + vision-select for ONE figure slot. Returns the chosen
     candidate dict (with `_bytes`) or None. Independent per slot, so this is the unit
     the image stage fans out across figures — same searches/vision as before."""
@@ -189,19 +187,25 @@ def _fetch_one_image(client: genai.Client, d, width: int):
     if not cands:
         print(f"    image: nothing usable for '{query[:40]}'")
         return None
-    idx = helpers._select_image(client, query, d.caption, cands) if CONFIG.get("image_vision_select") else 0
+    idx = (helpers._select_image(client, query, d.caption, cands, trace)
+           if CONFIG.get("image_vision_select") else 0)
     if idx < 0:
         print(f"    image: no suitable match for '{query[:40]}'")
         return None
     return cands[idx]
 
 
-def fetch_images_for_blocks(client: genai.Client, sections, *, max_images: int, width: int) -> int:
+def fetch_images_for_blocks(client: genai.Client, spec: TopicSpec, sections, *,
+                            max_images: int, width: int) -> int:
     """Search/select/embed images for `figure` blocks (kind='image') in place.
 
     The per-figure search+vision is fanned out across slots (each independent), then the
     successful picks are embedded IN SLOT ORDER up to ``max_images`` — the exact same
     selection the old sequential loop made, only concurrent.
+
+    Takes `spec` purely to trace the vision calls against the owning topic (built here,
+    on the parent thread, because the contract is a plain dict — no OTel context to
+    propagate into the pool).
     """
     slots = [b.diagram for s in sections for b in s.blocks
              if b.type == "figure" and b.diagram.kind == "image" and not b.diagram.image_src]
@@ -209,8 +213,10 @@ def fetch_images_for_blocks(client: genai.Client, sections, *, max_images: int, 
         return 0
     picks: list = [None] * len(slots)
     workers = min(len(slots), CONFIG.get("max_parallel_sections", 4))
+    trace = helpers.trace_topic(spec, "image.select")
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        futs = {ex.submit(_fetch_one_image, client, d, width): i for i, d in enumerate(slots)}
+        futs = {ex.submit(_fetch_one_image, client, d, width, trace): i
+                for i, d in enumerate(slots)}
         for fut in as_completed(futs):
             i = futs[fut]
             try:
@@ -238,8 +244,7 @@ def verify_v2(client: genai.Client, spec: TopicSpec, sections) -> CoverageReport
     # it must not be a weak rubber-stamp. It sees only the notes + contract, never
     # the writer's reasoning, so it stays an independent second read of the output.
     return helpers.call_model(
-        client, label=f"v2-verify:{spec.topic_id}", contents=prompt,
-        trace_meta=helpers.trace_meta(spec, "coverage"),
+        client, trace=helpers.trace_topic(spec, "coverage"), contents=prompt,
         **helpers._gen_config("model_coverage", "temperature_coverage", CoverageReport))
 
 
@@ -341,7 +346,7 @@ def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.Inte
         if not CONFIG.get("image_search"):
             return
         try:
-            k = fetch_images_for_blocks(client, sections,
+            k = fetch_images_for_blocks(client, spec, sections,
                                         max_images=CONFIG["max_images_per_topic"], width=CONFIG["image_width"])
             print(f"       embedded {k} image(s)")
         except Exception as exc:  # noqa: BLE001 — images never fail a topic

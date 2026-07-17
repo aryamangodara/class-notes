@@ -62,8 +62,11 @@ Offline self-tests live in `tests/` (no key/network), each the fast regression c
 `tests/_smoke_past_papers.py` (two-pass + URL/render safety), `tests/_smoke_ground_specs.py`
 (confidence gating + in-place patch), `tests/_smoke_extract_specs.py` (id convention + skip-existing
 + UNVERIFIED stamping + cross-module gate sync), `tests/_smoke_notes_batch.py` (select/plan/provenance
-gate + manifest + tagged output), `tests/_smoke_spotcheck.py` (deterministic sampling).
-**Run the relevant one after touching its module.**
+gate + manifest + tagged output), `tests/_smoke_spotcheck.py` (deterministic sampling),
+`tests/_smoke_tracing.py` (the tracing doctrine: static no-untraced-call scan + single-door +
+stage-vocabulary parity + tag/limit contract).
+**Run the relevant one after touching its module.** `_smoke_tracing.py` scans `src/` statically,
+so run it after adding ANY model call site.
 
 **Re-render existing notes without regenerating** (apply render/CSS changes, no API):
 ```bash
@@ -154,11 +157,12 @@ notes + contract, never the writer's reasoning, so it stays an independent read.
   - `GEMINI_API_KEY=...` (AI Studio), or
   - `GOOGLE_APPLICATION_CREDENTIALS` + `GOOGLE_CLOUD_PROJECT` (Vertex AI).
   `get_gemini_client()` prefers the key and falls back to Vertex.
-- **Optional cost tracking:** set `LANGFUSE_PUBLIC_KEY` + `LANGFUSE_SECRET_KEY` (+ `LANGFUSE_HOST`)
-  in `.env` and every Gemini call is logged to Langfuse as a generation with token usage —
-  it prices the models itself, so total/per-subject/per-stage cost rolls up (grouped by a
-  deterministic trace per `topic_id`). The hook is in `helpers.call_model` (the single call
-  site); it is a strict no-op when the keys are absent and NEVER breaks a run. `pip install langfuse`.
+- **Cost tracking (Langfuse):** set `LANGFUSE_PUBLIC_KEY` + `LANGFUSE_SECRET_KEY` (+ `LANGFUSE_HOST`)
+  in `.env` and every Gemini call is logged as a generation with token usage — Langfuse prices
+  the models itself, so total / per-feature / per-subject / per-stage cost rolls up. The hook is
+  in `helpers.call_model` (the single call site); it is a strict no-op when the keys are absent
+  and NEVER breaks a run. `pip install langfuse`. See **Tracing doctrine** below for the contract
+  every call must satisfy.
 - `curriculum/*.json` — one `TopicSpec` per topic, self-describing (carries its
   own board/subject/level); discovered automatically by `discover_topics()`. Author
   them by hand, or grow the store from official spec PDFs with `extract_specs.py`
@@ -175,8 +179,10 @@ src/             the application — run: py -3 src/notes.py <id>
                    OutlineSection / NotesOutline. Field descriptions are Gemini response_schema surface.
   schemas_v2.py    the v2 block vocabulary + the assembled InteractiveNotes
   helpers.py       shared utilities: Gemini client + retry (call_model -> response.parsed, with a global
-                   in-flight concurrency governor), _gen_config, load_prompt, grounding (_spec_block),
-                   the outline stage, image search + vision
+                   in-flight concurrency governor), the tracing contract (FEATURES / STAGES /
+                   trace_for / trace_topic / trace_spec_run + the Langfuse hook — see Tracing
+                   doctrine), _gen_config, load_prompt, grounding (_spec_block), the outline
+                   stage, image search + vision
   coverage_gate.py deterministic, genai-free gate logic — coverage (CoverageError) + block-completeness
                    tier (StructuralError, defect_feedback_by_section, structural_feedback_block)
   batch.py         deterministic, genai-free batch-runner logic — TopicResult + outcome vocabulary,
@@ -252,6 +258,45 @@ regress** (`_smoke_v2.py` asserts most):
   `BOARD_EXAM_TIPS[level]` plus any `BOARD_SUBJECT_EXAM_TIPS[(level, subject)]` overlay
   (so SAT Reading & Writing doesn't inherit SAT Math's Desmos/grid-in facts) — grounds the
   per-section exam pointers; keep them consistent with the real format.
+
+## Tracing doctrine — every model call is traced, named, and tagged
+
+**Not a single model call goes out untraced.** A call that isn't traced is spend nobody
+can attribute; a call traced as "unknown" is barely better. This is enforced structurally,
+not by convention (`tests/_smoke_tracing.py` asserts every clause):
+
+- **One door.** `helpers.call_model` is the ONLY place that calls `generate_content` — so
+  the trace requirement cannot be routed around.
+- **`trace` is required.** It is keyword-only with **no default**, built by
+  `helpers.trace_topic` / `trace_spec_run` / `trace_for`. A new call site that forgets it
+  fails at the call, not silently in Langfuse. `trace_for` rejects an undeclared
+  feature/stage, so a typo fails loudly in dev instead of landing as an anonymous call.
+  It also supplies the console label — logs and Langfuse cannot drift apart.
+- **Names are the aggregation axis, so keep them low-cardinality.** `feature` names the
+  TRACE (`notes.generate`, `notes.extract_specs`, `notes.ground_specs` — a new model-calling
+  CLI adds itself to `helpers.FEATURES`); `stage` names the OBSERVATION as `notes.<stage>`
+  (`notes.section`, `notes.coverage` — declared in `helpers.STAGES`, kept in lockstep with
+  the call sites exactly like `BLOCK_TYPES` ↔ `renderBlock`). The variable part (topic,
+  heading) goes in **tags/metadata, never the name** — names like `v2-section:Periodic
+  Trends and Co` mint one name per section and aggregate to nothing.
+- **Tags are the filter axis:** `app:class-notes`, `feature:`, `stage:`, `board:`,
+  `subject:`, `level:`, `topic:`. Langfuse silently DROPS a propagated value that isn't a
+  `str` or exceeds 200 chars, so `trace_for` coerces + clips — a quietly missing tag is the
+  same blind spot as no tag.
+- **`group` is the unit of work** one trace covers and seeds a **deterministic trace id**:
+  every stage of one topic (outline → section → coverage → images → practice → finalize →
+  papers) rolls up under ONE trace and one cost total. Seeded, never OTel context — the
+  pipeline fans out across threads (`--jobs` × the section pool) and contextvars do **not**
+  cross a `ThreadPoolExecutor` boundary. Anything needing the topic's trace must take it as
+  a plain argument (this is why `fetch_images_for_blocks` takes `spec`).
+- **The contract is validated; the transmission is best-effort.** A dropped cost record must
+  never cost a topic, so `_log_generation` swallows everything. The contract itself is pure +
+  deterministic, so the smoke test exercises it with no key.
+- **SDK trap (v4):** `propagate_attributes(trace_name=...)` is the ONLY API that names a
+  trace — v3's `update_current_trace` / `span.update_trace` are **gone**, and a
+  `trace_context` trace with no name renders as **"unknown"** (this cost the project ~$24
+  of unattributable spend before it was fixed). It is contextvar-scoped, so it MUST wrap
+  `start_observation` **in the same thread** — never build it on a parent thread.
 
 ## Conventions specific to this repo
 

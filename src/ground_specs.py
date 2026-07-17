@@ -147,7 +147,10 @@ def verify_spec(client, spec, pdf_bytes) -> SpecGroundingReport:
     prompt = helpers.load_prompt("spec_ground.txt").format(
         board=spec.board, subject=spec.subject, level=spec.level, unit=spec.unit,
         topic=spec.topic, items=items)
-    return helpers.call_model(client, label=f"spec-ground:{spec.topic_id}", contents=[prompt, part],
+    trace = helpers.trace_for(helpers.FEATURE_GROUND, "spec.ground", group=spec.topic_id,
+                              board=spec.board, subject=spec.subject, level=spec.level,
+                              topic_id=spec.topic_id)
+    return helpers.call_model(client, trace=trace, contents=[prompt, part],
                               **helpers._gen_config("model_spec_ground", "temperature_verify", SpecGroundingReport))
 
 

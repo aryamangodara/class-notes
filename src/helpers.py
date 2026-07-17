@@ -43,17 +43,108 @@ _INFLIGHT_SEM = threading.BoundedSemaphore(_MAX_INFLIGHT) if _MAX_INFLIGHT > 0 e
 
 
 # ---------------------------------------------------------------------------
-# Optional Langfuse cost / observability
+# Langfuse tracing — the contract every model call must satisfy
 # ---------------------------------------------------------------------------
-# Every Gemini call flows through call_model, so logging one generation here captures the
-# WHOLE pipeline's token usage (generation AND extraction/grounding). Fully optional: a
-# no-op unless LANGFUSE_PUBLIC_KEY + LANGFUSE_SECRET_KEY are set (loaded from .env by the
-# CLI before the first call). Langfuse prices the models itself (gemini-3.1-pro-preview /
-# gemini-3.5-flash are in its table), so cost is computed from the token counts we send.
-# Any error here NEVER breaks a run — cost tracking is strictly best-effort.
+# DOCTRINE: not a single model call goes out untraced. Every Gemini call flows through
+# call_model, which REQUIRES a `trace` contract built by the builders below — there is
+# no default and no opt-out, so a new call site cannot silently ship an uncosted call.
+# `trace_for` validates the feature/stage vocabulary, so a typo fails loudly on the
+# first call instead of landing in Langfuse as an anonymous "unknown".
+#
+# The contract's shape is dictated by how Langfuse aggregates:
+#   feature     -> the TRACE name. Low-cardinality (notes.generate, notes.ground_specs):
+#                  this is what "cost per product surface" groups by.
+#   stage       -> the OBSERVATION name, prefixed `notes.` (notes.section, notes.coverage).
+#                  Also low-cardinality ON PURPOSE — it is the "cost per pipeline step"
+#                  axis. The variable part (topic, heading) belongs in tags/metadata; a
+#                  name like `v2-section:Periodic Trends and Co` aggregates to nothing.
+#   group       -> the unit of work one trace covers (a topic id, a subject spec run).
+#                  Seeds a DETERMINISTIC trace id, so every stage of one topic rolls up
+#                  under one trace + one cost total, without OTel context — which matters
+#                  because the pipeline fans out across threads (--jobs x the section
+#                  pool) and contextvars do NOT cross a ThreadPoolExecutor boundary.
+#   tags        -> the filter axes in the UI (app/feature/stage/board/subject/level/topic).
+#   metadata    -> the same dimensions as data, plus per-stage detail.
+#
+# Transmission is best-effort and NEVER breaks a run (a dropped cost record must not cost
+# a topic); the CONTRACT above is validated deterministically. Fully optional: a no-op
+# unless LANGFUSE_PUBLIC_KEY + LANGFUSE_SECRET_KEY are set (loaded from .env by the CLI
+# before the first call). Langfuse prices the models itself, so sending token counts is
+# enough for total / per-subject / per-stage cost to roll up.
+
+# The product surfaces that spend tokens -> Langfuse TRACE names. A new CLI that calls a
+# model adds itself here.
+FEATURE_GENERATE = "notes.generate"          # notes.py: topic -> interactive notes
+FEATURE_EXTRACT = "notes.extract_specs"      # extract_specs.py: spec PDF -> TopicSpecs
+FEATURE_GROUND = "notes.ground_specs"        # ground_specs.py: verify codes vs spec PDF
+FEATURES = frozenset({FEATURE_GENERATE, FEATURE_EXTRACT, FEATURE_GROUND})
+
+# The pipeline steps -> Langfuse OBSERVATION names (rendered as `notes.<stage>`). Keep
+# this in lockstep with the call sites; `tests/_smoke_tracing.py` asserts every call site's
+# stage is declared here AND that every stage here is reachable from a call site.
+STAGES = frozenset({
+    "outline", "section", "coverage", "practice", "finalize",   # pipeline_v2
+    "image.select",                                             # helpers._select_image
+    "past_papers.candidates", "past_papers.verify",             # past_papers
+    "spec.enumerate", "spec.extract", "spec.ground",            # extract_specs / ground_specs
+})
+
 _LF = "uninit"           # "uninit" -> not yet built; None -> disabled; else the client
 _LF_LOCK = threading.Lock()
 _LF_WARNED = False
+
+
+def trace_for(feature: str, stage: str, *, group: str, board: str = "", subject: str = "",
+              level: str = "", topic_id: str = "", **detail) -> dict:
+    """Build the tracing contract REQUIRED by ``call_model`` (see the doctrine above).
+
+    Rejects an undeclared feature/stage rather than emitting an unattributable call —
+    tracing is a contract, not a best-effort afterthought. Prefer the per-feature
+    builders below; reach for this directly only when adding a feature.
+    """
+    if feature not in FEATURES:
+        raise ValueError(f"untraceable feature {feature!r} — add it to helpers.FEATURES")
+    if stage not in STAGES:
+        raise ValueError(f"untraceable stage {stage!r} — add it to helpers.STAGES")
+    if not group:
+        raise ValueError(f"trace_for({feature}, {stage}) needs a non-empty `group` to roll up under")
+    dims = [("board", board), ("subject", subject), ("level", level), ("topic", topic_id)]
+    # Langfuse DROPS a propagated value that is not a str or exceeds 200 chars — silently.
+    # So coerce and clip everything here: a quietly missing tag is exactly the blind spot
+    # this contract exists to remove. (The trace-id seed uses the unclipped `group`.)
+    meta = {"feature": feature, "stage": stage, "group": str(group)[:200]}
+    meta.update({k: str(v)[:200] for k, v in dims if v})
+    meta.update({k: str(v)[:200] for k, v in detail.items() if v})
+    return {
+        "feature": feature,
+        "stage": stage,
+        "group": group,
+        "observation": f"notes.{stage}",
+        "tags": ["app:class-notes", f"feature:{feature}", f"stage:{stage}"]
+                + [f"{k}:{str(v)[:190]}" for k, v in dims if v],
+        "metadata": meta,
+        # The console label for retry/error lines — derived, so it can never drift from
+        # what Langfuse shows. `item` is the optional "which one" detail (a section
+        # heading, a spec topic name) that distinguishes sibling calls of one stage.
+        "label": f"{stage}:{detail.get('item') or topic_id or group}",
+    }
+
+
+def trace_topic(spec, stage: str, **detail) -> dict:
+    """Tracing contract for a notes-generation call: one trace per topic, so every
+    stage (outline -> section -> coverage -> images -> practice -> finalize -> papers)
+    and its cost roll up under that topic."""
+    return trace_for(FEATURE_GENERATE, stage, group=spec.topic_id, board=spec.board,
+                     subject=spec.subject, level=spec.level, topic_id=spec.topic_id, **detail)
+
+
+def trace_spec_run(stage: str, *, board: str, subject: str, level: str = "", **detail) -> dict:
+    """Tracing contract for an extract_specs call: one trace per SUBJECT SPEC run, so the
+    enumerate + every per-topic extract from one PDF roll up under one trace and one cost.
+    (They used to mint a fresh single-call trace each, named after the topic — ~60 unique
+    trace names per subject, which aggregates to nothing.)"""
+    return trace_for(FEATURE_EXTRACT, stage, group=f"{board}:{subject}", board=board,
+                     subject=subject, level=level, **detail)
 
 
 def _langfuse():
@@ -76,29 +167,39 @@ def _langfuse():
     return _LF
 
 
-def _log_generation(label: str, model, resp, trace_meta=None) -> None:
-    """Record one Gemini call as a Langfuse generation (model + token usage -> cost).
-    Generations sharing a topic_id roll up under one deterministic trace."""
+def _log_generation(trace: dict, model, resp) -> None:
+    """Record one Gemini call as a Langfuse generation (model + token usage -> cost),
+    named + tagged per the `trace` contract.
+
+    ``propagate_attributes`` is the ONLY v4 API that sets a trace name (v3's
+    ``update_current_trace`` / ``span.update_trace`` are gone). Without it a
+    ``trace_context`` trace has NO name and every call in it renders as "unknown" — the
+    bug this replaces. It is contextvar-scoped, so it must wrap ``start_observation`` in
+    the SAME thread; it does here, because this runs inline in the worker that made the
+    call, never on a parent thread.
+    """
     lf = _langfuse()
     if lf is None:
         return
     global _LF_WARNED
     try:
+        from langfuse import propagate_attributes
+
         um = getattr(resp, "usage_metadata", None)
         usage = None
         if um is not None:
             usage = {"input": int(getattr(um, "prompt_token_count", 0) or 0),
                      "output": int(getattr(um, "candidates_token_count", 0) or 0)}
-        meta = dict(trace_meta or {})
-        trace_ctx = None
-        tid = meta.get("topic_id")
-        if tid:
-            # Deterministic trace per topic — all its stages roll up under one trace and
-            # its total cost. Thread-safe: derived from a seed, not OTel context.
-            trace_ctx = {"trace_id": lf.create_trace_id(seed=str(tid))}
-        lf.start_observation(name=label or "gemini", as_type="generation", model=model,
-                             usage_details=usage, metadata=meta or None,
-                             trace_context=trace_ctx).end()
+        meta = trace["metadata"]
+        with propagate_attributes(trace_name=trace["feature"], tags=list(trace["tags"]),
+                                  metadata=meta, session_id=trace["group"]):
+            lf.start_observation(
+                name=trace["observation"], as_type="generation", model=model,
+                usage_details=usage, metadata=meta,
+                # Deterministic trace per unit of work — every stage of one topic rolls
+                # up under one trace + its total cost. Thread-safe: seeded, not OTel.
+                trace_context={"trace_id": lf.create_trace_id(seed=trace["group"])},
+            ).end()
     except Exception as exc:  # noqa: BLE001 — cost tracking must NEVER break a run
         if not _LF_WARNED:
             print(f"    Langfuse logging error (further errors suppressed): {exc}")
@@ -116,10 +217,6 @@ def flush_langfuse() -> None:
             pass
 
 
-def trace_meta(spec, stage: str) -> dict:
-    """Langfuse metadata for a pipeline call — groups cost by topic / subject / stage."""
-    return {"topic_id": spec.topic_id, "board": spec.board, "subject": spec.subject,
-            "level": spec.level, "stage": stage}
 
 
 # ---------------------------------------------------------------------------
@@ -179,8 +276,8 @@ def _transient(exc: Exception) -> bool:
     return any(w in blob for w in _RETRYABLE_WORDS) or any(str(c) in blob for c in _RETRYABLE)
 
 
-def call_model(client: genai.Client, *, label: str = "", max_attempts: int = 4,
-               base_delay: float = 2.0, trace_meta: "dict | None" = None, **kwargs):
+def call_model(client: genai.Client, *, trace: dict, max_attempts: int = 4,
+               base_delay: float = 2.0, **kwargs):
     """Call ``client.models.generate_content`` with retry, returning the parsed
     Pydantic object (``response.parsed``).
 
@@ -188,8 +285,13 @@ def call_model(client: genai.Client, *, label: str = "", max_attempts: int = 4,
     empty structured responses (``parsed is None`` — usually a safety filter or
     a MAX_TOKENS truncation) with exponential backoff + jitter. Non-transient
     errors (400, auth) raise immediately.
+
+    ``trace`` (from ``trace_topic`` / ``trace_for``) is REQUIRED and has no default:
+    this is the single call site for every Gemini call in the repo, so demanding it
+    here is what makes "no untraced call" structural rather than a convention. It also
+    supplies the console label, so the logs and Langfuse can never disagree.
     """
-    tag = f" [{label}]" if label else ""
+    tag = f" [{trace['label']}]"
     for attempt in range(1, max_attempts + 1):
         try:
             # Bound total in-flight calls across all batch/section/stage threads.
@@ -204,8 +306,9 @@ def call_model(client: genai.Client, *, label: str = "", max_attempts: int = 4,
             continue
 
         # Cost tracking: log token usage for every response we got (even a truncated one
-        # consumed tokens). Best-effort; never raises.
-        _log_generation(label, kwargs.get("model"), resp, trace_meta)
+        # consumed tokens — a retry that lands here twice must show up twice, or the
+        # cost of a flaky topic under-reports). Best-effort; never raises.
+        _log_generation(trace, kwargs.get("model"), resp)
         parsed = getattr(resp, "parsed", None)
         if parsed is None:
             if attempt == max_attempts:
@@ -289,8 +392,7 @@ def _spec_block(spec: TopicSpec) -> str:
 
 def generate_outline(client: genai.Client, spec: TopicSpec) -> NotesOutline:
     prompt = load_prompt("outline.txt").format(house_style=HOUSE_STYLE, spec_block=_spec_block(spec))
-    return call_model(client, label=f"outline:{spec.topic_id}", contents=prompt,
-                      trace_meta=trace_meta(spec, "outline"),
+    return call_model(client, trace=trace_topic(spec, "outline"), contents=prompt,
                       **_gen_config("model_plan", "temperature_plan", NotesOutline))
 
 
@@ -435,8 +537,13 @@ def _attribution(c: dict) -> str:
     return f'{title}{who}{lic} (via {c.get("via", "the web")})'
 
 
-def _select_image(client: genai.Client, query: str, caption: str, candidates: list[dict]) -> int:
-    """Gemini vision picks the best candidate; returns 0-based index, or -1 for none."""
+def _select_image(client: genai.Client, query: str, caption: str, candidates: list[dict],
+                  trace: dict) -> int:
+    """Gemini vision picks the best candidate; returns 0-based index, or -1 for none.
+
+    ``trace`` is threaded from the owning topic so the vision calls cost against that
+    topic — they used to be the pipeline's one anonymous stage, one orphan trace each.
+    """
     import io
     from PIL import Image
 
@@ -455,6 +562,6 @@ def _select_image(client: genai.Client, query: str, caption: str, candidates: li
             contents.append(Image.open(io.BytesIO(c["_bytes"])))
         except Exception:
             contents.append(f"(image {i} could not be read)")
-    choice = call_model(client, label="img-select", contents=contents,
+    choice = call_model(client, trace=trace, contents=contents,
                         **_gen_config("model_vision", "temperature_verify", ImageChoice))
     return choice.choice - 1 if 1 <= choice.choice <= len(candidates) else -1
