@@ -292,6 +292,33 @@ not by convention (`tests/_smoke_tracing.py` asserts every clause):
 - **The contract is validated; the transmission is best-effort.** A dropped cost record must
   never cost a topic, so `_log_generation` swallows everything. The contract itself is pure +
   deterministic, so the smoke test exercises it with no key.
+- **A traced call is only a COSTED call if every billable token bucket is sent.** Gemini splits
+  usage FOUR ways and `candidates_token_count` is only the VISIBLE answer — the reasoning
+  tokens land in a separate `thoughts_token_count` that is billed at the OUTPUT rate. Sending
+  just prompt+candidates (as this did through the first pilot) under-reports the real bill by
+  ~62%: measured live, thinking runs 185–211% of visible output, so true cost was **2.6x**
+  what Langfuse showed. `helpers._usage_details` maps all four; the invariant is
+  **`sum(usage.values()) == total_token_count`**, and anything left over surfaces as a loud
+  one-time residual warning rather than vanishing. Two traps it encodes: Langfuse matches each
+  usage key EXACTLY against the model definition's price keys (an unmatched name silently
+  costs $0), and it buckets a key as input/output by whether the NAME CONTAINS "input"/"output"
+  — hence `output_reasoning_tokens` (priced identically to `thoughts_token_count`, but it also
+  makes Langfuse's output-token totals reconcile against Vertex). Cached tokens sit INSIDE
+  `prompt_token_count` but bill at ~10%, so `input` carries only the uncached remainder —
+  usage types must be mutually exclusive buckets. Never send `total`: Langfuse derives it, and
+  a model definition that prices it would double-charge every call.
+- **No keys ⇒ no record, and that must be audible.** Langfuse is optional, so a `.env` without
+  `LANGFUSE_PUBLIC_KEY`/`SECRET_KEY` spends real money with nothing written anywhere — the same
+  blind spot as an untraced call, so the OFF path now says so on every run. The dev `.env`s
+  carry only Vertex creds (the keys live on the server), so **local runs are unrecorded by
+  default**; `notes.ground_specs` currently has zero observations for that reason, while the
+  pre-refactor `spec-ground:<topic>` traces from the same CLI are still in the data.
+- **Reconciling against Vertex: Langfuse is not the whole bill.** The Vertex project
+  (`gen-lang-client-0547340259`) is SHARED — the Grader uses the same service account and has no
+  Langfuse integration at all, and several other AP Guru surfaces (`error_analysis_run`,
+  `weekly_plan_run`, `grader.grade`, `gemini.generate_structured`) write into the same Langfuse
+  project. So compare like for like: filter Langfuse on `app:class-notes` (only this repo sets
+  it), and expect the GCP bill to exceed it by whatever the co-tenants spend.
 - **SDK trap (v4):** `propagate_attributes(trace_name=...)` is the ONLY API that names a
   trace — v3's `update_current_trace` / `span.update_trace` are **gone**, and a
   `trace_context` trace with no name renders as **"unknown"** (this cost the project ~$24

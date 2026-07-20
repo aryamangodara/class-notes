@@ -180,7 +180,50 @@ for _tag in _c["tags"]:
 assert _c["metadata"]["marks"] == "7", "non-str detail is coerced, not dropped"
 print("langfuse-limits OK (values coerced to str + clipped to 200 chars; nothing silently dropped)")
 
-# 8. Tracing NEVER breaks a run: _log_generation swallows a broken client/response. The
+# 8. A traced call is only a COSTED call if every billable token bucket ships under the
+#    key Langfuse prices. Gemini splits them four ways and `candidates_token_count`
+#    EXCLUDES the reasoning tokens, so sending just prompt+candidates under-reported the
+#    real bill by roughly half on every thinking-model call (measured against the live
+#    API: thoughts = 211% of visible output on gemini-3.1-pro-preview, 185% on
+#    gemini-3.5-flash). Pin the mapping arithmetic here, offline.
+_um = _NS(prompt_token_count=7621, candidates_token_count=1332, thoughts_token_count=2810,
+          cached_content_token_count=0, tool_use_prompt_token_count=0,
+          total_token_count=7621 + 1332 + 2810)
+_u, _resid = helpers._usage_details(_um)
+assert _u["input"] == 7621 and _u["output"] == 1332, "output stays the VISIBLE answer"
+assert _u.get("output_reasoning_tokens") == 2810, \
+    "reasoning tokens must ship under the key Langfuse prices at the output rate"
+assert _resid == 0, f"our keys must account for every token Google counted (residual {_resid})"
+assert "total" not in _u, "never send `total` — a model definition that prices it would double-charge"
+# Langfuse buckets a usage type as input/output by whether the NAME CONTAINS input/output.
+# `thoughts_token_count` is priced the same but contains neither, so it would cost right
+# while leaving Langfuse's output-token totals reading ~1/3 low against Vertex.
+assert "output" in "output_reasoning_tokens", "reasoning must bucket as OUTPUT usage in Langfuse"
+assert all(("input" in k) or ("output" in k) or k == "cached_content_token_count" for k in _u), \
+    f"every usage key must bucket as input/output (or be the priced cached key): {sorted(_u)}"
+
+# The cached prefix is counted INSIDE prompt_token_count but billed at ~10%, and Langfuse
+# prices it as its own key — so it must be split out or it is charged at the full rate.
+_um2 = _NS(prompt_token_count=10000, cached_content_token_count=6000, candidates_token_count=500,
+           thoughts_token_count=0, tool_use_prompt_token_count=0, total_token_count=10500)
+_u2, _resid2 = helpers._usage_details(_um2)
+assert _u2["input"] == 4000, f"`input` must be the UNCACHED remainder, got {_u2['input']}"
+assert _u2["cached_content_token_count"] == 6000, "the cached prefix must ship at its discounted key"
+assert _resid2 == 0, f"cached split must still account for every token (residual {_resid2})"
+
+# ...and a billable field we do NOT map must surface as a residual, not vanish silently —
+# that silence is exactly how the thinking-token hole survived a whole pilot run.
+_um3 = _NS(prompt_token_count=100, candidates_token_count=50, thoughts_token_count=0,
+           cached_content_token_count=0, tool_use_prompt_token_count=0, total_token_count=900)
+assert helpers._usage_details(_um3)[1] == 750, "an unmapped billable token class must be detected"
+
+# Robustness: an absent/None usage field must degrade to 0, never raise (cost tracking
+# must not be able to fail a topic).
+assert helpers._usage_details(_NS(prompt_token_count=None, candidates_token_count=7))[0] == \
+    {"input": 0, "output": 7}, "absent/None usage fields must degrade, not raise"
+print("usage-mapping OK (thinking + cached tokens costed; unmapped token classes surface as a residual)")
+
+# 9. Tracing NEVER breaks a run: _log_generation swallows a broken client/response. The
 #    contract is validated deterministically (above); transmission is best-effort.
 helpers._LF = _NS(create_trace_id=lambda **k: (_ for _ in ()).throw(RuntimeError("langfuse is down")))
 try:
