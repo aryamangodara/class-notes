@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-3-1-intermolecular-and-interparticle-forces",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.1 Intermolecular and Interparticle Forces",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.1.A",
+      "statement": "Explain the relationship between the chemical structures of molecules and the relative strength of their intermolecular forces when:\ni. The molecules are of the same chemical species.\nii. The molecules are of two different chemical species.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "The topic covers the identification and relative strengths of intermolecular and interparticle forces, including London dispersion forces (LDFs), dipole-induced dipole, dipole-dipole, ion-dipole, and hydrogen bonding. It emphasizes that LDFs are present in all molecules and can often be the strongest net intermolecular force between large molecules. The strength of LDFs must be linked to polarizability, which increases with the number of electrons, the size of the electron cloud, and the presence of pi bonding. The specification explicitly mandates that the term 'London dispersion forces' should not be used synonymously with 'van der Waals forces'. Hydrogen bonding is strictly defined as occurring when a hydrogen atom covalently bonded to a highly electronegative atom (N, O, or F) is attracted to the negative end of a dipole formed by N, O, or F in a different molecule or a different part of the same molecule. The topic also extends to noncovalent interactions occurring between or within large biomolecules.",
+  "assessment_notes": "Students are expected to explain the relationship between chemical structures and the relative strength of intermolecular forces. They must be able to qualitatively understand the relative strength and orientation dependence of dipole-dipole and ion-dipole forces by considering the signs of partial charges and how they interact with ions or adjacent dipoles. The suggested skill (4.D) indicates that questions may require students to explain the degree to which a model or representation describes the connection between these particulate-level interactions and macroscopic properties.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.1.A",
+      "can_do": "Explain the relationship between the chemical structures of molecules and the relative strength of their intermolecular forces when:\ni. The molecules are of the same chemical species.\nii. The molecules are of two different chemical species.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1 (2024)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

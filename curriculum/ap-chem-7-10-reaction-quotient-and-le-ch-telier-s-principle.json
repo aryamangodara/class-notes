@@ -1,0 +1,39 @@
+{
+  "topic_id": "ap-chem-7-10-reaction-quotient-and-le-ch-telier-s-principle",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.10 Reaction Quotient and Le Châtelier’s Principle",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.10.A",
+      "statement": "Explain the relationships between Q, K, and the direction in which a reversible reaction will proceed to reach equilibrium.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that a disturbance to a system at equilibrium causes the reaction quotient (Q) to differ from the equilibrium constant (K), taking the system out of equilibrium. The system responds by bringing Q back into agreement with K to establish a new equilibrium state. Students must distinguish between stresses that change Q only (such as changes in concentration) and stresses that change K (such as a change in temperature). In either case, they must understand that the concentrations or partial pressures of species redistribute to bring Q and K back into equality.",
+  "assessment_notes": "Students are assessed on their ability to calculate, estimate, or predict an unknown quantity from known quantities by selecting and following a logical computational pathway (e.g., performing dimensional analysis and attending to significant figures). They must be able to connect what is happening at the molecular level to a model for a system at equilibrium, specifically connecting the value of the equilibrium constant (K) and the reaction quotient (Q) to the dominant direction of the reaction. A common pitfall is using ineffective mathematical routines instead of connecting the value of the equilibrium constant to the experimental data or observations provided.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.10.A.1",
+      "can_do": "I can explain that a disturbance to a system at equilibrium causes Q to differ from K, and that the system responds by bringing Q back into agreement with K.",
+      "recap": ""
+    },
+    {
+      "code": "7.10.A.2",
+      "can_do": "I can identify that changes in concentration change Q only, while changes in temperature change K, and describe how species redistribute to equalize Q and K.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

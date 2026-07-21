@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-2-5-lewis-diagrams",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 2: Compound Structure and Properties",
+  "topic": "2.5 Lewis Diagrams",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "2.5.A",
+      "statement": "Represent a molecule with a Lewis diagram.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to construct Lewis diagrams for molecules according to an established set of principles. This involves correctly determining the total number of valence electrons and distributing them to form bonds and lone pairs. This foundational skill serves as the basis for subsequent topics involving resonance, formal charge, and VSEPR theory.",
+  "assessment_notes": "On the AP Exam, students must be able to construct Lewis structures and make predictions or claims based on them. In free-response questions, students are often asked to draw a valid Lewis electron-dot diagram for a specific molecule or ion. Common student mistakes that examiners penalize include using the incorrect number of valence electrons and improperly violating the octet rule.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "2.5.A",
+      "can_do": "I can represent a molecule with a Lewis diagram.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1 (2024)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

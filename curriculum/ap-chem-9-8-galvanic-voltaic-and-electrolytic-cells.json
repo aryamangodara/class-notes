@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-9-8-galvanic-voltaic-and-electrolytic-cells",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.8 Galvanic (Voltaic) and Electrolytic Cells",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "9.8.A",
+      "statement": "Explain the relationship between the physical components of an electrochemical cell and the overall operational principles of the cell.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand the specific roles of each component in an electrochemical cell, including electrodes, half-cell solutions, the salt bridge, and voltage/current measuring devices. They need to describe operational characteristics—such as the direction of electron flow, half-cell reactions, changes in electrode mass, gas evolution, and ion flow through the salt bridge—at both macroscopic and particulate levels. Students must distinguish between galvanic (voltaic) cells, which involve thermodynamically favored reactions, and electrolytic cells, which involve unfavored reactions. They must know that oxidation always occurs at the anode and reduction at the cathode. Crucially, the specification explicitly states that labeling an electrode as positive or negative will not be assessed on the AP Exam.",
+  "assessment_notes": "This topic is assessed with a focus on Science Practice 2.F (Question and Method), requiring students to explain how modifications to an experimental procedure will alter results. Students are expected to analyze visual representations of galvanic and electrolytic cells to identify where half-reactions occur and the direction of current flow. Explanations may require connecting macroscopic observations (like electrode mass changes or gas evolution) to particulate-level processes (like ion flow through a salt bridge or electron transfer).",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.8.A",
+      "can_do": "I can explain the relationship between the physical components of an electrochemical cell and its overall operational principles.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

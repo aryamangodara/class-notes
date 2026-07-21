@@ -16,60 +16,132 @@
       "code": "8.1",
       "statement": "Define enthalpy change (delta H) and the standard enthalpy changes of reaction, formation, combustion and neutralisation, including the standard conditions.",
       "tier": null,
-      "command_words": ["define"]
+      "command_words": [
+        "define"
+      ]
     },
     {
       "code": "8.2",
       "statement": "Calculate an enthalpy change from calorimetry data using q = mc(delta T) and delta H = -q/n, applying the correct sign convention and units.",
       "tier": null,
-      "command_words": ["calculate"]
+      "command_words": [
+        "calculate"
+      ]
     },
     {
       "code": "8.3",
       "statement": "Apply Hess's law, using enthalpy cycles built from formation or combustion data, to determine an enthalpy change indirectly.",
       "tier": null,
-      "command_words": ["apply", "determine"]
+      "command_words": [
+        "apply",
+        "determine"
+      ]
     },
     {
       "code": "8.4",
       "statement": "Estimate the enthalpy change of a reaction from mean bond enthalpies (bonds broken minus bonds made) and explain why this differs from an experimentally determined value.",
       "tier": null,
-      "command_words": ["calculate", "explain"]
+      "command_words": [
+        "calculate",
+        "explain"
+      ]
     }
   ],
   "depth_profile": "A-Level rigour: students give precise definitions with standard conditions (298 K, 100 kPa, solutions at 1 mol dm^-3), carry out calorimetry calculations confidently (q = mc(delta T), then per mole, with correct signs), construct and use Hess cycles (formation and combustion routes) with correct arrow directions, and use mean bond enthalpies while explaining their limitation (mean values, and bond enthalpies apply to gaseous species). Born-Haber cycles and lattice enthalpies are NOT part of this topic (they are Energetics II). Sign conventions, units (kJ mol^-1) and clear working carry marks.",
   "assessment_notes": "Edexcel A-Level papers require the correct SIGN convention (exothermic is negative), units of kJ mol^-1, and full working. Hess's-law questions award method marks for a correct cycle with the right arrow directions; bond-enthalpy questions require 'bonds broken minus bonds made' and an explanation of why the estimate differs from a data-book value (mean bond enthalpies; not all species gaseous). Marks are commonly lost through a wrong sign, dividing by the wrong number of moles, or missing units.",
   "reference_data": "Use these mean bond enthalpies (kJ mol^-1) wherever a bond enthalpy is needed, in BOTH worked examples and practice questions — do not substitute other values: C-H = 413; C-C = 347; C=C = 612; C-O = 358; C=O = 805 (in CO2); O-H = 463; O=O = 498; H-H = 436; H-Cl = 432; C-Cl = 346; Cl-Cl = 243; N(triple bond)N = 945. Specific heat capacity for dilute aqueous solutions: c = 4.18 J g^-1 K^-1. Standard conditions: 298 K, 100 kPa, solutions at 1.00 mol dm^-3. VALIDATE every value against the official Edexcel A-Level Chemistry data booklet before classroom use; this table only guarantees that all sections use the SAME value for a given quantity.",
   "exam_map": [
-    {"key": "Papers", "value": "**Paper 1** (9CH0/01 · 90 marks · 1h45 · 30%) and **Paper 3** (9CH0/03 · 120 marks · 2h30 · 40%, synoptic + practical)"},
-    {"key": "What to expect", "value": "Usually one multi-part calculation (calorimetry, Hess or bond enthalpies) plus a definition or explain question"},
-    {"key": "Core Practical", "value": "**CP8** — finding an enthalpy change indirectly using Hess's Law. Fair game in Paper 3 practical questions"},
-    {"key": "Banked marks", "value": "Definitions word-for-word, ΔH(neut) ≈ −57 kJ mol⁻¹, and Δ(f)H of elements = 0 are near-guaranteed easy marks"}
+    {
+      "key": "Papers",
+      "value": "**Paper 1** (9CH0/01 · 90 marks · 1h45 · 30%) and **Paper 3** (9CH0/03 · 120 marks · 2h30 · 40%, synoptic + practical)"
+    },
+    {
+      "key": "What to expect",
+      "value": "Usually one multi-part calculation (calorimetry, Hess or bond enthalpies) plus a definition or explain question"
+    },
+    {
+      "key": "Core Practical",
+      "value": "**CP8** — finding an enthalpy change indirectly using Hess's Law. Fair game in Paper 3 practical questions"
+    },
+    {
+      "key": "Banked marks",
+      "value": "Definitions word-for-word, ΔH(neut) ≈ −57 kJ mol⁻¹, and Δ(f)H of elements = 0 are near-guaranteed easy marks"
+    }
   ],
   "spec_source_citation": "Statements from the official Pearson Edexcel 9CH0 specification, Issue 3 (Feb 2024), lightly reworded into 'I can' form.",
   "spec_checklist": [
-    {"code": "8.1", "can_do": "I know that standard conditions are 100 kPa and a specified temperature, usually 298 K"},
-    {"code": "8.2", "can_do": "I know that the enthalpy change is the heat energy change measured at constant pressure"},
-    {"code": "8.3", "can_do": "I can construct and interpret enthalpy level diagrams with the correct signs for exothermic and endothermic reactions (activation energy appears only in reaction profile diagrams, not enthalpy level diagrams)"},
-    {"code": "8.4", "can_do": "I can define the standard enthalpy change of: (i) reaction, (ii) formation, (iii) combustion, (iv) neutralisation"},
-    {"code": "8.5", "can_do": "I understand experiments to measure enthalpy changes: processing results with q = mcΔT, and evaluating sources of error and assumptions — for mixing in an insulated container, combustion with a spirit burner, and reactions whose ΔH cannot be measured directly"},
-    {"code": "8.6", "can_do": "I can calculate enthalpy changes in kJ mol⁻¹ from given experimental results, giving both a sign and units"},
-    {"code": "8.7", "can_do": "I can construct enthalpy cycles using Hess's Law"},
-    {"code": "8.8", "can_do": "I can calculate enthalpy changes from data using Hess's Law — including Core Practical 8: determining the enthalpy change of a reaction using Hess's Law"},
-    {"code": "8.9", "can_do": "I know what is meant by the terms 'bond enthalpy' and 'mean bond enthalpy'"},
-    {"code": "8.10", "can_do": "I can calculate an enthalpy change of reaction using mean bond enthalpies and explain the limitations of this method"},
-    {"code": "8.11", "can_do": "I can calculate mean bond enthalpies from enthalpy changes of reaction (the reverse calculation)"}
+    {
+      "code": "8.1",
+      "can_do": "know that standard conditions are 100 kPa and a specified temperature, usually 298 K"
+    },
+    {
+      "code": "8.2",
+      "can_do": "know that the enthalpy change is the heat energy change measured at constant pressure"
+    },
+    {
+      "code": "8.3",
+      "can_do": "be able to construct and interpret enthalpy level diagrams showing an enthalpy change, including appropriate signs for exothermic and endothermic reactions Activation energy is not shown in enthalpy level diagrams but it is shown in reaction profile diagrams."
+    },
+    {
+      "code": "8.4",
+      "can_do": "be able to define standard enthalpy change of: i reaction ii formation iii combustion iv neutralisation"
+    },
+    {
+      "code": "8.5",
+      "can_do": "understand experiments to measure enthalpy changes in terms of: i processing results using the expression: energy transferred = mass x specific heat capacity × temperature change (Q=mcΔT) ii evaluating sources of error and assumptions made in the experiments Students will need to consider experiments where: o substances are mixed in an insulated container and the temperature change is measured o enthalpy of combustion is measured, such as using a series of alcohols in a spirit burner o the enthalpy change cannot be measured directly."
+    },
+    {
+      "code": "8.6",
+      "can_do": "be able to calculate enthalpy changes in kJ mol-1 from given experimental results Both a sign and units are expected in the final answer."
+    },
+    {
+      "code": "8.7",
+      "can_do": "be able to construct enthalpy cycles using Hess’s Law"
+    },
+    {
+      "code": "8.8",
+      "can_do": "be able to calculate enthalpy changes from data using Hess’s Law CORE PRACTICAL 8: To determine the enthalpy change of a reaction using Hess’s Law"
+    },
+    {
+      "code": "8.9",
+      "can_do": "know what is meant by the terms ‘bond enthalpy’ and ‘mean bond enthalpy’"
+    },
+    {
+      "code": "8.10",
+      "can_do": "be able to calculate an enthalpy change of reaction using mean bond enthalpies and explain the limitations of this method of calculation"
+    },
+    {
+      "code": "8.11",
+      "can_do": "be able to calculate mean bond enthalpies from enthalpy changes of reaction"
+    }
   ],
   "past_papers": {
     "intro": "Once you can clear the ladder above, sit actual Edexcel questions under timed conditions — nothing calibrates you like the real paper. Energetics I appears in every series, so start with the three most recent.",
     "resources": [
-      {"key": "Official papers + mark schemes", "value": "Download free from the [Pearson Edexcel website](https://qualifications.pearson.com/en/qualifications/edexcel-a-levels/chemistry-2015.html) — mark your own work against the real mark scheme"},
-      {"key": "Topic-sorted questions", "value": "[PMT's Energetics page](https://www.physicsandmathstutor.com/chemistry-revision/a-level-edexcel/energetics/) collects past questions filtered to just this topic"},
-      {"key": "How to use them", "value": "Timed, no notes, then mark ruthlessly with the scheme. Log every lost mark against the checklist above — that becomes your revision list"}
+      {
+        "key": "Official papers + mark schemes",
+        "value": "Download free from the [Pearson Edexcel website](https://qualifications.pearson.com/en/qualifications/edexcel-a-levels/chemistry-2015.html) — mark your own work against the real mark scheme"
+      },
+      {
+        "key": "Topic-sorted questions",
+        "value": "[PMT's Energetics page](https://www.physicsandmathstutor.com/chemistry-revision/a-level-edexcel/energetics/) collects past questions filtered to just this topic"
+      },
+      {
+        "key": "How to use them",
+        "value": "Timed, no notes, then mark ruthlessly with the scheme. Log every lost mark against the checklist above — that becomes your revision list"
+      }
     ],
     "verified": [
-      {"label": "June 2024 · Paper 1 · Q5 · 10 marks", "summary": "A direct-ethanol fuel cell scenario asking for the same combustion ΔH three ways: estimate it from mean bond enthalpies, build and use a formation-data enthalpy cycle, then give two reasons the answers disagree — the exact 'averages + gases only' 2-marker. Every Topic 8 calculation method in one question.", "url": "https://pmt.physicsandmathstutor.com/download/Chemistry/A-level/Past-Papers/Edexcel/Paper-1/June%202024%20QP%20-%20Paper%201%20Edexcel%20Chemistry%20A-level.pdf"},
-      {"label": "June 2023 · Paper 1 · Q6(d) · 5 marks", "summary": "Calorimetry on neutralising quinic acid (a weak acid found in cranberries): equal volumes but different concentrations, so the marks hinge on spotting the limiting reactant before dividing, then explaining why a weak acid's neutralisation enthalpy is far less exothermic than a strong acid's.", "url": "https://pmt.physicsandmathstutor.com/download/Chemistry/A-level/Past-Papers/Edexcel/Paper-1/June%202023%20QP%20-%20Paper%201%20Edexcel%20Chemistry%20A-level.pdf"}
+      {
+        "label": "June 2024 · Paper 1 · Q5 · 10 marks",
+        "summary": "A direct-ethanol fuel cell scenario asking for the same combustion ΔH three ways: estimate it from mean bond enthalpies, build and use a formation-data enthalpy cycle, then give two reasons the answers disagree — the exact 'averages + gases only' 2-marker. Every Topic 8 calculation method in one question.",
+        "url": "https://pmt.physicsandmathstutor.com/download/Chemistry/A-level/Past-Papers/Edexcel/Paper-1/June%202024%20QP%20-%20Paper%201%20Edexcel%20Chemistry%20A-level.pdf"
+      },
+      {
+        "label": "June 2023 · Paper 1 · Q6(d) · 5 marks",
+        "summary": "Calorimetry on neutralising quinic acid (a weak acid found in cranberries): equal volumes but different concentrations, so the marks hinge on spotting the limiting reactant before dividing, then explaining why a weak acid's neutralisation enthalpy is far less exothermic than a strong acid's.",
+        "url": "https://pmt.physicsandmathstutor.com/download/Chemistry/A-level/Past-Papers/Edexcel/Paper-1/June%202023%20QP%20-%20Paper%201%20Edexcel%20Chemistry%20A-level.pdf"
+      }
     ],
     "disclaimer": "Question summaries written in our own words — attempt the originals on the official papers. References verified against the papers themselves; new series are added after each exam window."
   },

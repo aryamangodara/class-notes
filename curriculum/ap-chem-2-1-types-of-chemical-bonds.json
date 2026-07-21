@@ -1,0 +1,88 @@
+{
+  "topic_id": "ap-chem-2-1-types-of-chemical-bonds",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 2: Compound Structure and Properties",
+  "topic": "2.1 Types of Chemical Bonds",
+  "prerequisites": [
+    "Electronic structure of atoms",
+    "The shell model",
+    "Coulomb's law"
+  ],
+  "learning_objectives": [
+    {
+      "code": "2.1.A",
+      "statement": "Explain the relationship between the type of bonding and the properties of the elements participating in the bond.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "2.1.A.1",
+      "statement": "Electronegativity values for the representative elements increase going from left to right across a period and decrease going down a group. These trends can be understood qualitatively through the electronic structure of the atoms, the shell model, and Coulomb’s law.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "2.1.A.2",
+      "statement": "Valence electrons shared between atoms of similar electronegativity constitute a nonpolar covalent bond. For example, bonds between carbon and hydrogen are effectively nonpolar even though carbon is slightly more electronegative than hydrogen.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "2.1.A.3",
+      "statement": "Valence electrons shared between atoms of unequal electronegativity constitute a polar covalent bond. i. The atom with a higher electronegativity will develop a partial negative charge relative to the other atom in the bond. ii. In single bonds, greater differences in electronegativity lead to greater bond dipoles. iii. All polar bonds have some ionic character, and the difference between ionic and covalent bonding is not distinct but rather a continuum.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "2.1.A.4",
+      "statement": "The difference in electronegativity is not the only factor in determining if a bond should be designated as ionic or covalent. Generally, bonds between a metal and nonmetal are ionic, and bonds between two nonmetals are covalent. Examination of the properties of a compound is the best way to characterize the type of bonding.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "2.1.A.5",
+      "statement": "In a metallic solid, the valence electrons from the metal atoms are considered to be delocalized and not associated with any individual atom.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students are expected to qualitatively understand electronegativity trends using the shell model and Coulomb's law. The curriculum emphasizes that bonding is a continuum rather than distinct categories; all polar bonds have some ionic character. Students must know that C-H bonds are effectively nonpolar. Furthermore, students should understand that electronegativity difference alone does not dictate bond type; macroscopic properties are the best way to characterize bonding. Metallic bonding must be understood as a system of delocalized valence electrons.",
+  "assessment_notes": "This topic is assessed primarily through the science practice of Argumentation (Make a scientific claim). Students may be asked to explain the connection between electronegativity, the type of bond formed, and the macroscopic properties of a substance. A common expectation is to provide explanations across scales (particulate to macroscopic) rather than just stating chemical theories.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "2.1.A.1",
+      "can_do": "Electronegativity values for the representative elements increase going from left to right across a period and decrease going down a group. These trends can be understood qualitatively through the electronic structure of the atoms, the shell model, and Coulomb’s law.",
+      "recap": ""
+    },
+    {
+      "code": "2.1.A.2",
+      "can_do": "Valence electrons shared between atoms of similar electronegativity constitute a nonpolar covalent bond. For example, bonds between carbon and hydrogen are effectively nonpolar even though carbon is slightly more electronegative than hydrogen.",
+      "recap": ""
+    },
+    {
+      "code": "2.1.A.3",
+      "can_do": "Valence electrons shared between atoms of unequal electronegativity constitute a polar covalent bond. i. The atom with a higher electronegativity will develop a partial negative charge relative to the other atom in the bond. ii. In single bonds, greater differences in electronegativity lead to greater bond dipoles. iii. All polar bonds have some ionic character, and the difference between ionic and covalent bonding is not distinct but rather a continuum.",
+      "recap": ""
+    },
+    {
+      "code": "2.1.A.4",
+      "can_do": "The difference in electronegativity is not the only factor in determining if a bond should be designated as ionic or covalent. Generally, bonds between a metal and nonmetal are ionic, and bonds between two nonmetals are covalent. Examination of the properties of a compound is the best way to characterize the type of bonding.",
+      "recap": ""
+    },
+    {
+      "code": "2.1.A.5",
+      "can_do": "In a metallic solid, the valence electrons from the metal atoms are considered to be delocalized and not associated with any individual atom.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

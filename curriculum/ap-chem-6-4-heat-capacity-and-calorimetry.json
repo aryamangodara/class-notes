@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-6-4-heat-capacity-and-calorimetry",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 6: Thermochemistry",
+  "topic": "6.4 Heat Capacity and Calorimetry",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "6.4.A",
+      "statement": "Calculate the heat q absorbed or released by a system undergoing heating/cooling based on the amount of the substance, the heat capacity, and the change in temperature.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    }
+  ],
+  "depth_profile": "This topic focuses on the quantification of heat transfer between systems using the equation q = mcΔT. Students must understand that heating a cool body by a warmer body transfers energy, and that equal masses of matter with differing specific heat capacities will undergo different temperature changes for a given amount of thermal energy. The scope includes both specific heat capacity and molar heat capacity in energy calculations. Students must apply the first law of thermodynamics (conservation of energy) to chemical and physical processes. The topic also covers calorimetry experiments, specifically involving dissolution, where students must determine the direction of energy flow: an increase in the mixture's temperature indicates an exothermic process (thermal energy released), while a decrease indicates an endothermic process (thermal energy absorbed). Chemical systems change energy through heating/cooling, phase transitions, and chemical reactions.",
+  "assessment_notes": "On the AP Exam, students will be required to analyze calorimetry data and apply mathematical routines to calculate or estimate the heat transferred. Questions often assess the ability to make observations or collect data from representations of laboratory setups or results, while attending to precision (e.g., significant figures) where appropriate. Students must be able to interpret temperature changes in a calorimeter to classify a dissolution process as endothermic or exothermic.",
+  "reference_data": "q = mcΔT\nq = heat\nm = mass\nc = specific heat capacity\nT = temperature",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "6.4.A",
+      "can_do": "I can calculate the heat q absorbed or released by a system undergoing heating or cooling based on the amount of the substance, the heat capacity, and the change in temperature.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

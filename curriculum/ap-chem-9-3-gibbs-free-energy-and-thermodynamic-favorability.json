@@ -1,0 +1,113 @@
+{
+  "topic_id": "ap-chem-9-3-gibbs-free-energy-and-thermodynamic-favorability",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.3 Gibbs Free Energy and Thermodynamic Favorability",
+  "prerequisites": [
+    "Enthalpy and entropy changes in chemical and physical processes",
+    "Standard states of substances"
+  ],
+  "learning_objectives": [
+    {
+      "code": "9.3.A",
+      "statement": "Explain whether a physical or chemical process is thermodynamically favored based on an evaluation of ΔG°.",
+      "tier": null,
+      "command_words": [
+        "Explain",
+        "evaluate"
+      ]
+    },
+    {
+      "code": "9.3.A.1",
+      "statement": "The Gibbs free energy change for a chemical process in which all the reactants and products are present in a standard state (as pure substances, as solutions of 1.0 M concentration, or as gases at a pressure of 1.0 atm (or 1.0 bar)) is given the symbol ΔG°.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "9.3.A.2",
+      "statement": "The standard Gibbs free energy change for a chemical or physical process is a measure of thermodynamic favorability. Historically, the term \"spontaneous\" has been used to describe processes for which ΔG° < 0. The phrase \"thermodynamically favored\" is preferred instead so that common misunderstandings (equating \"spontaneous\" with \"suddenly\" or \"without cause\") can be avoided. When ΔG° < 0 for the process, it is said to be thermodynamically favored.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "9.3.A.3",
+      "statement": "The standard Gibbs free energy change for a physical or chemical process may also be determined from the standard Gibbs free energy of formation of the reactants and products. EQN: ΔG°_reaction = ΣΔG°_f products - ΣΔG°_f reactants",
+      "tier": null,
+      "command_words": [
+        "determine"
+      ]
+    },
+    {
+      "code": "9.3.A.4",
+      "statement": "In some cases, it is necessary to consider both enthalpy and entropy to determine if a process will be thermodynamically favored. The freezing of water and the dissolution of sodium nitrate are examples of such phenomena.",
+      "tier": null,
+      "command_words": [
+        "determine"
+      ]
+    },
+    {
+      "code": "9.3.A.5",
+      "statement": "Knowing the values of ΔH° and ΔS° for a process at a given temperature allows ΔG° to be calculated directly. EQN: ΔG° = ΔH° - T ΔS°",
+      "tier": null,
+      "command_words": [
+        "calculate"
+      ]
+    },
+    {
+      "code": "9.3.A.6",
+      "statement": "In general, the temperature conditions for a process to be thermodynamically favored (ΔG° < 0) can be predicted from the signs of ΔH° and ΔS° as shown in the table below: (ΔH° < 0, ΔS° > 0 favored at all T; ΔH° > 0, ΔS° < 0 favored at no T; ΔH° > 0, ΔS° > 0 favored at high T; ΔH° < 0, ΔS° < 0 favored at low T). In cases where ΔH° < 0 and ΔS° > 0, no calculation of ΔG° is necessary to determine that the process is thermodynamically favored (ΔG° < 0). In cases where ΔH° > 0 and ΔS° < 0, no calculation of ΔG° is necessary to determine that the process is thermodynamically unfavored (ΔG° > 0).",
+      "tier": null,
+      "command_words": [
+        "predict",
+        "determine"
+      ]
+    }
+  ],
+  "depth_profile": "Students must evaluate thermodynamic favorability using standard Gibbs free energy (ΔG°). The curriculum emphasizes using the term 'thermodynamically favored' over 'spontaneous' to prevent students from conflating thermodynamic favorability with kinetic rate ('suddenly' or 'without cause'). Students are expected to calculate ΔG° using standard free energies of formation (ΣΔG°_f products - ΣΔG°_f reactants) and using the Gibbs free energy equation (ΔG° = ΔH° - TΔS°). A key conceptual requirement is predicting the temperature dependence of favorability based purely on the signs of ΔH° and ΔS° (e.g., favored at all T, no T, high T, or low T). The spec explicitly notes that when ΔH° and ΔS° have opposite signs such that they both drive or both oppose the reaction, no calculation of ΔG° is necessary to determine favorability.",
+  "assessment_notes": "On the AP Exam, students must provide appropriate explanations connecting entropy, enthalpy, and Gibbs free energy to thermodynamic favorability. A common pitfall is stating that both enthalpy and entropy drive a reaction by simply citing the Gibbs free energy equation, rather than reasoning about which factor is actually driving the process. Students often fail to connect macroscopic observational data to entropy and enthalpy to support claims about the driving force. Examiners expect students to define and interrelate these thermodynamic quantities and to connect them with kinetics and equilibrium (e.g., explaining why a thermodynamically favorable reaction might produce small concentrations of product). The suggested skill for this topic is 6.E: Provide reasoning to justify a claim using connections between particulate and macroscopic scales or levels.",
+  "reference_data": "ΔG°_reaction = ΣΔG°_f products - ΣΔG°_f reactants\nΔG° = ΔH° - TΔS°\nStandard state conditions: 1.0 M concentration, 1.0 atm (or 1.0 bar) pressure.",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.3.A",
+      "can_do": "I can explain whether a physical or chemical process is thermodynamically favored based on an evaluation of ΔG°.",
+      "recap": ""
+    },
+    {
+      "code": "9.3.A.1",
+      "can_do": "I can identify the standard state conditions for Gibbs free energy (pure substances, 1.0 M solutions, or gases at 1.0 atm/bar).",
+      "recap": ""
+    },
+    {
+      "code": "9.3.A.2",
+      "can_do": "I can use the term 'thermodynamically favored' for processes where ΔG° < 0 and avoid equating it with the rate of the reaction.",
+      "recap": ""
+    },
+    {
+      "code": "9.3.A.3",
+      "can_do": "I can calculate the standard Gibbs free energy change of a reaction using the standard Gibbs free energies of formation of the reactants and products.",
+      "recap": ""
+    },
+    {
+      "code": "9.3.A.4",
+      "can_do": "I can recognize situations where both enthalpy and entropy must be considered to determine if a process is thermodynamically favored.",
+      "recap": ""
+    },
+    {
+      "code": "9.3.A.5",
+      "can_do": "I can calculate ΔG° directly from the values of ΔH°, ΔS°, and temperature.",
+      "recap": ""
+    },
+    {
+      "code": "9.3.A.6",
+      "can_do": "I can predict the temperature conditions under which a process will be thermodynamically favored based on the signs of ΔH° and ΔS°, without needing to calculate ΔG° in certain cases.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

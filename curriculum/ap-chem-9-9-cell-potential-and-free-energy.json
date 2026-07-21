@@ -1,0 +1,44 @@
+{
+  "topic_id": "ap-chem-9-9-cell-potential-and-free-energy",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.9 Cell Potential and Free Energy",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "9.9.A",
+      "statement": "Explain whether an electrochemical cell is thermodynamically favored, based on its standard cell potential and the constituent half-reactions within the cell.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "This topic focuses on the quantitative and conceptual relationship between standard cell potential (E°) and the standard Gibbs free energy change (ΔG°). Students are expected to calculate the standard cell potential of electrochemical cells by identifying the oxidation and reduction half-reactions and their respective standard reduction potentials. They must understand that a thermodynamically favored reaction results in a positive voltage (E° > 0) and a negative ΔG°, whereas a thermodynamically unfavored reaction results in a negative voltage (E° < 0) and a positive ΔG°, requiring an externally applied potential to proceed. The mathematical relationship is defined by the equation ΔG° = −nFE°.",
+  "assessment_notes": "This topic is assessed using the suggested skill 5.F (Mathematical Routines). Students may be asked to calculate, estimate, or predict an unknown quantity (such as ΔG° or E°) from known quantities by selecting and following a logical computational pathway. Mark schemes will expect students to attend to precision, perform dimensional analysis, and use correct significant figures. Students must also be able to provide written explanations justifying whether a cell is thermodynamically favored based on its standard cell potential.",
+  "reference_data": "ΔG° = −nFE°\nFaraday's constant, F = 96,485 coulombs / 1 mol e−",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.9.A.1",
+      "can_do": "I can explain that thermodynamically favored redox reactions produce a positive voltage, while unfavored reactions produce a negative voltage and require an externally applied potential.",
+      "recap": ""
+    },
+    {
+      "code": "9.9.A.2",
+      "can_do": "I can calculate the standard cell potential of an electrochemical cell by identifying the oxidation and reduction half-reactions and their standard reduction potentials.",
+      "recap": ""
+    },
+    {
+      "code": "9.9.A.3",
+      "can_do": "I can use the equation ΔG° = −nFE° to relate standard cell potential to standard Gibbs free energy change, and use the sign of E° to determine if a reaction is thermodynamically favored.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

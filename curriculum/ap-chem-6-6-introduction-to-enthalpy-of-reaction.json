@@ -1,0 +1,49 @@
+{
+  "topic_id": "ap-chem-6-6-introduction-to-enthalpy-of-reaction",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 6: Thermochemistry",
+  "topic": "6.6 Introduction to Enthalpy of Reaction",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "6.6.A",
+      "statement": "Calculate the heat q absorbed or released by a system undergoing a chemical reaction in relationship to the amount of the reacting substance in moles and the molar enthalpy of reaction.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to understand that the enthalpy change of a reaction gives the amount of heat energy released (negative values) or absorbed (positive values) at constant pressure. They must relate the transfer of thermal energy to the surroundings (exothermic) or from the surroundings (endothermic) to the system reaching thermal equilibrium. Furthermore, they should connect the difference in chemical potential energy between products and reactants (due to bond breaking and forming) to changes in kinetic energy and temperature. Exclusion Statement: The technical distinctions between enthalpy and internal energy will not be assessed on the AP Exam. Most reactions studied at the AP level are carried out at constant pressure, where the enthalpy change of the process is equal to the heat (and by extension, the energy) of reaction.",
+  "assessment_notes": "Questions may assess this topic using Suggested Skill 5.F (Model Analysis), requiring students to calculate, estimate, or predict an unknown quantity from known quantities by selecting and following a logical computational pathway. Students must attend to precision, such as performing dimensional analysis and attending to significant figures.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "6.6.A",
+      "can_do": "Calculate the heat q absorbed or released by a system undergoing a chemical reaction in relationship to the amount of the reacting substance in moles and the molar enthalpy of reaction.",
+      "recap": ""
+    },
+    {
+      "code": "6.6.A.1",
+      "can_do": "The enthalpy change of a reaction gives the amount of heat energy released (for negative values) or absorbed (for positive values) by a chemical reaction at constant pressure.",
+      "recap": ""
+    },
+    {
+      "code": "6.6.A.2",
+      "can_do": "When the products of a reaction are at a different temperature than their surroundings, they exchange energy with the surroundings to reach thermal equilibrium. Thermal energy is transferred to the surroundings as the reactants convert to products in an exothermic reaction. Thermal energy is transferred from the surroundings as the reactants convert to products in an endothermic reaction.",
+      "recap": ""
+    },
+    {
+      "code": "6.6.A.3",
+      "can_do": "The chemical potential energy of the products of a reaction is different from that of the reactants because of the breaking and forming of bonds. The energy difference results in a change in the kinetic energy of the particles, which manifests as a temperature change.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

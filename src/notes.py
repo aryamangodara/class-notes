@@ -137,6 +137,14 @@ def run_one(client, spec) -> "batch.TopicResult":
     print(f"\n=== {spec.topic} ({spec.board} · {spec.subject}) ===")
     try:
         notes = generate_interactive_notes(client, spec)
+        # An UNVERIFIED spec only reaches here via --include-unverified, i.e. someone
+        # overrode a DETERMINISTIC grounding failure. Record that on the page itself so it
+        # surfaces in the spot-check queue (spotcheck.py already reads review_flags), which
+        # is the only human review surface left once the approval gate is gone.
+        if batch.is_unverified(spec):
+            notes.review_flags = list(notes.review_flags) + [
+                f"SPEC UNGROUNDED: generated from a spec whose codes failed PDF verification "
+                f"— {spec.source}"]
         save_interactive_notes(notes)
         out = str(Path(CONFIG["out_dir"]) / _fs_safe(spec.board) / _fs_safe(spec.subject)
                   / f"{spec.topic_id}.v2.json")
@@ -215,14 +223,21 @@ def _write_manifest(results, *, jobs, selected, elapsed) -> None:
     print(f"  manifest -> {out / 'run-manifest.json'}")
 
 
-def _run_single(topic_id: str, topics) -> int:
+def _run_single(topic_id: str, topics, *, include_unverified: bool = False) -> int:
     if topic_id not in topics:
         _print_topics(topics)
         sys.exit(f"\nUnknown topic '{topic_id}'.")
     spec = topics[topic_id]
-    if batch.is_unverified(spec):
-        print(f"  ! {spec.topic_id} is UNVERIFIED (auto-extracted) — generating anyway "
-              f"(explicit single-topic request).")
+    if batch.is_unverified(spec) and not include_unverified:
+        # This used to generate anyway, on the reasoning that an explicit single-topic
+        # request WAS the human in the loop. With the human approval step gone, the
+        # marker no longer means "unreviewed" — it means the codes could not be located
+        # in the official PDF — so typing the id is not evidence of anything and the
+        # override must be explicit.
+        sys.exit(f"\n{spec.topic_id} is UNVERIFIED: {spec.source}\n"
+                 f"Its codes could not be verified against the official spec PDF, so it will "
+                 f"teach and cite spec points that may not exist.\n"
+                 f"Re-run extraction to repair it, or force it with --include-unverified.")
     client = get_gemini_client()
     res = run_one(client, spec)
     return 1 if res.outcome in batch.FAILURE_OUTCOMES else 0
@@ -247,13 +262,14 @@ def _run_batch_mode(args, topics) -> int:
         for s in to_gen:
             print(f"  would generate: {s.topic_id}")
         if n_unv:
-            print(f"  ({n_unv} UNVERIFIED spec(s) skipped — after review: "
-                  f"py -3 src/approve_specs.py <selector> --apply)")
+            print(f"  ({n_unv} UNVERIFIED spec(s) skipped — they failed PDF grounding; re-run "
+                  f"extraction to repair, or pass --include-unverified)")
         return 0
     if not to_gen:
         print("Nothing to generate.")
         if n_unv:
-            print(f"  {n_unv} spec(s) are UNVERIFIED — approve them (approve_specs) or pass --include-unverified.")
+            print(f"  {n_unv} spec(s) are UNVERIFIED — they failed PDF grounding. Re-run extraction "
+                  f"to repair them, or pass --include-unverified to ship them anyway.")
         if n_exist:
             print(f"  {n_exist} topic(s) already generated — pass --force to regenerate.")
         return 0
@@ -334,7 +350,8 @@ def main() -> None:
     ap.add_argument("--level", help="batch filter: only this level")
     ap.add_argument("--force", action="store_true", help="regenerate topics whose output already exists")
     ap.add_argument("--include-unverified", action="store_true",
-                    help="also generate specs still marked UNVERIFIED (default: skip them)")
+                    help="also generate specs that FAILED PDF grounding (default: skip). The notes "
+                         "will teach and cite spec codes that could not be found in the official spec.")
     ap.add_argument("--jobs", type=int, default=None,
                     help=f"topics to generate in parallel (default: CONFIG max_parallel_topics="
                          f"{CONFIG.get('max_parallel_topics', 1)}); pure parallelism, no quality change")
@@ -356,7 +373,7 @@ def main() -> None:
         sys.exit("Give a single topic_id OR batch flags (--all/--board/--subject/--level), not both.")
 
     if args.topic_id:
-        sys.exit(_run_single(args.topic_id, topics))
+        sys.exit(_run_single(args.topic_id, topics, include_unverified=args.include_unverified))
     if not batch_mode:
         _print_topics(topics)
         return

@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-7-5-magnitude-of-the-equilibrium-constant",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.5 Magnitude of the Equilibrium Constant",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.5.A",
+      "statement": "Explain the relationship between very large or very small values of K and the relative concentrations of chemical species at equilibrium.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that some equilibrium reactions have very large K values and proceed essentially to completion, while others have very small K values and barely proceed at all. The focus is on connecting the magnitude of the equilibrium constant to the relative concentrations of chemical species present at equilibrium.",
+  "assessment_notes": "This topic is assessed using Argumentation (Skill 6.D), requiring students to provide reasoning to justify a claim using chemical principles or mathematical justification. A common pitfall on the AP Exam is that students struggle to connect the value of a large K to a reaction proceeding essentially to completion. This lack of connection often leads students to use ineffective mathematical routines and incorrectly calculate the concentration of the product in solution. Students must be able to connect the value of the equilibrium constant to the experimental data or observations provided and visualize the effects of a large or small equilibrium constant on the concentrations of all species in equilibrium.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.5.A",
+      "can_do": "I can explain the relationship between very large or very small values of K and the relative concentrations of chemical species at equilibrium.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description (College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

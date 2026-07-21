@@ -1,0 +1,56 @@
+{
+  "topic_id": "ap-chem-7-7-calculating-equilibrium-concentrations",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.7 Calculating Equilibrium Concentrations",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.7.A",
+      "statement": "Identify the concentrations or partial pressures of chemical species at equilibrium based on the initial conditions and the equilibrium constant.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    },
+    {
+      "code": "7.7.A.1",
+      "statement": "The concentrations or partial pressures of species at equilibrium can be predicted given the balanced reaction, initial concentrations, and the appropriate K.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "7.7.A.2",
+      "statement": "When Q < K, the reaction will proceed with a net consumption of reactants and generation of products. When Q > K, the reaction will proceed with a net consumption of products and generation of reactants. When Q = K, the system is at dynamic equilibrium; both forward and reverse reactions proceed at the same rate, and the proportion of reactants and products remains constant.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students are expected to predict equilibrium concentrations or partial pressures using initial conditions, balanced equations, and the equilibrium constant K. The topic requires understanding the reaction quotient Q and comparing it to K to determine the direction of a reaction (Q < K favors products, Q > K favors reactants, Q = K indicates dynamic equilibrium where forward and reverse rates are equal and proportions remain constant).",
+  "assessment_notes": "Students may be assessed on their ability to identify quantities needed to solve problems and represent chemical phenomena using appropriate graphing techniques with correct scale and units (Suggested Skill 3.A). They must be able to mathematically determine equilibrium values and conceptually explain the direction of a reaction by comparing Q and K.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.7.A",
+      "can_do": "I can identify the concentrations or partial pressures of chemical species at equilibrium based on the initial conditions and the equilibrium constant.",
+      "recap": ""
+    },
+    {
+      "code": "7.7.A.1",
+      "can_do": "I can predict the concentrations or partial pressures of species at equilibrium given the balanced reaction, initial concentrations, and the appropriate K.",
+      "recap": ""
+    },
+    {
+      "code": "7.7.A.2",
+      "can_do": "I can determine the direction a reaction will proceed by comparing Q to K, and recognize that when Q = K, the system is at dynamic equilibrium.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

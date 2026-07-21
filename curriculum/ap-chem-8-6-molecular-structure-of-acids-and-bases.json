@@ -1,0 +1,45 @@
+{
+  "topic_id": "ap-chem-8-6-molecular-structure-of-acids-and-bases",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 8: Acids and Bases",
+  "topic": "8.6 Molecular Structure of Acids and Bases",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "8.6.A",
+      "statement": "Explain the relationship between the strength of an acid or base and the structure of the molecule or ion.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "8.6.A.1",
+      "statement": "The protons on a molecule that will participate in acid-base reactions, and the relative strength of these protons, can be inferred from the molecular structure.\ni. Strong acids (such as HCl, HBr, HI, HClO4, H2SO4, and HNO3) have very weak conjugate bases that are stabilized by electronegativity, inductive effects, resonance, or some combination thereof.\nii. Carboxylic acids are one common class of weak acid.\niii. Strong bases (such as group I and II hydroxides) have very weak conjugate acids.\niv. Common weak bases include nitrogenous bases such as ammonia as well as carboxylate ions.\nv. Electronegative elements tend to stabilize the conjugate base relative to the conjugate acid, and so increase acid strength.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "This topic requires students to connect molecular structure to acid and base strength. Students must understand that strong acids (HCl, HBr, HI, HClO4, H2SO4, HNO3) have very weak conjugate bases stabilized by electronegativity, inductive effects, and/or resonance. They must recognize carboxylic acids as weak acids, group I and II hydroxides as strong bases, and nitrogenous bases (like ammonia) and carboxylate ions as weak bases. A key conceptual requirement is understanding that electronegative elements stabilize the conjugate base relative to the conjugate acid, thereby increasing acid strength.",
+  "assessment_notes": "Students are expected to support claims with evidence from representations or models at the particulate level (Suggested Skill 6.C). Exam questions frequently require students to explain or justify the relative strengths of different acids or bases by referencing specific structural features, such as the presence of highly electronegative atoms, inductive effects, or resonance stabilization of the conjugate base.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "8.6.A",
+      "can_do": "I can explain the relationship between the strength of an acid or base and the structure of the molecule or ion.",
+      "recap": ""
+    },
+    {
+      "code": "8.6.A.1",
+      "can_do": "I can infer the relative strength of protons in a molecule based on its molecular structure, including the effects of electronegativity, inductive effects, and resonance on conjugate base stabilization.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

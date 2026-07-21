@@ -1,0 +1,38 @@
+{
+  "topic_id": "ap-chem-8-11-ph-and-solubility",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 8: Acids and Bases",
+  "topic": "8.11 pH and Solubility",
+  "prerequisites": [
+    "Le Châtelier's principle",
+    "Weak acids and weak bases",
+    "Solubility equilibria"
+  ],
+  "learning_objectives": [
+    {
+      "code": "8.11.A",
+      "statement": "Identify the qualitative effect of changes in pH on the solubility of a salt.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that the solubility of a salt is pH sensitive when one of its constituent ions is a weak acid, a weak base, or the hydroxide ion. These effects must be understood qualitatively using Le Châtelier's principle. The specification explicitly excludes computations of solubility as a function of pH; students are only required to predict and explain the qualitative shifts in solubility.",
+  "assessment_notes": "Assessment will focus on qualitative reasoning rather than quantitative calculations. Students may be asked to identify how the addition of an acid or base affects the solubility of a specific salt, applying Le Châtelier's principle to justify their answers. Questions may also require students to make observations or collect data from representations of laboratory setups or results (Skill 2.D). Computations of solubility as a function of pH will not be assessed on the AP Exam.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "8.11.A",
+      "can_do": "I can identify the qualitative effect of changes in pH on the solubility of a salt.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Unit 8",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

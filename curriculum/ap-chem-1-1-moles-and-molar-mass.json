@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-1-1-moles-and-molar-mass",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 1: Atomic Structure and Properties",
+  "topic": "1.1 Moles and Molar Mass",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "1.1.A",
+      "statement": "Calculate quantities of a substance or its relative number of particles using dimensional analysis and the mole concept.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand the connection between macroscopic mass and the particulate scale, as particles cannot be counted directly in the laboratory. They are required to use Avogadro's number (6.022 × 10^23 mol^-1) to convert between the number of moles in a pure sample and the number of constituent particles (atoms, molecules, or formula units). Furthermore, students must recognize that the average mass of an individual particle in atomic mass units (amu) is numerically equal to the molar mass of that substance in grams. This allows for quantitative connections between the mass of a substance and the number of particles it contains using the relationship n = m/M.",
+  "assessment_notes": "Students are expected to identify appropriate mathematical relationships to solve problems (Skill 5.B). Proficiency in dimensional analysis and the mole concept is critical; a common pitfall identified by examiners in later units is students mistakenly comparing mass to mass instead of mole to mole when performing calculations. Students must be able to justify claims with evidence by connecting macroscopic mass measurements to particulate-level counts.",
+  "reference_data": "Avogadro's number (N_A) = 6.022 × 10^23 mol^-1\nEquation: n = m/M",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "1.1.A",
+      "can_do": "Calculate quantities of a substance or its relative number of particles using dimensional analysis and the mole concept.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

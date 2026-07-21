@@ -1,0 +1,54 @@
+{
+  "topic_id": "ap-chem-1-5-atomic-structure-and-electron-configuration",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 1: Atomic Structure and Properties",
+  "topic": "1.5 Atomic Structure and Electron Configuration",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "1.5.A",
+      "statement": "Represent the ground-state electron configuration of an atom of an element or its ions using the Aufbau principle.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that atoms consist of a positively charged nucleus (protons and neutrons) and negatively charged electrons. They need to know that electrons occupy shells (energy levels) and subshells (sublevels), and be able to distinguish between inner (core) and outer (valence) electrons. Students must be able to write ground-state electron configurations for atoms and their ions using the Aufbau principle and the periodic table. Furthermore, they must qualitatively apply Coulomb's law to estimate the relative ionization energy required to remove an electron from different subshells or different atoms/ions, relating this energy to the distance from the nucleus and the effective (shield) charge of the nucleus. Explicit exclusion: The assignment of quantum numbers to electrons in subshells of an atom will not be assessed on the AP Exam.",
+  "assessment_notes": "Questions may ask students to represent ground-state electron configurations for both neutral atoms and ions. Students may be required to use models and representations (Skill 1.A) to illustrate particulate-level properties. A key assessment focus is the qualitative application of Coulomb's law to justify relative ionization energies based on atomic radius (distance from the nucleus) and effective nuclear charge (shielding). Students should be prepared to explain these concepts rather than just stating trends. Note that assigning specific quantum numbers is explicitly excluded from the exam.",
+  "reference_data": "Coulomb's law: F_coulombic ∝ (q1 * q2) / r^2",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "1.5.A",
+      "can_do": "Represent the ground-state electron configuration of an atom of an element or its ions using the Aufbau principle.",
+      "recap": ""
+    },
+    {
+      "code": "1.5.A.1",
+      "can_do": "The atom is composed of negatively charged electrons and a positively charged nucleus that is made of protons and neutrons.",
+      "recap": ""
+    },
+    {
+      "code": "1.5.A.2",
+      "can_do": "Coulomb’s law is used to calculate the force between two charged particles.",
+      "recap": ""
+    },
+    {
+      "code": "1.5.A.3",
+      "can_do": "In atoms and ions, the electrons can be thought of as being in “shells (energy levels)” and “subshells (sublevels),” as described by the ground-state electron configuration. Inner electrons are called core electrons, and outer electrons are called valence electrons. The electron configuration is explained by quantum mechanics, as delineated in the Aufbau principle and exemplified in the periodic table of the elements.",
+      "recap": ""
+    },
+    {
+      "code": "1.5.A.4",
+      "can_do": "The relative energy required to remove an electron from different subshells of an atom or ion or from the same subshell in different atoms or ions (ionization energy) can be estimated through a qualitative application of Coulomb’s law. This energy is related to the distance from the nucleus and the effective (shield) charge of the nucleus.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

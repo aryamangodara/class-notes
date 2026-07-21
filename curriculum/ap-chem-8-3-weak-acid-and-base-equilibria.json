@@ -1,0 +1,68 @@
+{
+  "topic_id": "ap-chem-8-3-weak-acid-and-base-equilibria",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 8: Acids and Bases",
+  "topic": "8.3 Weak Acid and Base Equilibria",
+  "prerequisites": [
+    "Chemical equilibrium (Unit 7)",
+    "pH and pOH of strong acids and bases",
+    "Autoionization of water and Kw"
+  ],
+  "learning_objectives": [
+    {
+      "code": "8.3.A",
+      "statement": "Explain the relationship among pH, pOH, and concentrations of all species in a solution of a monoprotic weak acid or weak base.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "This topic covers the equilibrium of monoprotic weak acids and weak bases in aqueous solutions. Students must understand that weak acids and bases only partially ionize, meaning the concentration of hydronium or hydroxide ions is much less than the initial concentration of the acid or base, and the vast majority of molecules remain un-ionized. The required depth includes calculating pH, pOH, and species concentrations using initial concentrations and the equilibrium constants Ka or Kb (or their negative logarithms, pKa and pKb). Students must also be able to calculate percent ionization from pKa/pKb and initial concentration, or from equilibrium concentrations. The relationship between the acid ionization constant and base ionization constant for a conjugate acid-base pair (Kw = Ka × Kb and pKw = pKa + pKb) is required. The scope is strictly limited to monoprotic weak acids and weak bases.",
+  "assessment_notes": "This topic is assessed with a focus on Mathematical Routines (Skill 5.C), requiring students to explain the relationship between variables within an equation when one variable changes. Questions frequently ask students to calculate pH, pOH, or percent ionization, or to determine Ka/Kb from given concentrations. Students should be prepared to use ICE (Initial, Change, Equilibrium) charts to reflect percent ionization and solve for equilibrium concentrations. A common pitfall is assuming weak acids or bases fully ionize like strong ones, or failing to recognize that the vast majority of molecules remain un-ionized in solution.",
+  "reference_data": "Ka = [H3O+][A-] / [HA]\npKa = -log Ka\nKb = [OH-][HB+] / [B]\npKb = -log Kb\nKw = Ka × Kb\npKw = pKa + pKb",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "8.3.A",
+      "can_do": "I can explain the relationship among pH, pOH, and concentrations of all species in a solution of a monoprotic weak acid or weak base.",
+      "recap": ""
+    },
+    {
+      "code": "8.3.A.1",
+      "can_do": "I can explain that weak acids only partially ionize, leaving the vast majority of molecules un-ionized, and that [H3O+] is much less than the initial acid concentration.",
+      "recap": ""
+    },
+    {
+      "code": "8.3.A.2",
+      "can_do": "I can calculate the pH of a weak acid solution using the initial acid concentration and Ka or pKa.",
+      "recap": ""
+    },
+    {
+      "code": "8.3.A.3",
+      "can_do": "I can explain that weak bases only partially ionize, leaving the vast majority of molecules un-ionized, and that [OH-] does not equal the initial base concentration.",
+      "recap": ""
+    },
+    {
+      "code": "8.3.A.4",
+      "can_do": "I can calculate the pH of a weak base solution using the initial base concentration and Kb or pKb.",
+      "recap": ""
+    },
+    {
+      "code": "8.3.A.5",
+      "can_do": "I can calculate the percent ionization of a weak acid or base from its pKa/pKb and initial concentration, or from equilibrium concentrations.",
+      "recap": ""
+    },
+    {
+      "code": "8.3.A.6",
+      "can_do": "I can relate the acid ionization constant and base ionization constant for a conjugate acid-base pair using Kw.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

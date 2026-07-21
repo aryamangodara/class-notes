@@ -1,0 +1,69 @@
+{
+  "topic_id": "ap-chem-8-7-ph-and-pka",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 8: Acids and Bases",
+  "topic": "8.7 pH and pKa",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "8.7.A",
+      "statement": "Explain the relationship between the predominant form of a weak acid or base in solution at a given pH and the pKa of the conjugate acid or the pKb of the conjugate base.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "8.7.A.1",
+      "statement": "The protonation state of an acid or base (i.e., the relative concentrations of HA and A-) can be predicted by comparing the pH of a solution to the pKa of the acid in that solution. When solution pH < acid pKa, the acid form has a higher concentration than the base form. When solution pH > acid pKa, the base form has a higher concentration than the acid form.",
+      "tier": null,
+      "command_words": [
+        "predict"
+      ]
+    },
+    {
+      "code": "8.7.A.2",
+      "statement": "Acid-base indicators are substances that exhibit different properties (such as color) in their protonated versus deprotonated state, making that property respond to the pH of a solution.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "8.7.A.3",
+      "statement": "To ensure accurate results in a titration experiment, acid-base indicators should be selected that have a pKa close to the pH at the equivalence point.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "The topic requires students to understand the relationship between the pH of a solution and the pKa of a weak acid or base to predict its predominant protonation state. Students must know that when pH < pKa, the acid form predominates, and when pH > pKa, the base form predominates. The concept is applied to acid-base indicators, which change properties (like color) depending on their protonation state. Students are expected to know how to select an appropriate indicator for a titration by ensuring its pKa is close to the pH at the equivalence point.",
+  "assessment_notes": "Students are assessed on their ability to explain the relationship between predominant species and pH/pKa. Questions may require students to predict the relative concentrations of HA and A- given pH and pKa values. They may also be asked to select or justify the choice of an acid-base indicator for a specific titration based on equivalence point pH and indicator pKa. The suggested skill (2.D) indicates students may need to make observations or collect data from representations of laboratory setups or results, attending to precision.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "8.7.A",
+      "can_do": "I can explain the relationship between the predominant form of a weak acid or base in solution at a given pH and the pKa of the conjugate acid or the pKb of the conjugate base.",
+      "recap": ""
+    },
+    {
+      "code": "8.7.A.1",
+      "can_do": "I can predict the protonation state of an acid or base by comparing the pH of a solution to the pKa of the acid.",
+      "recap": ""
+    },
+    {
+      "code": "8.7.A.2",
+      "can_do": "I can explain how acid-base indicators change properties based on their protonated versus deprotonated states in response to pH.",
+      "recap": ""
+    },
+    {
+      "code": "8.7.A.3",
+      "can_do": "I can select an appropriate acid-base indicator for a titration by choosing one with a pKa close to the pH at the equivalence point.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

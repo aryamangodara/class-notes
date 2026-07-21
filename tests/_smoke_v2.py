@@ -58,12 +58,28 @@ def sample(review_flags=None, bad_mcq=False):
                     {"text": "b", "correct": (True if bad_mcq else False), "explanation": "no"}]},
                 {"type": "figure", "diagram": {"caption": "leaf", "kind": "image", "content": "leaf",
                                                "image_src": "data:image/png;base64,AAAA", "attribution": "CC0"}},
+                # Appended LAST so blocks[0] stays `prose` for the escaping check in 5.
+                # It was the ONE block type the fixture never carried, so every accordion
+                # rule would have been shipped untested.
+                {"type": "accordion", "items": [{"summary": "wrong mass", "detail": "use the solution mass"}]},
             ],
         }],
-        practice=[{"type": "numeric", "label": "Q1 · basic · 2 marks", "question": "calc", "answer": -56.4,
-                   "tolerance": 0.6, "unit": "kJ/mol",
+        # A real 3-rung ladder. Once the practice-SET gate folds into document_defects, a
+        # single unweighted `standard` numeric on an A-Level note fails TWO new rules at
+        # once (no basic/stretch rung; no `marks` on a board that weights), so a
+        # one-question fixture is no longer a structurally clean note.
+        practice=[{"type": "numeric", "label": "Q1 · basic · 2 marks", "difficulty": "basic",
+                   "marks": 2, "question": "calc", "answer": -56.4, "tolerance": 0.6, "unit": "kJ/mol",
                    "wrong_answers": [{"value": 56.4, "tolerance": 0.6, "message": "sign"}],
-                   "mark_scheme": [{"label": "M1", "text": "q"}, {"label": "A1", "text": "ans"}]}],
+                   "mark_scheme": [{"label": "M1", "text": "q"}, {"label": "A1", "text": "ans"}]},
+                  {"type": "mcq", "difficulty": "standard", "tag": "Q2 · standard", "question": "Sign?",
+                   "options": [{"text": "negative", "correct": True, "explanation": "exothermic releases heat"},
+                               {"text": "positive", "correct": False, "explanation": "that would absorb heat"}]},
+                  {"type": "numeric", "label": "Q3 · stretch · 3 marks", "difficulty": "stretch",
+                   "marks": 3, "question": "harder", "answer": 12.0, "tolerance": 0.2, "unit": "kJ/mol",
+                   "wrong_answers": [{"value": -12.0, "tolerance": 0.2, "message": "sign flip"}],
+                   "mark_scheme": [{"label": "M1", "text": "n"}, {"label": "M2", "text": "q"},
+                                   {"label": "A1", "text": "ans"}]}],
         command_words=[{"word": "Define", "gloss": "recite"}],
         mistakes=[{"summary": "wrong mass", "detail": "use the solution"}],
         spec_checklist={"source_title": "Edexcel 9CH0", "source_citation": "Issue 3",
@@ -136,6 +152,46 @@ _pd = render_v2.practice_block_defects(n_pd.practice)
 assert _pd and _pd[0].kind == "practice" and "mark scheme" in _pd[0].message, "practice defect detected + tagged"
 print("validate_interactives OK (clean=0; bad-mcq/blank-expl/empty-steps flagged; loci tagged)")
 
+# 6c. EMPTY CONTAINERS. An empty container is not an empty defect list: an empty
+#     flip_cards block SATISFIES the define/state structural-evidence rule in
+#     coverage_gate while teaching nothing, so it can close a coverage gap with an empty
+#     grid. table/accordion have the same hole and are not even behind that opt-in flag.
+for _t, _field, _want in (("flip_cards", "cards", "no cards"),
+                          ("table", "rows", "no rows"),
+                          ("accordion", "items", "no items")):
+    _n = sample()
+    setattr(next(b for s in _n.sections for b in s.blocks if b.type == _t), _field, [])
+    assert any(_want in f for f in render_v2.validate_interactives(_n)), f"an empty {_t} must flag"
+#     And the numeric half of rule 7: an EMPTY wrong_answers list ran the diagnostic loop
+#     zero times, so "no diagnostics at all" emitted no defect while a bad one did.
+_nw = sample(); _nw.practice[0].wrong_answers = []
+assert any("no diagnostic wrong_answers" in f for f in render_v2.validate_interactives(_nw)), \
+    "a numeric with no diagnostics must flag"
+#     Duplicate MCQ explanations: the redraft prompt already promised "distinct", unchecked.
+_nd = sample()
+_dmcq = next(b for s in _nd.sections for b in s.blocks if b.type == "mcq")
+_dmcq.options[1].explanation = _dmcq.options[0].explanation
+assert any("reuses the same explanation" in f for f in render_v2.validate_interactives(_nd)), \
+    "the same explanation on two options must flag"
+print("empty-container gate OK (flip_cards/table/accordion/diagnostics/duplicate explanations)")
+
+# 6d. mark_scheme must AWARD the marks the label advertises. Exact equality on the SUM of
+#     per-step `marks`, NOT the step COUNT: a scaffolding step legitimately carries
+#     marks:0, which is how "more steps than marks" stays legal without loosening the
+#     test. Marks are 1-5 integers, so a tolerance would permit exactly the off-by-one
+#     that is the likeliest real error. It MUST skip when marks is None (SAT/AMC).
+n_ms = sample(); n_ms.practice[0].marks = 3            # scheme still awards 2
+assert any("awards 2" in f for f in render_v2.validate_interactives(n_ms)), "a mark-scheme shortfall must flag"
+n_ok = sample(); n_ok.practice[0].marks = 3; n_ok.practice[0].mark_scheme[0].marks = 2
+assert render_v2.validate_interactives(n_ok) == [], "a step worth 2 marks makes the scheme add up"
+n_sat = sample(); n_sat.practice[0].marks = None; n_sat.practice[0].mark_scheme[0].marks = 99
+assert not any("awards" in d.message for d in render_v2.block_defects(n_sat)), \
+    "marks=None (SAT/AMC) skips the sum rule entirely, whatever the steps say"
+n_neg = sample(); n_neg.practice[0].marks = 0
+assert any("use a positive whole number" in f for f in render_v2.validate_interactives(n_neg)), \
+    "marks=0 on a weighted board is its own fault, not a silent empty sum"
+print("mark-scheme sum OK (exact equality; marks:0 scaffolding legal; null marks skips)")
+
 # 7. progress ids derived + unique.
 ids = render_v2.interactive_block_ids(sample())
 assert ids and len(ids) == len(set(ids)), "interactive block ids must be non-empty and unique"
@@ -191,8 +247,9 @@ _PROMPT_KEYS = {
     "v2_write_section.txt": ["house_style", "spec_block", "heading", "intent",
                              "codes", "outline", "exam_format", "coverage_feedback"],
     "v2_write_practice.txt": ["house_style", "spec_block", "sections", "worked_examples",
-                              "structural_feedback"],
-    "v2_finalize.txt": ["house_style", "spec_block", "sections", "checklist"],
+                              "marks_convention", "structural_feedback"],
+    "v2_finalize.txt": ["house_style", "spec_block", "sections", "checklist",
+                        "structural_feedback"],
     "past_papers_candidates.txt": ["spec_block", "paper_label"],
     "past_papers_verify.txt": ["spec_block", "candidates"],
     "spec_ground.txt": ["board", "subject", "level", "unit", "topic", "items"],
@@ -286,5 +343,84 @@ except cg.StructuralError as _se:
     assert "empty explanation" in str(_se) and "mark scheme" in str(_se) and "3 structural" in str(_se), \
         "StructuralError must name the surviving defects"
 print("tiered-gate OK (section defects route + fix block; practice flat lines; StructuralError names them)")
+
+import config  # noqa: E402
+
+# 14. Whole-LADDER rules: the set-level defects `_block_defects` cannot see, because they
+#     are properties of the COLLECTION (does it actually ladder?) or of the BOARD (does
+#     this level mark-weight at all?). They share the `practice` locus deliberately — the
+#     ladder is one artifact with one regenerating stage, so a set defect routes through
+#     the SAME enforce_practice_structure_v2 loop and needs no new BlockDefect kind. A
+#     'document' locus, by contrast, could only ever hard-fail: nothing regenerates a
+#     whole document.
+n_lad = sample()
+assert render_v2.practice_set_defects(n_lad.practice, level="A-Level") == [], \
+    "a basic/standard/stretch ladder with weighted marks is clean"
+_flat = sample().practice
+for _b in _flat:
+    _b.difficulty = "standard"
+#     The difficulty rule is OFF by default: `difficulty` DEFAULTS to 'standard', so a
+#     model that merely omits the field fails EVERY topic. Assert both states explicitly.
+assert render_v2.practice_set_defects(_flat, level="A-Level") == [], \
+    "the difficulty gate is off by default - a flat ladder must not fail a corpus-wide run"
+config.CONFIG["structural_gate_difficulty"] = True
+try:
+    _sd2 = render_v2.practice_set_defects(_flat, level="A-Level")
+    assert _sd2 and _sd2[0].kind == "practice" and _sd2[0].index == -1, "a set defect carries the practice locus"
+    assert "no basic" in _sd2[0].message and "stretch" in _sd2[0].message, "the fix names the missing rungs"
+    assert render_v2.practice_set_defects(n_lad.practice, level="A-Level") == [], \
+        "a real 3-rung ladder still passes with the gate on"
+finally:
+    config.CONFIG["structural_gate_difficulty"] = False
+#     The marks convention belongs to the BOARD: weighting a digital-SAT item invents an
+#     exam fact, and M1/A1 on a board with no method marks imports another board's scheme.
+n_sat2 = sample()
+assert any("does not mark-weight" in d.message
+           for d in render_v2.practice_set_defects(n_sat2.practice, level="SAT")), \
+    "marks on a SAT question must flag"
+for _b in n_sat2.practice:
+    if _b.type == "numeric":
+        _b.marks = None
+assert any("no method marks" in d.message
+           for d in render_v2.practice_set_defects(n_sat2.practice, level="SAT")), \
+    "M1/A1 labels on a board with no method marks must flag"
+n_unw = sample(); n_unw.practice[0].marks = None
+assert any("has no `marks`" in d.message
+           for d in render_v2.practice_set_defects(n_unw.practice, level="A-Level")), \
+    "an unweighted question on a weighted board must flag"
+assert render_v2.practice_set_defects(n_unw.practice, level="") == [], \
+    "an unknown level skips the convention rules rather than guessing"
+print("ladder-set gate OK (difficulty spread opt-in; per-level marks convention; practice locus)")
+
+# 15. Hook-locus routing. The hook is a RevealBlock produced by finalize_v2, so it belongs
+#     to NO section. Before this it reached only the assemble-time guard — a hard fail
+#     with ZERO retries that threw away the whole topic's spend over a fixable block. It
+#     now has its own collector and its own stage gate, which is what makes
+#     defect_feedback_by_section's kind=='section' filter correct rather than lossy.
+n_hk = sample(); n_hk.hook.answer = "   "
+_hd = render_v2.hook_block_defects(n_hk.hook)
+assert _hd and _hd[0].kind == "hook" and _hd[0].index == -1, "a hook defect carries the hook locus"
+assert "empty answer" in _hd[0].message, "the fix names what the reveal is missing"
+assert cg.defect_feedback_by_section(_hd) == {}, \
+    "a hook defect routes to NO section - finalize owns it, and a section could not fix it"
+assert "STRUCTURAL FIX" in cg.structural_feedback_block(cg.structural_feedback_lines(_hd)), \
+    "the hook re-draft gets the same fix block as the section and practice loops"
+assert render_v2.hook_block_defects(None) == [], "a missing hook is not a defect"
+#     The rule is dual-locus: a reveal INSIDE a section still routes to that section.
+n_rv = sample()
+n_rv.sections[0].blocks.append(v2.RevealBlock(question="Q", teaser="t", answer=""))
+assert 0 in cg.defect_feedback_by_section(render_v2.block_defects(n_rv)), \
+    "a section-locus reveal routes to its owning section"
+print("hook-routing OK (hook locus regenerable via finalize; section reveals route to sections)")
+
+# 16. The revealed answer box is titled by the BOARD's convention, and that table is
+#     DUPLICATED into the JS — so pin the parity, exactly like BLOCK_TYPES <-> renderBlock.
+_js_titles = dict(re.findall(r"'([^']+)'\s*:\s*'(Worked solution)'", js))
+_want_titles = {lvl: c["scheme_title"] for lvl, c in config.MARKS_CONVENTION.items() if not c["weighted"]}
+assert _js_titles == _want_titles, f"scheme-title drift: js={_js_titles} config={_want_titles}"
+assert config.marks_convention_for("A-Level")["weighted"], "A-Level mark-weights"
+assert not config.marks_convention_for("SAT")["weighted"], "SAT does not mark-weight"
+assert config.marks_convention_for("Nope")["weighted"], "an unknown level defaults to weighted (the common case)"
+print(f"marks-convention parity OK ({len(_want_titles)} no-marks level(s) titled by the board)")
 
 print("\nALL V2 SMOKE CHECKS PASSED")

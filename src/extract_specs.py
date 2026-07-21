@@ -36,6 +36,8 @@ from dotenv import load_dotenv
 from google.genai import types
 
 import helpers
+import pdf_text
+import spec_gate
 from config import CONFIG, board_to_level
 from ground_specs import fetch_spec_pdf, slice_pdf
 from schemas import SpecTopicList, TopicSpec
@@ -79,20 +81,37 @@ def plan_writes(board, subject, entries, existing_ids, *, force=False, limit=Non
 
 
 def stamp_extracted(spec_dict: dict, *, topic_id, board, subject, level, unit, topic,
-                    citation: str, page_note: str = "") -> dict:
+                    citation: str, page_note: str = "", gaps=None, next_topic: str = "") -> dict:
     """Overwrite the controlled identity fields deterministically (never trust the model
-    for board/level/id), clear the human-curated exam-format layer, and stamp UNVERIFIED
-    provenance. Returns a new dict ready to validate + write."""
-    d = dict(spec_dict)
+    for board/level/id), strip the extraction-only evidence quotes, and stamp the GATE'S
+    VERDICT as provenance. Returns a new dict ready to validate + write.
+
+    ``gaps`` is the curriculum gate's outcome (``spec_gate.spec_gaps``). Empty => the spec
+    is auto-approved and carries no UNVERIFIED marker, so ``notes.py`` will generate it.
+    Non-empty => it stays UNVERIFIED **with the machine-written reason**, so `--list` and
+    `git diff` say WHAT failed. Defaulting to None keeps the marker on: a caller that has
+    not run the gate has not earned an approval.
+    """
+    # Evidence quotes are verbatim text from a copyrighted specification. They exist only
+    # to be checked in the run that produced them; persisting them would ship syllabus
+    # text into a git-tracked file.
+    d = spec_gate.strip_evidence(spec_dict)
     d["topic_id"], d["board"], d["subject"], d["level"] = topic_id, board, subject, level
     d["unit"], d["topic"] = unit, topic
-    # The curated exam-format layer is a human decision — extraction never authors it.
-    d["exam_map"], d["past_papers"], d["next_topic"] = [], None, ""
+    # The model never authors the exam-format layer: exam_map is filled by the caller from
+    # separately-verified data, and next_topic is computed from the enumeration order.
+    d["exam_map"], d["past_papers"] = [], None
+    d["next_topic"] = next_topic
     if not d.get("spec_source_citation"):
         d["spec_source_citation"] = citation
     pg = f", {page_note}" if page_note else ""
-    d["source"] = (f"Auto-extracted from {citation}{pg} — UNVERIFIED: run "
-                   f"`py -3 src/ground_specs.py {topic_id} --apply` then review `git diff` before shipping.")
+    n = len(d.get("learning_objectives") or [])
+    if gaps is not None and not gaps:
+        d["source"] = f"Auto-extracted from {citation}{pg} — {spec_gate.approve_note(citation, n)}"
+    else:
+        reason = spec_gate.block_reason(gaps or [])
+        d["source"] = (f"Auto-extracted from {citation}{pg} — UNVERIFIED: could not be verified "
+                       f"against the source PDF ({reason}). It will NOT generate notes.")
     return d
 
 
@@ -118,18 +137,52 @@ def enumerate_topics(client, board, subject, level, pdf_bytes) -> list:
     return items
 
 
-def extract_topic(client, board, subject, level, entry, pdf_bytes) -> dict:
-    """Stage 2: extract ONE TopicSpec from the pages this topic's keywords slice to."""
-    sliced = slice_pdf(pdf_bytes, list(entry.keywords), CONFIG.get("ced_slice_page_threshold", 40))
+def extract_topic(client, board, subject, level, entry, pdf_bytes, *,
+                  spec_feedback: str = "", extra_keywords=()) -> dict:
+    """Stage 2: extract ONE TopicSpec from the pages this topic's keywords slice to.
+
+    ``extra_keywords`` steers the SLICE on a repair pass: re-asking the same question of
+    the same pages is a self-confirmation loop, so a retry must see different evidence."""
+    keywords = list(extra_keywords) + list(entry.keywords)
+    sliced = slice_pdf(pdf_bytes, keywords, CONFIG.get("ced_slice_page_threshold", 40))
     part = types.Part.from_bytes(data=sliced, mime_type="application/pdf")
     prompt = helpers.load_prompt("spec_extract.txt").format(
-        board=board, subject=subject, level=level, unit=entry.unit, topic=entry.topic)
+        board=board, subject=subject, level=level, unit=entry.unit, topic=entry.topic,
+        spec_feedback=spec_feedback)
     spec = helpers.call_model(
         client, trace=helpers.trace_spec_run("spec.extract", board=board, subject=subject,
                                              level=level, item=entry.topic),
         contents=[prompt, part],
         **helpers._gen_config("model_spec_extract", "temperature_verify", TopicSpec))
     return spec.model_dump()
+
+
+def extract_topic_verified(client, board, subject, level, entry, pdf_bytes, paper):
+    """Extract ONE topic and hold it to the curriculum gate: verify every code and
+    evidence quote against the SAME PDF, re-extract with the gaps injected, then give up.
+
+    Returns ``(spec_dict, gaps)`` — an empty ``gaps`` means the spec earned approval. This
+    is the autonomous replacement for the human `git diff` review, and it mirrors
+    ``enforce_coverage_v2`` exactly: verify -> regenerate the failing part with feedback
+    -> re-verify -> stop at the cap. Costs NO extra model calls in the happy path, because
+    the evidence quotes come back from the extraction that was already happening.
+    """
+    max_retries = CONFIG.get("max_spec_repair_retries", 2)
+    min_objectives = CONFIG.get("min_objectives_per_topic", 2)
+    feedback, extra = "", ()
+    attempt = 0
+    while True:
+        spec = extract_topic(client, board, subject, level, entry, pdf_bytes,
+                             spec_feedback=feedback, extra_keywords=extra)
+        gaps = spec_gate.spec_gaps(spec, paper, min_objectives=min_objectives)
+        action = spec_gate.plan_spec_decision(gaps, attempt, max_retries)
+        if action != "repair":
+            return spec, gaps
+        attempt += 1
+        print(f"    spec gate: {len(gaps)} ungrounded item(s) — re-extracting "
+              f"({attempt}/{max_retries}): {spec_gate.block_reason(gaps)}")
+        feedback = spec_gate.spec_feedback_block(spec_gate.spec_feedback_lines(gaps))
+        extra = spec_gate.repair_keywords(spec, gaps)
 
 
 # ---------------------------------------------------------------------------
@@ -171,30 +224,49 @@ def extract_source(client, board, subject, *, apply, force, limit) -> "list[str]
 
     citation = src.citation
     curric = Path(CONFIG["curriculum_dir"])
+    # Extract the PDF's text ONCE for the whole subject: the curriculum gate checks every
+    # code and evidence quote against it, and re-parsing per topic would be pure waste.
+    paper = pdf_text.extract_text(pdf)
+    if paper is None:
+        print("  ! the spec PDF yielded no extractable text (a scan?) — nothing can be verified "
+              "against it, so every spec from this source will stay UNVERIFIED.")
+    # next_topic is DETERMINISTIC: enumerate_topics returns entries in spec order, so the
+    # successor is a list lookup, not a model guess. Computed over the FULL list before
+    # plan_writes filters it, or the indices misalign.
+    next_by_topic = {e.topic: (entries[i + 1].topic if i + 1 < len(entries) else "")
+                     for i, e in enumerate(entries)}
 
     def _work(item):
         tid, e = item
         try:
-            raw = extract_topic(client, board, subject, level, e, pdf)
+            raw, gaps = extract_topic_verified(client, board, subject, level, e, pdf, paper)
             stamped = stamp_extracted(raw, topic_id=tid, board=board, subject=subject, level=level,
-                                      unit=e.unit, topic=e.topic, citation=citation)
+                                      unit=e.unit, topic=e.topic, citation=citation, gaps=gaps,
+                                      next_topic=next_by_topic.get(e.topic, ""))
             TopicSpec.model_validate(stamped)  # never write an invalid spec
-            return tid, stamped, None
+            return tid, stamped, gaps, None
         except Exception as exc:  # noqa: BLE001 — one bad topic must not kill the source
-            return tid, None, exc
+            return tid, None, None, exc
 
     written: "list[str]" = []
+    approved = blocked = 0
     with ThreadPoolExecutor(max_workers=CONFIG["max_parallel_sections"]) as ex:
         futures = [ex.submit(_work, it) for it in planned]
         for f in as_completed(futures):
-            tid, stamped, err = f.result()
+            tid, stamped, gaps, err = f.result()
             if err is not None or stamped is None:
                 print(f"    ✗ {tid}: {err}")
                 continue
             (curric / f"{tid}.json").write_text(
                 json.dumps(stamped, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
             written.append(tid)
-            print(f"    ✓ {tid}")
+            if gaps:
+                blocked += 1
+                print(f"    ! {tid} — UNVERIFIED: {spec_gate.block_reason(gaps)}")
+            else:
+                approved += 1
+                print(f"    ✓ {tid}")
+    print(f"  {approved} approved (will generate) · {blocked} UNVERIFIED (will NOT generate)")
     return sorted(written)
 
 
@@ -256,10 +328,13 @@ def main() -> None:
     if args.apply:
         print(f"\n✓ wrote {len(written)} spec(s) to curriculum/.")
         if written:
-            print("  NEXT — verify + review before generating (extraction is UNVERIFIED):")
-            print("    py -3 src/ground_specs.py --all --apply   # verify codes vs the spec PDF")
-            print("    git diff curriculum/                      # human review")
-            print("    py -3 src/notes.py --all                  # generate notes")
+            # Each spec was already verified against its source PDF above, so generation is
+            # the next step — nothing waits for a person. `git diff` is a post-hoc audit
+            # trail, and approve_specs is only for overriding a spec the gate declined.
+            print("  Every spec above was verified against its source PDF as it was written.")
+            print("    py -3 src/notes.py --all                  # generate (skips any still UNVERIFIED)")
+            print("    py -3 src/approve_specs.py --list         # which the gate declined, and why")
+            print("    git diff curriculum/                      # post-hoc audit trail (non-blocking)")
     else:
         print("\nDry run complete — re-run with --apply to write curriculum JSON.")
 

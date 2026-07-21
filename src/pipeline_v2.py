@@ -16,8 +16,11 @@ from pydantic import BaseModel, Field
 
 import helpers
 import schemas_v2 as v2
-from config import CONFIG, HOUSE_STYLE, exam_tips_for
-from render_v2 import block_defects, practice_block_defects, section_block_defects
+from config import CONFIG, HOUSE_STYLE, exam_tips_for, marks_convention_for
+from render_v2 import (
+    document_defects, hook_block_defects, practice_block_defects, practice_set_defects,
+    section_block_defects,
+)
 from schemas import CoverageReport, TopicSpec
 from coverage_gate import (
     CoverageError, StructuralError, defect_feedback_by_section, feedback_block,
@@ -121,12 +124,28 @@ def write_sections_v2(client: genai.Client, spec: TopicSpec, outline) -> list[v2
     return [r for r in results if r is not None]
 
 
+def _marks_convention_text(level: str) -> str:
+    """The board's marks convention as one instruction line. Rendered from
+    ``config.MARKS_CONVENTION`` so the prompt, the deterministic gate and the renderer all
+    read the SAME curated fact — the model is never asked to recall whether its board
+    mark-weights, which is how SAT questions ended up with Edexcel M1/A1 mark schemes."""
+    c = marks_convention_for(level)
+    if c["weighted"]:
+        return (f"{level} weights each question in whole {c['plural']}: set `marks` to that number, "
+                f"label the mark scheme {c['step_style']}, and make the per-step `marks` add up to it. "
+                f"Leave `time_estimate_s` null.")
+    return (f"{level} does NOT mark-weight questions — set `marks` to null (never invent a mark "
+            f"total), label the solution steps {c['step_style']}, and set `time_estimate_s` to the "
+            f"seconds a prepared student should take ({c['pace']}).")
+
+
 def write_practice_v2(client: genai.Client, spec: TopicSpec, sections,
                       structural_feedback: str = "") -> list:
     joined = "\n\n".join(_section_text(s) for s in sections)
     prompt = helpers.load_prompt("v2_write_practice.txt").format(
         house_style=HOUSE_STYLE, spec_block=helpers._spec_block(spec),
         sections=joined, worked_examples=_worked_examples_text(sections),
+        marks_convention=_marks_convention_text(spec.level),
         structural_feedback=structural_feedback)
     ps = helpers.call_model(
         client, trace=helpers.trace_topic(spec, "practice"), contents=prompt,
@@ -145,7 +164,9 @@ def enforce_practice_structure_v2(client: genai.Client, spec: TopicSpec, section
     max_retries = CONFIG.get("max_structure_retries", 1)
     attempt = 0
     while True:
-        defects = practice_block_defects(practice)
+        # Per-block defects PLUS the set-level ones (does it ladder? does this board even
+        # mark-weight?), which only exist over the whole collection.
+        defects = practice_block_defects(practice) + practice_set_defects(practice, level=spec.level)
         if not defects:
             return practice
         if attempt >= max_retries:
@@ -158,16 +179,44 @@ def enforce_practice_structure_v2(client: genai.Client, spec: TopicSpec, section
             structural_feedback=structural_feedback_block(structural_feedback_lines(defects)))
 
 
-def finalize_v2(client: genai.Client, spec: TopicSpec, sections) -> _Finalize:
+def finalize_v2(client: genai.Client, spec: TopicSpec, sections, *,
+                structural_feedback: str = "") -> _Finalize:
     joined = "\n\n".join(_section_text(s) for s in sections)
     checklist = "\n".join(f"  {i+1}. [{it.code}] {it.can_do}"
                           for i, it in enumerate(spec.spec_checklist)) or "  (none)"
     prompt = helpers.load_prompt("v2_finalize.txt").format(
         house_style=HOUSE_STYLE, spec_block=helpers._spec_block(spec),
-        sections=joined, checklist=checklist)
+        sections=joined, checklist=checklist, structural_feedback=structural_feedback)
     return helpers.call_model(
         client, trace=helpers.trace_topic(spec, "finalize"), contents=prompt,
         **helpers._gen_config("model_write", "temperature_write", _Finalize))
+
+
+def enforce_finalize_structure_v2(client: genai.Client, spec: TopicSpec, sections, fin) -> _Finalize:
+    """The HOOK structural GATE — third sibling of the section and practice gates.
+
+    The hook is a reveal block produced HERE, belonging to no section, so
+    ``defect_feedback_by_section`` could never route a hook defect and it reached the
+    assemble-time guard with ZERO regeneration attempts — a hard fail that threw away the
+    whole topic's spend over a fixable block. Re-running finalize also redraws
+    hero/command-words/mistakes, but that is ONE call and far cheaper than a bespoke hook
+    stage needing its own prompt, schema and tracing vocabulary. It reuses the existing
+    `finalize` trace stage, so ``helpers.STAGES`` is untouched.
+    """
+    max_retries = CONFIG.get("max_structure_retries", 1)
+    attempt = 0
+    while True:
+        defects = hook_block_defects(fin.hook)
+        if not defects:
+            return fin
+        if attempt >= max_retries:
+            raise StructuralError(spec.topic_id, defects)
+        attempt += 1
+        print(f"       hook gate: {len(defects)} block defect(s) — "
+              f"re-running finalize ({attempt}/{max_retries})")
+        fin = finalize_v2(client, spec, sections,
+                          structural_feedback=structural_feedback_block(
+                              structural_feedback_lines(defects)))
 
 
 def _fetch_one_image(client: genai.Client, d, width: int, trace: dict):
@@ -259,8 +308,14 @@ def enforce_coverage_v2(client: genai.Client, spec: TopicSpec, outline, sections
     through as a soft flag (the model verifier's opinions do, routed to spot-check).
     """
     max_retries = CONFIG.get("max_coverage_retries", 2)
+    max_struct = CONFIG.get("max_structure_retries", 2)
     coverage = verify_v2(client, spec, sections)
-    attempt = 0
+    # Two INDEPENDENT budgets on purpose. They used to share one counter, so a topic that
+    # had both an uncovered objective and a broken block spent its coverage attempts on
+    # the block — adding structural rules would then have silently weakened the coverage
+    # gate, which is the stronger of the two. A redraft that fixes a defect must not cost
+    # the contract its retries.
+    cov_attempt = struct_attempt = 0
     while True:
         model_gaps = uncovered_items(coverage.items)
         # Deterministic structural evidence: an objective whose command word demands
@@ -281,18 +336,20 @@ def enforce_coverage_v2(client: genai.Client, spec: TopicSpec, outline, sections
 
         if not gaps and not defect_targets:
             return coverage
-        if attempt >= max_retries:
-            if gaps:
-                raise CoverageError(spec.topic_id, gaps)
+        # Each fault is checked against its OWN budget, so neither can exhaust the other's.
+        if gaps and cov_attempt >= max_retries:
+            raise CoverageError(spec.topic_id, gaps)
+        if defect_targets and struct_attempt >= max_struct:
             raise StructuralError(spec.topic_id, sec_defects)
-        attempt += 1
         reasons = []
         if gaps:
-            reasons.append("coverage " + ", ".join(c.code for c in gaps))
+            cov_attempt += 1
+            reasons.append(f"coverage {', '.join(c.code for c in gaps)} ({cov_attempt}/{max_retries})")
         if defect_targets:
-            reasons.append(f"structure {sum(len(v) for v in defect_targets.values())} defect(s)")
-        print(f"       section gate [{' | '.join(reasons)}] — "
-              f"regenerating owning section(s) ({attempt}/{max_retries})")
+            struct_attempt += 1
+            reasons.append(f"structure {sum(len(v) for v in defect_targets.values())} defect(s) "
+                           f"({struct_attempt}/{max_struct})")
+        print(f"       section gate [{' | '.join(reasons)}] — regenerating owning section(s)")
         texts = [_section_text(s) for s in sections]
         targets, forced = plan_regeneration(gaps, sections, texts, spec.learning_objectives)
         # Route codes no section claimed onto their best-overlap section, so the
@@ -356,6 +413,10 @@ def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.Inte
         p = write_practice_v2(client, spec, sections)
         return enforce_practice_structure_v2(client, spec, sections, p)
 
+    def _stage_finalize():
+        f = finalize_v2(client, spec, sections)
+        return enforce_finalize_structure_v2(client, spec, sections, f)
+
     def _stage_past_papers():
         pp = spec.past_papers
         if CONFIG.get("generate_past_papers") and not (pp and pp.verified):
@@ -370,7 +431,7 @@ def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.Inte
     with ThreadPoolExecutor(max_workers=4) as ex:
         f_img = ex.submit(_stage_images)
         f_practice = ex.submit(_stage_practice)
-        f_finalize = ex.submit(finalize_v2, client, spec, sections)
+        f_finalize = ex.submit(_stage_finalize)
         f_pp = ex.submit(_stage_past_papers)
         f_img.result()                    # images mutate sections in place; just join
         practice = f_practice.result()    # propagates StructuralError/RuntimeError -> topic fails
@@ -403,7 +464,7 @@ def generate_interactive_notes(client: genai.Client, spec: TopicSpec) -> v2.Inte
     # every deterministic block defect, so this must come back clean. If ANY survives
     # (e.g. a future checked block type on a locus no gate covers), refuse to ship
     # rather than emit a broken interactive — the same fix-or-fail contract as coverage.
-    residual = block_defects(notes)
+    residual = document_defects(notes)
     if residual:
         raise StructuralError(spec.topic_id, residual)
 

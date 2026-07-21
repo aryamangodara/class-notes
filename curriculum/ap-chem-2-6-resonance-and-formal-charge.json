@@ -1,0 +1,71 @@
+{
+  "topic_id": "ap-chem-2-6-resonance-and-formal-charge",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 2: Compound Structure and Properties",
+  "topic": "2.6 Resonance and Formal Charge",
+  "prerequisites": [
+    "Valence electrons",
+    "Octet rule",
+    "Basic Lewis electron-dot diagrams"
+  ],
+  "learning_objectives": [
+    {
+      "code": "2.6.A",
+      "statement": "Represent a molecule with a Lewis diagram that accounts for resonance between equivalent structures or that uses formal charge to select between nonequivalent structures.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    },
+    {
+      "code": "2.6.A.1",
+      "statement": "In cases where more than one equivalent Lewis structure can be constructed, resonance must be included as a refinement to the Lewis structure. In many such cases, this refinement is needed to provide qualitatively accurate predictions of molecular structure and properties.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "2.6.A.2",
+      "statement": "The octet rule and formal charge can be used as criteria for determining which of several possible valid Lewis diagrams provides the best model for predicting molecular structure and properties.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "2.6.A.3",
+      "statement": "As with any model, there are limitations to the use of the Lewis structure model, particularly in cases with an odd number of valence electrons.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students are expected to construct Lewis structures that include resonance when equivalent structures exist, understanding that this refinement is necessary for qualitatively accurate predictions of molecular properties. They must also be able to calculate formal charges and use them, alongside the octet rule, to evaluate and select the best model among several nonequivalent valid Lewis diagrams. The course explicitly requires students to recognize the limitations of the Lewis structure model, specifically noting cases involving an odd number of valence electrons.",
+  "assessment_notes": "This topic is assessed under Science Practice 6.C (Argumentation), requiring students to support a claim with evidence from representations or models at the particulate level. On the AP Exam, students must be able to construct Lewis structures and make predictions or claims based on them. Common pitfalls examiners note include using the incorrect number of valence electrons, violating the octet rule, or confusing molecular geometry with bond angles. Students should be well-practiced in calculating and connecting formal charges in Lewis structures to the predicted structure of a molecule.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "2.6.A",
+      "can_do": "Represent a molecule with a Lewis diagram that accounts for resonance between equivalent structures or that uses formal charge to select between nonequivalent structures.",
+      "recap": ""
+    },
+    {
+      "code": "2.6.A.1",
+      "can_do": "In cases where more than one equivalent Lewis structure can be constructed, resonance must be included as a refinement to the Lewis structure. In many such cases, this refinement is needed to provide qualitatively accurate predictions of molecular structure and properties.",
+      "recap": ""
+    },
+    {
+      "code": "2.6.A.2",
+      "can_do": "The octet rule and formal charge can be used as criteria for determining which of several possible valid Lewis diagrams provides the best model for predicting molecular structure and properties.",
+      "recap": ""
+    },
+    {
+      "code": "2.6.A.3",
+      "can_do": "As with any model, there are limitations to the use of the Lewis structure model, particularly in cases with an odd number of valence electrons.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,49 @@
+{
+  "topic_id": "ap-chem-3-9-separation-of-solutions-and-mixtures",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.9 Separation of Solutions and Mixtures",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.9.A",
+      "statement": "Explain the results of a separation experiment based on intermolecular interactions.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that the components of a liquid solution cannot be separated by filtration, but rather by processes that take advantage of differences in intermolecular interactions. The course requires knowledge of two main separation techniques: chromatography (paper, thin-layer, and column) and distillation. For chromatography, students must understand that separation occurs due to the differential strength of intermolecular interactions between the components and both the mobile phase and the stationary phase. They must also be able to infer relative polarities of components from a resulting chromatogram. For distillation, students must understand that separation relies on the differential strength of intermolecular interactions and the resulting effects on the vapor pressures of the components in the mixture.",
+  "assessment_notes": "This topic is associated with Science Practice 2.C: Identify experimental procedures that are aligned to the question (which may include a sketch of a lab setup). On the exam, students may be presented with diagrams of chromatography experiments and asked to draw conclusions about the relative molar mass, intermolecular forces, or attractions to the stationary versus mobile phases for the separated dyes. They may also be asked to evaluate claims about polarity based on macroscopic observations of chromatography and their understanding of intermolecular forces.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.9.A.1",
+      "can_do": "The components of a liquid solution cannot be separated by filtration. They can, however, be separated using processes that take advantage of differences in the intermolecular interactions of the components.",
+      "recap": ""
+    },
+    {
+      "code": "3.9.A.1.i",
+      "can_do": "Chromatography (paper, thin-layer, and column) separates chemical species by taking advantage of the differential strength of intermolecular interactions between and among the components of the solution (the mobile phase) and with the surface components of the stationary phase. The resulting chromatogram can be used to infer the relative polarities of components in a mixture.",
+      "recap": ""
+    },
+    {
+      "code": "3.9.A.1.i",
+      "can_do": "I can use a chromatogram to infer the relative polarities of components in a mixture.",
+      "recap": ""
+    },
+    {
+      "code": "3.9.A.1.ii",
+      "can_do": "Distillation separates chemical species by taking advantage of the differential strength of intermolecular interactions between and among the components and the effects these interactions have on the vapor pressures of the components in the mixture.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

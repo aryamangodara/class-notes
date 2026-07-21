@@ -1,0 +1,89 @@
+{
+  "topic_id": "ap-chem-5-11-catalysis",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.11 Catalysis",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "5.11.A",
+      "statement": "Explain the relationship between the effect of a catalyst on a reaction and changes in the reaction mechanism.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "5.11.A.1",
+      "statement": "In order for a catalyst to increase the rate of a reaction, the addition of the catalyst must increase the number of effective collisions and/or provide a reaction path with a lower activation energy relative to the original reaction coordinate.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.11.A.2",
+      "statement": "In a reaction mechanism containing a catalyst, the net concentration of the catalyst is constant. However, the catalyst will frequently be consumed in the rate-determining step of the reaction, only to be regenerated in a subsequent step in the mechanism.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.11.A.3",
+      "statement": "Some catalysts accelerate a reaction by binding to the reactant(s). The reactants are either oriented more favorably or react with lower activation energy. There is often a new reaction intermediate in which the catalyst is bound to the reactant(s). Many enzymes function in this manner.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.11.A.4",
+      "statement": "Some catalysts involve covalent bonding between the catalyst and the reactant(s). An example is acid-base catalysis, in which a reactant or intermediate either gains or loses a proton. This introduces a new reaction intermediate and new elementary reactions involving that intermediate.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.11.A.5",
+      "statement": "In surface catalysis, a reactant or intermediate binds to, or forms a covalent bond with, the surface. This introduces elementary reactions involving these new bound reaction intermediate(s).",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students are expected to understand that catalysts increase reaction rates by providing an alternative reaction pathway with a lower activation energy or by increasing the number of effective collisions. They must recognize that the net concentration of a catalyst remains constant, even though it is typically consumed in the rate-determining step and regenerated in a subsequent step. The required depth includes specific catalytic mechanisms: binding to reactants (such as enzymes), covalent bonding (such as acid-base catalysis involving proton transfer), and surface catalysis (where reactants bind to or form covalent bonds with a surface). The focus is on connecting the macroscopic effect of the catalyst to the particulate-level changes in the reaction mechanism.",
+  "assessment_notes": "This topic is assessed with a strong focus on Argumentation (Suggested Skill 6.E). Students are expected to provide reasoning to justify a claim using connections between particulate and macroscopic scales or levels. They must be able to identify catalysts within a reaction mechanism (consumed then regenerated) and explain how their presence alters the reaction pathway and activation energy.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.11.A",
+      "can_do": "Explain the relationship between the effect of a catalyst on a reaction and changes in the reaction mechanism.",
+      "recap": ""
+    },
+    {
+      "code": "5.11.A.1",
+      "can_do": "In order for a catalyst to increase the rate of a reaction, the addition of the catalyst must increase the number of effective collisions and/or provide a reaction path with a lower activation energy relative to the original reaction coordinate.",
+      "recap": ""
+    },
+    {
+      "code": "5.11.A.2",
+      "can_do": "In a reaction mechanism containing a catalyst, the net concentration of the catalyst is constant. However, the catalyst will frequently be consumed in the rate-determining step of the reaction, only to be regenerated in a subsequent step in the mechanism.",
+      "recap": ""
+    },
+    {
+      "code": "5.11.A.3",
+      "can_do": "Some catalysts accelerate a reaction by binding to the reactant(s). The reactants are either oriented more favorably or react with lower activation energy. There is often a new reaction intermediate in which the catalyst is bound to the reactant(s). Many enzymes function in this manner.",
+      "recap": ""
+    },
+    {
+      "code": "5.11.A.4",
+      "can_do": "Some catalysts involve covalent bonding between the catalyst and the reactant(s). An example is acid-base catalysis, in which a reactant or intermediate either gains or loses a proton. This introduces a new reaction intermediate and new elementary reactions involving that intermediate.",
+      "recap": ""
+    },
+    {
+      "code": "5.11.A.5",
+      "can_do": "In surface catalysis, a reactant or intermediate binds to, or forms a covalent bond with, the surface. This introduces elementary reactions involving these new bound reaction intermediate(s).",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

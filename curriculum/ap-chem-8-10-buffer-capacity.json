@@ -1,0 +1,56 @@
+{
+  "topic_id": "ap-chem-8-10-buffer-capacity",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 8: Acids and Bases",
+  "topic": "8.10 Buffer Capacity",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "8.10.A",
+      "statement": "Explain the relationship between the buffer capacity of a solution and the relative concentrations of the conjugate acid and conjugate base components of the solution.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "8.10.A.1",
+      "statement": "Increasing the concentration of the buffer components (while keeping the ratio of these concentrations constant) keeps the pH of the buffer the same but increases the capacity of the buffer to neutralize added acid or base.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "8.10.A.2",
+      "statement": "When a buffer has more conjugate acid than base, it has a greater buffer capacity for addition of added base than acid. When a buffer has more conjugate base than acid, it has a greater buffer capacity for addition of added acid than base.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "The course requires students to understand the relationship between buffer capacity and the absolute and relative concentrations of its components. Students must know that increasing the absolute concentration of the buffer components, while maintaining their ratio, does not change the pH but does increase the buffer's capacity to neutralize added acid or base. Additionally, students must understand asymmetric buffer capacity: a buffer containing more conjugate acid than base has a greater capacity to neutralize added base, whereas a buffer with more conjugate base than acid has a greater capacity to neutralize added acid.",
+  "assessment_notes": "This topic is paired with Science Practice 6.G (Argumentation). On the AP Exam, students may be asked to explain how potential sources of experimental error may affect the experimental results. In the context of buffer capacity, this can involve developing explanations for how errors in preparing a buffer or conducting a titration might affect the observed buffer capacity, pH, and associated calculations.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "8.10.A",
+      "can_do": "I can explain the relationship between the buffer capacity of a solution and the relative concentrations of its conjugate acid and conjugate base components.",
+      "recap": ""
+    },
+    {
+      "code": "8.10.A.1",
+      "can_do": "I can explain that increasing the concentration of buffer components (while keeping their ratio constant) keeps the pH the same but increases the buffer capacity.",
+      "recap": ""
+    },
+    {
+      "code": "8.10.A.2",
+      "can_do": "I can predict that a buffer with more conjugate acid than base has a greater capacity for added base, and a buffer with more conjugate base than acid has a greater capacity for added acid.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

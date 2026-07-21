@@ -1,0 +1,57 @@
+{
+  "topic_id": "ap-chem-8-5-acid-base-titrations",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 8: Acids and Bases",
+  "topic": "8.5 Acid-Base Titrations",
+  "prerequisites": [
+    "Chemical equilibrium",
+    "Acid-base reactions and stoichiometry"
+  ],
+  "learning_objectives": [
+    {
+      "code": "8.5.A",
+      "statement": "Explain results from the titration of a mono- or polyprotic acid or base solution, in relation to the properties of the solution and its components.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand titration curves (pH vs. volume of titrant) for mono- and polyprotic acids and bases. They need to identify equivalence points (where moles of titrant equal moles of analyte) and half-equivalence points (where pH = pKa and [HA] = [A-]). Students must be able to determine if the equivalence point pH is neutral, acidic, or basic based on the hydrolysis of the conjugate species. For polyprotic acids, students must be able to identify the number of acidic protons, the pKa for each, and qualitatively reason about species concentrations at any point. EXCLUSION: Computation of the concentration of each species present in the titration curve for polyprotic acids will not be assessed on the AP Exam (though qualitative reasoning regarding large vs. small concentrations is expected).",
+  "assessment_notes": "Exam questions frequently require students to identify information presented graphically (Skill 5.D). Students often struggle to use titration curves to identify equivalence and half-equivalence points, or to estimate concentration/pH at specific points. Common pitfalls include confusing half-equivalence, equivalence, and endpoint, struggling with unit conversions, and failing to understand what different types of titration curves represent. The half-equivalence point is a helpful reference to visualize acid/conjugate base ratios.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "8.5.A.1",
+      "can_do": "I can use a titration curve plotting pH against the volume of titrant added to summarize results from a titration.",
+      "recap": ""
+    },
+    {
+      "code": "8.5.A.2",
+      "can_do": "I can use the relationship at the equivalence point (moles of titrant added equals moles of analyte originally present) to obtain the concentration of the analyte for monoprotic acids or bases.",
+      "recap": ""
+    },
+    {
+      "code": "8.5.A.3",
+      "can_do": "I can determine the pKa of a weak acid or base from the pH at the half-equivalence point in a titration, where the conjugate acid and base have equal concentrations.",
+      "recap": ""
+    },
+    {
+      "code": "8.5.A.4",
+      "can_do": "I can determine the pH at the equivalence point based on the major species in solution, recognizing that strong acid-strong base titrations are neutral, while weak acid or weak base titrations produce basic or acidic solutions respectively.",
+      "recap": ""
+    },
+    {
+      "code": "8.5.A.5",
+      "can_do": "I can use titration curves for polyprotic acids to determine the number of acidic protons, identify the major species present at any point, and find the pKa associated with each proton.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,50 @@
+{
+  "topic_id": "ap-chem-6-9-hess-s-law",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 6: Thermochemistry",
+  "topic": "6.9 Hess’s Law",
+  "prerequisites": [
+    "First law of thermodynamics",
+    "Enthalpy change"
+  ],
+  "learning_objectives": [
+    {
+      "code": "6.9.A",
+      "statement": "Represent a chemical or physical process as a sequence of steps.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    },
+    {
+      "code": "6.9.B",
+      "statement": "Explain the relationship between the enthalpy of a chemical or physical process and the sum of the enthalpies of the individual steps.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to understand that chemical and physical processes can be broken down into a series of steps, each with its own energy change. They must apply the principles of Hess's law to determine the overall enthalpy change of a process: reversing a reaction reverses the sign of the enthalpy change, multiplying a reaction by a factor multiplies the enthalpy change by the same factor, and adding reactions requires adding their individual enthalpy changes. The concept of state functions is explicitly excluded and will not be assessed on the AP Exam.",
+  "assessment_notes": "Students are assessed on their ability to identify quantities needed to solve a problem from given information (e.g., text, mathematical expressions, graphs, or tables). They may be required to manipulate a given set of chemical equations (reversing, multiplying by coefficients) and their corresponding enthalpy changes to calculate the net enthalpy change for an overall reaction.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "6.9.A",
+      "can_do": "I can represent a chemical or physical process as a sequence of steps.",
+      "recap": ""
+    },
+    {
+      "code": "6.9.B",
+      "can_do": "I can explain the relationship between the enthalpy of a chemical or physical process and the sum of the enthalpies of the individual steps.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

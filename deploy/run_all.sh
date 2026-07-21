@@ -7,16 +7,26 @@
 #     deploy/run_all.sh "AP (College Board)"                 # whole board,  jobs 3
 #     deploy/run_all.sh "AP (College Board)" 5               # whole board,  jobs 5
 #
-# Runs four phases non-interactively. A phase failure is LOGGED, not fatal (no set -e),
+# Runs three phases non-interactively. A phase failure is LOGGED, not fatal (no set -e),
 # so one bad spec/topic never aborts the run:
-#   1. extract_specs <sel> --apply    official CED PDF(s) -> grounded TopicSpecs (UNVERIFIED)
-#   2. ground_specs  --all  --apply    OPT-IN (RUN_GROUND=1). SKIPPED by default: re-verifying
-#                                       auto-extracted codes re-sends the full CED per spec (~$0.25
-#                                       each) and confirms what extraction already pulled from that
-#                                       same PDF. Worth it for hand-seeded specs, not extracted ones.
-#   3. approve_specs <sel> --apply    auto-clear UNVERIFIED  (the human git-diff review is post-hoc)
-#   4. notes.py      <sel> --jobs J   generate; skips existing, isolates per-topic failures
+#   1. extract_specs <sel> --apply    official CED PDF(s) -> TopicSpecs, each held to the
+#                                       CURRICULUM GATE in the same pass: every code and every
+#                                       objective's evidence quote must be located in that same
+#                                       PDF, else it re-extracts with the gaps injected and then
+#                                       stays UNVERIFIED. Costs no extra model calls — the quotes
+#                                       come back from the extraction that was already happening.
+#   2. notes.py      <sel> --jobs J   generate; skips existing AND anything still UNVERIFIED,
+#                                       isolates per-topic failures
+#   3. spotcheck.py  --rate 10        post-hoc human sample; never blocks. Doubled from the usual
+#                                       1-in-20 precisely BECAUSE the approval gate is now
+#                                       automatic: it is the only human review surface left.
 # where <sel> = --board "<board>" [--subject "<subject>"].
+#
+# There is deliberately no `approve_specs` phase. It used to run here as an unconditional
+# `--apply`, which wiped the UNVERIFIED marker with nothing checking anything — a rubber
+# stamp wearing a gate's name (0 of 103 specs were unverified). Approval now happens inside
+# phase 1, on deterministic evidence. `approve_specs.py` survives only as a manual override
+# (`--force-approve`) for a spec you have checked yourself and believe the gate got wrong.
 #
 # All output tee'd to logs/run-<ts>.log. Auth + Langfuse come from .env (see README). Watch live:
 #   <python> src/notes.py --status --watch 5      # progress dashboard
@@ -54,14 +64,10 @@ phase() {                                          # phase <n/N> <label> <cmd...
 }
 
 LABEL="${BOARD}${SUBJECT:+ / $SUBJECT}"
-phase "1/4" "extract ${LABEL}"          "$PY" src/extract_specs.py "${SEL[@]}" --apply
-if [ "${RUN_GROUND:-0}" = "1" ]; then
-  phase "2/4" "ground corpus"           "$PY" src/ground_specs.py --all --apply
-else
-  echo "=== $(date -u '+%F %T') UTC  PHASE 2/4: ground SKIPPED (extraction is PDF-grounded; RUN_GROUND=1 to include) ===" | tee -a "$LOG"
-fi
-phase "3/4" "approve (auto) ${LABEL}"   "$PY" src/approve_specs.py "${SEL[@]}" --apply
-phase "4/4" "generate ${LABEL} j=${JOBS}" "$PY" src/notes.py "${SEL[@]}" --jobs "$JOBS"
+phase "1/3" "extract + verify ${LABEL}"   "$PY" src/extract_specs.py "${SEL[@]}" --apply
+phase "2/3" "generate ${LABEL} j=${JOBS}" "$PY" src/notes.py "${SEL[@]}" --jobs "$JOBS"
+phase "3/3" "spot-check sample"           "$PY" src/spotcheck.py --rate 10
 
 echo "=== $(date -u '+%F %T') UTC  ALL PHASES COMPLETE ===" | tee -a "$LOG"
 echo "Cost roll-up: Langfuse (per subject/stage).  Post-hoc curriculum review: git diff --stat curriculum/"
+echo "Specs the gate declined (they did NOT generate): $PY src/approve_specs.py --list"

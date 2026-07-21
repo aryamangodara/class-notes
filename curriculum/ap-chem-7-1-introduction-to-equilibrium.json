@@ -1,0 +1,78 @@
+{
+  "topic_id": "ap-chem-7-1-introduction-to-equilibrium",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.1 Introduction to Equilibrium",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.1.A",
+      "statement": "Explain the relationship between the occurrence of a reversible chemical or physical process, and the establishment of equilibrium, to experimental observations.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "7.1.A.1",
+      "statement": "Many observable processes are reversible. Examples include evaporation and condensation of water, absorption and desorption of a gas, or dissolution and precipitation of a salt. Some important reversible chemical processes include the transfer of protons in acid-base reactions and the transfer of electrons in redox reactions.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "7.1.A.2",
+      "statement": "When equilibrium is reached, no observable changes occur in the system. Reactants and products are simultaneously present, and the concentrations or partial pressures of all species remain constant.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "7.1.A.3",
+      "statement": "The equilibrium state is dynamic. The forward and reverse processes continue to occur at equal rates, resulting in no net observable change.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "7.1.A.4",
+      "statement": "Graphs of concentration, partial pressure, or rate of reaction versus time for simple chemical reactions can be used to understand the establishment of chemical equilibrium.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must understand that many observable processes are reversible, including phase changes, dissolution, acid-base proton transfer, and redox electron transfer. The core concept is that equilibrium is a dynamic state where forward and reverse processes occur at equal rates, resulting in no net observable change. At equilibrium, reactants and products are simultaneously present, and their concentrations or partial pressures remain constant. Students are expected to interpret graphs of concentration, partial pressure, or rate of reaction versus time to understand the establishment of chemical equilibrium.",
+  "assessment_notes": "This topic is assessed with a focus on argumentation (Suggested Skill 6.D). Students may be required to provide reasoning to justify a claim using chemical principles, laws, or mathematical justification. Questions often involve explaining the relationship between reversible processes and equilibrium based on experimental observations, or interpreting concentration, partial pressure, or rate versus time graphs to identify the point at which equilibrium is established.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.1.A",
+      "can_do": "I can explain the relationship between a reversible process and the establishment of equilibrium using experimental observations.",
+      "recap": ""
+    },
+    {
+      "code": "7.1.A.1",
+      "can_do": "I can identify examples of reversible physical and chemical processes, such as phase changes, dissolution, acid-base reactions, and redox reactions.",
+      "recap": ""
+    },
+    {
+      "code": "7.1.A.2",
+      "can_do": "I can recognize that at equilibrium, no observable changes occur, both reactants and products are present, and their concentrations or partial pressures remain constant.",
+      "recap": ""
+    },
+    {
+      "code": "7.1.A.3",
+      "can_do": "I can describe the dynamic nature of equilibrium, where forward and reverse processes occur at equal rates.",
+      "recap": ""
+    },
+    {
+      "code": "7.1.A.4",
+      "can_do": "I can interpret graphs of concentration, partial pressure, or rate of reaction versus time to determine when chemical equilibrium is established.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

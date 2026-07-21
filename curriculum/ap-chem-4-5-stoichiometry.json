@@ -1,0 +1,72 @@
+{
+  "topic_id": "ap-chem-4-5-stoichiometry",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 4: Chemical Reactions",
+  "topic": "4.5 Stoichiometry",
+  "prerequisites": [
+    "The mole concept and dimensional analysis",
+    "Writing and balancing chemical equations (molecular, complete, net ionic)"
+  ],
+  "learning_objectives": [
+    {
+      "code": "4.5.A",
+      "statement": "Explain changes in the amounts of reactants and products based on the balanced reaction equation for a chemical process.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    },
+    {
+      "code": "4.5.A.1",
+      "statement": "Because atoms must be conserved during a chemical process, it is possible to calculate product amounts by using known reactant amounts, or to calculate reactant amounts given known product amounts.",
+      "tier": null,
+      "command_words": [
+        "calculate"
+      ]
+    },
+    {
+      "code": "4.5.A.2",
+      "statement": "Coefficients of balanced chemical equations contain information regarding the proportionality of the amounts of substances involved in the reaction. These values can be used in chemical calculations involving the mole concept.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "4.5.A.3",
+      "statement": "Stoichiometric calculations can be combined with the ideal gas law and calculations involving molarity to quantitatively study gases and solutions.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students are expected to calculate product amounts from known reactant amounts (and vice versa) using the conservation of atoms and the coefficients of balanced chemical equations. The depth of this topic requires students to determine the output of a reaction when the number of moles of reactants change or are in limited/excess supply. Furthermore, students must be able to combine stoichiometric calculations with the ideal gas law and molarity calculations to quantitatively study gases and solutions.",
+  "assessment_notes": "On the AP Exam, students must be able to calculate quantities in multiple contexts using more than just 1:1 stoichiometric ratios. A common pitfall examiners note is that students encounter difficulty with determining the limiting reactant using stoichiometry; specifically, students often make the mistake of comparing mass to mass instead of mole to mole when determining the limiting reactant. Students may also be assessed on their ability to explain the relationship between variables within an equation when one variable changes (Suggested Skill 5.C).",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "4.5.A",
+      "can_do": "Explain changes in the amounts of reactants and products based on the balanced reaction equation for a chemical process.",
+      "recap": ""
+    },
+    {
+      "code": "4.5.A.1",
+      "can_do": "Because atoms must be conserved during a chemical process, it is possible to calculate product amounts by using known reactant amounts, or to calculate reactant amounts given known product amounts.",
+      "recap": ""
+    },
+    {
+      "code": "4.5.A.2",
+      "can_do": "Coefficients of balanced chemical equations contain information regarding the proportionality of the amounts of substances involved in the reaction. These values can be used in chemical calculations involving the mole concept.",
+      "recap": ""
+    },
+    {
+      "code": "4.5.A.3",
+      "can_do": "Stoichiometric calculations can be combined with the ideal gas law and calculations involving molarity to quantitatively study gases and solutions.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

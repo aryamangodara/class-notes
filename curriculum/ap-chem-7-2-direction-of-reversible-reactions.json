@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-7-2-direction-of-reversible-reactions",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 7: Equilibrium",
+  "topic": "7.2 Direction of Reversible Reactions",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "7.2.A",
+      "statement": "Explain the relationship between the direction in which a reversible reaction proceeds and the relative rates of the forward and reverse reactions.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to understand that the net direction of a reversible reaction depends on the relative rates of the forward and reverse processes. They must know that a net conversion of reactants to products occurs when the forward rate is greater than the reverse rate, and a net conversion of products to reactants occurs when the reverse rate is greater than the forward rate. Furthermore, they must recognize that chemical equilibrium is the dynamic state reached when the rates of the forward and reverse reactions become equal.",
+  "assessment_notes": "Questions may assess the suggested skill of Model Analysis (4.D), requiring students to explain the degree to which a model or representation describes the connection between particulate-level properties (such as reaction rates) and macroscopic properties (such as the net conversion of species). Students should be prepared to justify the direction of a reaction or the establishment of equilibrium based on relative reaction rates.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "7.2.A",
+      "can_do": "I can explain the relationship between the direction in which a reversible reaction proceeds and the relative rates of the forward and reverse reactions.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

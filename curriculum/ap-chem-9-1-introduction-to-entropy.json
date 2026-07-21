@@ -1,0 +1,60 @@
+{
+  "topic_id": "ap-chem-9-1-introduction-to-entropy",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.1 Introduction to Entropy",
+  "prerequisites": [
+    "Particulate representations of matter",
+    "Kinetic molecular theory (KMT) and the Maxwell-Boltzmann distribution of kinetic energy",
+    "Phase changes and macroscopic observations"
+  ],
+  "learning_objectives": [
+    {
+      "code": "9.1.A",
+      "statement": "Identify the sign and relative magnitude of the entropy change associated with chemical or physical processes.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    },
+    {
+      "code": "9.1.A.1",
+      "statement": "Entropy increases when matter becomes more dispersed. For example, the phase change from solid to liquid or from liquid to gas results in a dispersal of matter as the individual particles become freer to move and generally occupy a larger volume. Similarly, for a gas, the entropy increases when there is an increase in volume (at constant temperature), and the gas molecules are able to move within a larger space. For reactions involving gas-phase reactants or products, the entropy generally increases when the total number of moles of gas-phase products is greater than the total number of moles of gas-phase reactants.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "9.1.A.2",
+      "statement": "Entropy increases when energy is dispersed. According to kinetic molecular theory (KMT), the distribution of kinetic energy among the particles of a gas broadens as the temperature increases. As a result, the entropy of the system increases with an increase in temperature.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "This topic introduces entropy qualitatively as a factor necessary to explain why some endothermic reactions occur. The focus is on identifying the sign and relative magnitude of entropy changes by analyzing the dispersal of matter and energy. Students must be able to predict entropy increases during phase changes (solid to liquid to gas), volume expansions of gases at constant temperature, and chemical reactions where the number of moles of gas-phase products exceeds the reactants. Furthermore, students must connect temperature increases to entropy increases using the kinetic molecular theory (KMT), specifically recognizing that a broader distribution of kinetic energy among particles corresponds to higher entropy. Quantitative calculations of standard entropy changes are reserved for subsequent topics.",
+  "assessment_notes": "On the AP Exam, students are frequently asked to support claims about entropy changes using evidence from representations or models at the particulate level (e.g., atomic/molecular structures or kinetic energy distributions). A common pitfall is failing to connect macroscopic observational data to the concept of entropy to support claims. Additionally, students often struggle to reason whether entropy, enthalpy, or both drive a reaction; they may inappropriately rely on the Gibbs free energy equation to state that both drive the reaction, rather than evaluating entropy as a distinct driving factor.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.1.A",
+      "can_do": "I can identify the sign and relative magnitude of the entropy change associated with chemical or physical processes.",
+      "recap": ""
+    },
+    {
+      "code": "9.1.A.1",
+      "can_do": "I can explain how entropy increases when matter becomes more dispersed, such as during phase changes, volume increases, or reactions that produce a greater number of moles of gas.",
+      "recap": ""
+    },
+    {
+      "code": "9.1.A.2",
+      "can_do": "I can explain how entropy increases when energy is dispersed, using the kinetic molecular theory to relate an increase in temperature to a broader distribution of kinetic energy.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

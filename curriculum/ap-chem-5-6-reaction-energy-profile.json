@@ -1,0 +1,78 @@
+{
+  "topic_id": "ap-chem-5-6-reaction-energy-profile",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 5: Kinetics",
+  "topic": "5.6 Reaction Energy Profile",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "5.6.A",
+      "statement": "Represent the activation energy and overall energy change in an elementary reaction using a reaction energy profile.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    },
+    {
+      "code": "5.6.A.1",
+      "statement": "Elementary reactions typically involve the breaking of some bonds and the forming of new ones.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.6.A.2",
+      "statement": "The reaction coordinate is the axis along which the complex set of motions involved in rearranging reactants to form products can be plotted.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.6.A.3",
+      "statement": "The energy profile gives the energy along the reaction coordinate, which typically proceeds from reactants, through a transition state, to products. The energy difference between the reactants and the transition state is the activation energy for the forward reaction.",
+      "tier": null,
+      "command_words": []
+    },
+    {
+      "code": "5.6.A.4",
+      "statement": "The rate of an elementary reaction is temperature dependent because the proportion of particle collisions that are energetic enough to reach the transition state varies with temperature. The Arrhenius equation relates the temperature dependence of the rate of an elementary reaction to the activation energy needed by molecular collisions to reach the transition state.",
+      "tier": null,
+      "command_words": []
+    }
+  ],
+  "depth_profile": "Students must understand how to represent the activation energy and overall energy change in an elementary reaction using a reaction energy profile. They should know that the reaction coordinate plots the complex motions of rearranging reactants to products, proceeding through a transition state. The activation energy is the energy difference between reactants and the transition state. Students must also understand that reaction rates are temperature-dependent because the proportion of collisions energetic enough to reach the transition state varies with temperature, as related by the Arrhenius equation. Calculations involving the Arrhenius equation are explicitly excluded and will not be assessed on the AP Exam.",
+  "assessment_notes": "Questions may ask students to represent chemical substances or phenomena with appropriate diagrams or models (Skill 3.B). Students may need to draw or interpret reaction energy profiles, identifying activation energy, transition states, and overall energy changes. Calculations using the Arrhenius equation will not be assessed.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "5.6.A",
+      "can_do": "I can represent the activation energy and overall energy change in an elementary reaction using a reaction energy profile.",
+      "recap": ""
+    },
+    {
+      "code": "5.6.A.1",
+      "can_do": "I can state that elementary reactions typically involve breaking some bonds and forming new ones.",
+      "recap": ""
+    },
+    {
+      "code": "5.6.A.2",
+      "can_do": "I can describe the reaction coordinate as the axis plotting the motions involved in rearranging reactants to products.",
+      "recap": ""
+    },
+    {
+      "code": "5.6.A.3",
+      "can_do": "I can identify the transition state, reactants, products, and activation energy on a reaction energy profile.",
+      "recap": ""
+    },
+    {
+      "code": "5.6.A.4",
+      "can_do": "I can explain the temperature dependence of reaction rates using the proportion of energetic collisions and the Arrhenius equation conceptually.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

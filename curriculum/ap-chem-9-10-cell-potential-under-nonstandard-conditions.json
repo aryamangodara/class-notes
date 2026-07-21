@@ -1,0 +1,53 @@
+{
+  "topic_id": "ap-chem-9-10-cell-potential-under-nonstandard-conditions",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.10 Cell Potential Under Nonstandard Conditions",
+  "prerequisites": [
+    "Standard cell potential (E°)",
+    "Reaction quotient (Q) and equilibrium constant (K)",
+    "Le Châtelier's principle"
+  ],
+  "learning_objectives": [
+    {
+      "code": "9.10.A",
+      "statement": "Explain the relationship between deviations from standard cell conditions and changes in the cell potential.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that cell potential is a driving force toward equilibrium and varies with the concentration of active species. They need to know that standard cell potential (E°) corresponds to Q = 1, and that as a system approaches equilibrium (Q = K), the magnitude of the cell potential decreases to zero. Deviations taking the cell further from equilibrium than Q = 1 increase the cell potential's magnitude relative to E°, while deviations taking it closer decrease it. In concentration cells, students must determine the direction of spontaneous electron flow based on the direction needed to reach equilibrium. Crucially, the specification explicitly excludes the use of equilibrium arguments like Le Châtelier's principle for electrochemical systems, as they are not in equilibrium. Furthermore, algorithmic calculations using the Nernst equation are deemed insufficient; students must qualitatively understand and conceptually reason about the effects of concentration on cell potential using the Nernst equation.",
+  "assessment_notes": "Assessed via Suggested Skill 6.D (Argumentation), requiring students to provide reasoning to justify a claim using chemical principles or mathematical justification. Exam questions will expect students to use conceptual reasoning and qualitative application of the Nernst equation rather than just performing algorithmic calculations. A key pitfall examiners will penalize is the inappropriate application of Le Châtelier's principle to electrochemical systems, which are not at equilibrium.",
+  "reference_data": "E = E° - (RT/nF) ln Q",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.10.A.1",
+      "can_do": "I can explain that cell potential varies with the concentrations of active species and that the farther a reaction is from equilibrium, the greater the magnitude of the cell potential.",
+      "recap": ""
+    },
+    {
+      "code": "9.10.A.2",
+      "can_do": "I can state that Le Châtelier's principle does not apply to electrochemical systems because they are not in equilibrium.",
+      "recap": ""
+    },
+    {
+      "code": "9.10.A.3",
+      "can_do": "I can predict how deviations from standard conditions (Q = 1) change the magnitude of the cell potential relative to E°, and determine the direction of spontaneous electron flow in concentration cells.",
+      "recap": ""
+    },
+    {
+      "code": "9.10.A.4",
+      "can_do": "I can qualitatively use the Nernst equation to reason about the effects of concentration on cell potential without relying solely on algorithmic calculations.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

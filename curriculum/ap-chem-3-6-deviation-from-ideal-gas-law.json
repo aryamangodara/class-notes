@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-3-6-deviation-from-ideal-gas-law",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.6 Deviation from Ideal Gas Law",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.6.A",
+      "statement": "Explain the relationship among non-ideal behaviors of gases, interparticle forces, and/or volumes.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that the ideal gas law does not perfectly describe the actual behavior of real gases. The required depth includes attributing deviations from ideal behavior to two specific factors: interparticle attractions among gas molecules (particularly significant at conditions close to condensation) and the actual volume of the particles themselves (particularly significant at extremely high pressures).",
+  "assessment_notes": "Students are assessed on their ability to provide reasoning to justify a claim using connections between particulate and macroscopic scales or levels (Argumentation, Skill 6.E). Expect questions that ask students to explain why a gas deviates from ideal behavior under specific conditions (e.g., high pressure or low temperature) by referencing interparticle forces or particle volumes.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.6.A",
+      "can_do": "I can explain the relationship among non-ideal behaviors of gases, interparticle forces, and/or volumes.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

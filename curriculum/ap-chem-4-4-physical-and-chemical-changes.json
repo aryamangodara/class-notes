@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-4-4-physical-and-chemical-changes",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 4: Chemical Reactions",
+  "topic": "4.4 Physical and Chemical Changes",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "4.4.A",
+      "statement": "Explain the relationship between macroscopic characteristics and bond interactions for: i. Chemical processes. ii. Physical processes.",
+      "tier": null,
+      "command_words": [
+        "explain"
+      ]
+    }
+  ],
+  "depth_profile": "The specification distinguishes between chemical processes (which typically involve the breaking and/or formation of chemical bonds) and physical processes (which typically involve only changes in intermolecular interactions, such as phase changes). However, students are explicitly required to understand the nuance that some physical processes do involve the breaking of chemical bonds. A key required example is the dissolution of a salt in water; students must be able to make plausible arguments for classifying it as either a physical or chemical process because it involves the breaking of ionic bonds and the formation of ion-dipole interactions between ions and the solvent.",
+  "assessment_notes": "This topic is assessed under the 'Argumentation' skill (Science Practice 6.B), requiring students to support a claim with evidence from experimental data. Students may be asked to justify the classification of a process as physical or chemical using macroscopic observations and particulate-level bond interactions. A common expectation is to argue the ambiguity of processes like salt dissolution, referencing both ionic bond breaking and ion-dipole formation.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "4.4.A",
+      "can_do": "Explain the relationship between macroscopic characteristics and bond interactions for: i. Chemical processes. ii. Physical processes.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

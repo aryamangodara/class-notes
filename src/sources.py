@@ -221,6 +221,13 @@ _AP_SUBJECTS: "dict[str, str]" = {
     "English Literature and Composition": "english-literature-and-composition",
 }
 
+# The SAT's equivalent of a CED. One document, both sections, all four Suite assessments;
+# verified to resolve (2.6 MB, 227 pp, "Version 3.01", August 2024).
+_SAT_FRAMEWORK = ("https://satsuite.collegeboard.org/media/pdf/"
+                  "assessment-framework-for-digital-sat-suite.pdf")
+_SAT_CITATION = ("Assessment Framework for the Digital SAT Suite V.3.01 (College Board) "
+                 "— {} section, SAT (not PSAT) scope")
+
 _SPEC_SOURCES: "dict[tuple[str, str], SpecSource]" = {
     **{("AP (College Board)", _subj): SpecSource(
         _AP_CED.format(_slug), f"AP {_subj} Course and Exam Description (College Board)")
@@ -236,6 +243,13 @@ _SPEC_SOURCES: "dict[tuple[str, str], SpecSource]" = {
     ("Cambridge IGCSE", "Chemistry"): SpecSource(
         "https://www.cambridgeinternational.org/Images/595428-2023-2025-syllabus.pdf",
         "Cambridge IGCSE Chemistry (0620) syllabus 2023-2025"),
+    # The Digital SAT Suite publishes ONE framework covering BOTH sections (Reading and
+    # Writing, Math) AND all four assessments (SAT, PSAT/NMSQT, PSAT 10, PSAT 8/9) — unlike
+    # the AP CEDs, which are one-subject-per-PDF. Both subjects therefore point at the SAME
+    # url and enumeration must scope itself to the (subject x SAT) slice; see the
+    # multi-subject rule in prompts/spec_enumerate.txt.
+    **{("SAT (College Board)", _subj): SpecSource(_SAT_FRAMEWORK, _SAT_CITATION.format(_subj))
+       for _subj in ("Mathematics", "Reading and Writing")},
 }
 
 

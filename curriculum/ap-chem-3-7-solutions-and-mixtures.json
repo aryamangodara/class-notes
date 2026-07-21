@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-3-7-solutions-and-mixtures",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.7 Solutions and Mixtures",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.7.A",
+      "statement": "Calculate the number of solute particles, volume, or molarity of solutions.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that solutions (homogeneous mixtures) can exist as solids, liquids, or gases, and that their macroscopic properties do not vary throughout the sample (unlike heterogeneous mixtures where properties depend on location). The topic focuses on expressing solution composition; while various methods exist, molarity is the expected and most common method used in the laboratory.",
+  "assessment_notes": "Students will be assessed on their ability to calculate, estimate, or predict unknown quantities (such as solute particles, volume, or molarity) from known quantities. This requires selecting a logical computational pathway, performing dimensional analysis, and strictly attending to precision and significant figures (Mathematical Routine 5.F).",
+  "reference_data": "M = n_solute / L_solution\n(Where M = molarity, n = number of moles, V = volume)",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.7.A",
+      "can_do": "I can calculate the number of solute particles, volume, or molarity of solutions.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

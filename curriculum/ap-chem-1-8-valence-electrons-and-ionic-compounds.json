@@ -1,0 +1,44 @@
+{
+  "topic_id": "ap-chem-1-8-valence-electrons-and-ionic-compounds",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 1: Atomic Structure and Properties",
+  "topic": "1.8 Valence Electrons and Ionic Compounds",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "1.8.A",
+      "statement": "Explain the relationship between trends in the reactivity of elements and periodicity.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to understand that the likelihood of two elements forming a chemical bond is determined by the interactions between their valence electrons and nuclei. They must recognize that elements in the same column of the periodic table tend to form analogous compounds. Furthermore, students are required to predict the typical charges of atoms in ionic compounds based on the number of valence electrons and the element's location on the periodic table. There are no explicit exclusion statements for this topic.",
+  "assessment_notes": "Students may be assessed on their ability to explain the connection between particulate-level properties (such as valence electrons and nuclei interactions) and macroscopic properties of a substance using models and representations (Suggested Skill 4.C). They should be prepared to explain relationships between trends in the reactivity of elements and periodicity.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "1.8.A.1",
+      "can_do": "The likelihood that two elements will form a chemical bond is determined by the interactions between the valence electrons and nuclei of elements.",
+      "recap": ""
+    },
+    {
+      "code": "1.8.A.2",
+      "can_do": "Elements in the same column of the periodic table tend to form analogous compounds.",
+      "recap": ""
+    },
+    {
+      "code": "1.8.A.3",
+      "can_do": "Typical charges of atoms in ionic compounds are governed by the number of valence electrons and predicted by their location on the periodic table.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-3-8-representations-of-solutions",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.8 Representations of Solutions",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.8.A",
+      "statement": "Using particulate models for mixtures: i. Represent interactions between components. ii. Represent concentrations of components.",
+      "tier": null,
+      "command_words": [
+        "Represent"
+      ]
+    }
+  ],
+  "depth_profile": "Students are expected to use particulate representations of solutions to communicate the structure and properties of solutions. This involves illustrating the relative concentrations of the components in the solution and/or drawing the interactions among the components. The specification explicitly excludes colligative properties from being assessed on the AP Exam. Furthermore, calculations of molality, percent by mass, and percent by volume for solutions are also explicitly excluded and will not be assessed.",
+  "assessment_notes": "This topic is assessed using Skill 3.C (Representing Data and Phenomena), which requires students to visually represent the relationship between structures and interactions across multiple levels or scales (e.g., particulate to macroscopic). Exam questions may ask students to create or interpret particulate representations of mixtures that illustrate the interactions between molecules that allow or disallow solubility (e.g., why ethanol mixes with water but hexane does not). Students must be careful not to waste time studying colligative properties or practicing calculations for molality, percent by mass, or percent by volume, as these are explicitly excluded from the exam.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.8.A",
+      "can_do": "I can use particulate models for mixtures to represent interactions between components and represent the relative concentrations of components.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

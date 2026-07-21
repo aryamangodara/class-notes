@@ -35,18 +35,31 @@ py -3 src/extract_specs.py --list         # curriculum-extraction CLI: official 
                                           #   (--board/--subject or --all; DRY RUN by default; --apply writes)
 py -3 src/ground_specs.py --list          # spec-grounding CLI: verify codes vs official spec PDFs
                                           #   (DRY RUN by default; --apply writes; --all = corpus)
-py -3 src/approve_specs.py --list         # clear the UNVERIFIED marker after review (fetch -> generate handoff)
+py -3 src/approve_specs.py --list         # MANUAL OVERRIDE: specs the curriculum gate declined, + why
+py -3 src/audit_citations.py              # re-check SHIPPED past-paper citations vs the real PDFs (no model calls)
 py -3 src/spotcheck.py                    # bundle a deterministic ~1-in-20 tutor spot-check into out/spotcheck/
 py -3 tests/_smoke_v2.py                  # OFFLINE self-test — no key/network
 ```
 
-**Fetch and generate are separate, repeatable commands.** The curriculum store is
-**grown from the source of record** (fetch): `extract_specs.py` fetches a subject's official
-spec/CED PDF, enumerates its topics, and extracts one grounded `TopicSpec` per topic into
-`curriculum/`. Extraction is PDF-grounded but **stamped UNVERIFIED** — the fetch pipeline is
-`extract_specs --apply` → `ground_specs --apply` (verify codes vs the SAME PDF) → review
-`git diff` → `approve_specs --apply` (clear the marker) → then `notes.py` will generate it.
+**Fetch and generate are separate, repeatable commands, and NOTHING waits for a human.**
+The curriculum store is **grown from the source of record** (fetch): `extract_specs.py`
+fetches a subject's official spec/CED PDF, enumerates its topics, and extracts one grounded
+`TopicSpec` per topic into `curriculum/` — holding each to the **curriculum gate**
+(`spec_gate.py`) in the same pass: every code and every objective's `evidence_quote` must be
+located in that same PDF, else it re-extracts with the gaps injected
+(`max_spec_repair_retries`) and then stays UNVERIFIED. So the pipeline is just
+`extract_specs --apply` (extract + verify + auto-approve) → `notes.py`.
 It only pulls (board, subject) pairs registered in `sources._SPEC_SOURCES`; widen by adding entries.
+
+> **The human approval step is gone, and that made the gate STRONGER, not weaker.** It used
+> to be `... → review git diff → approve_specs --apply`. But `deploy/run_all.sh` ran
+> `approve_specs --apply` as an unconditional phase, so the marker was wiped with nothing
+> checking anything (0 of 103 specs were unverified) — a rubber stamp wearing a gate's name.
+> It is now cleared only by evidence a model cannot talk its way past. `approve_specs.py`
+> survives ONLY as a manual override (`--force-approve`) for a spec you checked yourself and
+> believe the gate got wrong. A human still curates `sources.py` and `BOARD_EXAM_TIPS`, still
+> reads `git diff curriculum/`, and still adjudicates `spotcheck.py` — but nothing BLOCKS on
+> any of it.
 
 **Generation** (`notes.py`) then runs over `curriculum/` again and again. `--all` is a production
 batch runner: **skips already-generated output** (`--force` to regenerate) and **UNVERIFIED specs**
@@ -58,13 +71,20 @@ is pure — same models/stages/gates, only overlapped — bounded globally by
 for speed. Batch pure logic lives in `batch.py` (genai-free).
 
 Offline self-tests live in `tests/` (no key/network), each the fast regression check for its area:
-`tests/_smoke_v2.py` (renderer↔schema parity + coverage/structural gate + prompt brace-safety),
-`tests/_smoke_past_papers.py` (two-pass + URL/render safety), `tests/_smoke_ground_specs.py`
-(confidence gating + in-place patch), `tests/_smoke_extract_specs.py` (id convention + skip-existing
-+ UNVERIFIED stamping + cross-module gate sync), `tests/_smoke_notes_batch.py` (select/plan/provenance
-gate + manifest + tagged output), `tests/_smoke_spotcheck.py` (deterministic sampling),
-`tests/_smoke_tracing.py` (the tracing doctrine: static no-untraced-call scan + single-door +
-stage-vocabulary parity + tag/limit contract).
+`tests/_smoke_v2.py` (renderer↔schema parity + coverage/structural/ladder/hook gates + marks-convention
+JS parity + prompt brace-safety), `tests/_smoke_pdf_text.py` (the grounding primitive: normalisation
+folds, contiguity discrimination, fail-closed extraction), `tests/_smoke_spec_gate.py` (the curriculum
+gate: code/quote evidence, repair-vs-block boundary, evidence stripping, marker semantics),
+`tests/_smoke_past_papers.py` (evidence gate + "null" refs + URL/render safety),
+`tests/_smoke_audit_citations.py` (label parsing + static no-model-call / read-only guards),
+`tests/_smoke_ground_specs.py` (confidence gating + in-place patch), `tests/_smoke_extract_specs.py`
+(id convention + skip-existing + gate-verdict stamping + cross-module gate sync),
+`tests/_smoke_notes_batch.py` (select/plan/provenance gate + manifest + tagged output),
+`tests/_smoke_spotcheck.py` (deterministic sampling), `tests/_smoke_tracing.py` (the tracing doctrine:
+static no-untraced-call scan + single-door + stage-vocabulary parity + tag/limit contract).
+`tests/_pdfgen.py` is a shared fixture builder, not a test: it constructs a REAL parseable PDF in
+pure stdlib (the old `b"%PDF-1.4 stub bytes"` cannot be parsed, so it could only ever exercise the
+drop path once citations had to be PROVEN).
 **Run the relevant one after touching its module.** `_smoke_tracing.py` scans `src/` statically,
 so run it after adding ANY model call site.
 
@@ -104,13 +124,31 @@ exam-map + past-paper panel. `notes.py <id>` writes `out/<board>/<subject>/<id>.
   templates are `str.format`-ed — never put literal `{`/`}` in them (a `{-1}` unit
   example once broke every section-write with `KeyError`; `_smoke_v2.py` now asserts
   every prompt formats cleanly).**
-- Curated per topic: `TopicSpec.exam_map / spec_checklist / next_topic` (+ optional
-  hand-verified `past_papers`, which the pipeline leaves untouched). **Past papers are
-  otherwise generated** (`past_papers.py` + `sources.py`): fetch the real paper PDF from
-  the per-board registry → propose citations from it → independently verify each against
-  the SAME PDF (two-pass) → keep only confirmed. The `url` is always the registry url
-  (never model text) and `verified[]` renders via `textContent` + a `safeUrl` guard; no
-  lawful paper source ⇒ resources-only signposting. Never recall a citation from memory.
+- Curated per topic: `TopicSpec.spec_checklist` (+ optional hand-verified `past_papers`,
+  which the pipeline leaves untouched). **Past papers are otherwise generated**
+  (`past_papers.py` + `sources.py`) through THREE checks: fetch the real paper PDF from the
+  per-board registry → propose citations from it → independently verify each against the
+  SAME PDF → **deterministically require each survivor's `evidence_quote` to be present in
+  that PDF's extracted text** (`pdf_text.quote_supported`).
+  **That third check is the one that makes "verified" mean anything.** The first two are
+  both model calls, and model-checking-model fails in the same direction — which is how a
+  fabricated `Paper 1 · Q2(c)(i)` with an invented ionisation-energy table once shipped as
+  verified. A citation that fails is dropped INDIVIDUALLY (siblings still ship); a scanned
+  PDF with no text layer yields NO citations at all, and bails before the model calls.
+  `confirmed_to_verified` takes `paper_text` **keyword-only with no default** — the same
+  enforcement shape as `call_model`'s `trace`, so a new call site cannot silently reopen
+  the hole. The `url` is always the registry url (never model text), `verified[]` renders
+  via `textContent` + a `safeUrl` guard, and a placeholder question ref (`"null"`, `"n/a"`,
+  …) is rejected — those strings are TRUTHY, so the old `if q else ""` guard rendered
+  `June 2023 · Paper 1 · null · 2 marks` to students. No lawful paper source ⇒
+  resources-only signposting. Never recall a citation from memory.
+  `evidence_quote` is deliberately NOT persisted to `.v2.json` (it is verbatim exam text —
+  a licensing problem in a shipped page), so the offline `audit_citations.py` probes the
+  OTHER half instead: the question ref, via `pdf_text.locate_question`. Content grounding
+  catches invented CONTENT; identity grounding catches invented QUESTION NUMBERS; neither
+  alone catches both. That probe is **advisory only** — it walks real two-level exam
+  structure (AP prints `3.` then `(b)` then `(ii)`; Edexcel opens with a tab) and a naive
+  line-prefix version was measured wrong in BOTH directions on 3 of 5 genuine citations.
 - Spec/LO codes are likewise grounded: `ground_specs.py` (standalone CLI) verifies each
   hand-seeded code against the official spec/CED PDF from `sources.py` and auto-corrects
   only high-confidence mismatches in place (dry-run default; `curriculum/` is git-tracked,
@@ -124,7 +162,23 @@ exam-map + past-paper panel. `notes.py <id>` writes `out/<board>/<subject>/<id>.
 The pipeline separates what it **gates** on from what it merely **flags** by the
 **source** of the signal, because they have different reliability:
 
-- **Deterministic checks are FACTS → they gate (fix-or-fail).** Two tiers:
+- **Deterministic checks are FACTS → they gate (fix-or-fail).** Three tiers, in the order
+  a topic meets them:
+  0. **Curriculum** (`spec_gate.py`, at extraction time — see the fetch section above).
+     Every code and every objective's `evidence_quote` must be located in the spec PDF the
+     extraction read, else re-extract with the gaps injected (**re-slicing on the failing
+     codes**, or attempt 2 re-asks the same question of the same pages — a
+     self-*confirmation* loop) up to `CONFIG["max_spec_repair_retries"]`, then stay
+     UNVERIFIED. Failure mode differs from the other two: **ungenerable, not unwritten.**
+     Costs no extra model calls — the quotes come back from the extraction that was
+     already happening. Plus `min_objectives_per_topic` (default **1**) as a partial
+     backstop against silent under-extraction — it catches a spec that extracted NOTHING.
+     **Do not raise it without checking the board's structure:** the AP CED prints exactly
+     ONE `LEARNING OBJECTIVE` per topic (`1.1.A`) with several `ESSENTIAL KNOWLEDGE` points
+     beneath it (`1.1.A.1/.2/.3`) that belong in `depth_profile`, so 1 is correct there. At
+     a floor of 2 this flagged 53 correct AP specs, and the repair loop "fixed" them by
+     promoting Essential Knowledge into `learning_objectives` — a schema violation that
+     reads as an improvement in a diff.
   1. **Coverage.** `enforce_coverage_v2` (`pipeline_v2.py`) runs the audit and, for any
      objective the verifier marks `covered:false` — or that a command word demands an
      artifact for but lacks it (the structural-evidence rules in `coverage_gate.py`:
@@ -132,12 +186,26 @@ The pipeline separates what it **gates** on from what it merely **flags** by the
      section(s)** with the `gap_note` injected, re-verifies, up to
      `CONFIG["max_coverage_retries"]`; a surviving gap raises `CoverageError`.
   2. **Block completeness.** The SAME section loop also runs `render_v2.block_defects`
-     (an unexplained MCQ option, a numeric with no mark scheme, an empty worked example,
-     a dead widget) and regenerates the owning section for any defect — so a structural
-     fix is re-verified for coverage in the same loop. The practice ladder gets the same
-     check in its own loop (`enforce_practice_structure_v2`, `max_structure_retries`). A
-     surviving defect raises `StructuralError`. A final `block_defects` guard at
-     assemble time refuses to write if anything slipped a gate.
+     (an unexplained MCQ option or two options sharing one explanation, a numeric with no
+     mark scheme / no diagnostic `wrong_answers` / a mark scheme that does not add up to
+     `marks`, an empty worked example, an EMPTY CONTAINER — `flip_cards` with no cards,
+     `table` with no rows, `accordion` with no items, `reveal` with no answer — or a dead
+     widget) and regenerates the owning section for any defect, so a structural fix is
+     re-verified for coverage in the same loop. **Three loops, one per locus**: sections
+     here, the ladder in `enforce_practice_structure_v2`, and the hook in
+     `enforce_finalize_structure_v2` (the hook belongs to no section, so before it had its
+     own loop a hook defect hard-failed at the assemble guard with ZERO retries). Set-level
+     rules that only exist over a whole collection live in `practice_set_defects` and share
+     the `practice` locus — **push every rule down to the smallest locus some stage can
+     regenerate**; a "document" locus could only ever hard-fail, because nothing regenerates
+     a document. A surviving defect raises `StructuralError`, and a final `document_defects`
+     guard at assemble time refuses to write if anything slipped a gate.
+     - The **coverage and structural budgets are tracked separately** (`cov_attempt` /
+       `struct_attempt`). They shared one counter, so a topic with both faults spent its
+       coverage attempts on the block — adding structural rules would have silently
+       weakened the stronger gate.
+     - An empty `flip_cards` block used to SATISFY the define/state structural-evidence
+       rule while teaching nothing. That is why empty containers are a FACT, not a flag.
 - **The model verifier's `review_flags` are OPINIONS → they DON'T gate.** They land in
   `notes.review_flags` (advisory) and are surfaced to the human `spotcheck.py` queue. A
   single model read can be wrong — it can flag a *complete* block as incomplete — so a
@@ -165,8 +233,9 @@ notes + contract, never the writer's reasoning, so it stays an independent read.
   every call must satisfy.
 - `curriculum/*.json` — one `TopicSpec` per topic, self-describing (carries its
   own board/subject/level); discovered automatically by `discover_topics()`. Author
-  them by hand, or grow the store from official spec PDFs with `extract_specs.py`
-  (then verify with `ground_specs.py` + review the `git diff` before generating).
+  them by hand, or grow the store from official spec PDFs with `extract_specs.py`, which
+  verifies and approves each one against that PDF in the same pass. `git diff curriculum/`
+  is a post-hoc audit trail — nothing blocks on reading it.
 
 ## Architecture & data flow
 
@@ -185,18 +254,27 @@ src/             the application — run: py -3 src/notes.py <id>
                    stage, image search + vision
   coverage_gate.py deterministic, genai-free gate logic — coverage (CoverageError) + block-completeness
                    tier (StructuralError, defect_feedback_by_section, structural_feedback_block)
+  spec_gate.py     deterministic, genai-free CURRICULUM gate — code/quote evidence vs the spec PDF,
+                   shape gaps, approve/repair/block decision, spec_feedback_block, strip_evidence
+  pdf_text.py      LEAF (stdlib + soft fitz): the deterministic grounding primitive. normalise ->
+                   longest_common_run -> quote_supported ("is this snippet provably in THAT PDF?"),
+                   plus locate_question for the offline citation audit. Fails CLOSED on a scan.
   batch.py         deterministic, genai-free batch-runner logic — TopicResult + outcome vocabulary,
                    select_specs / plan_batch (skip-existing + UNVERIFIED gate), manifest, TaggedStdout
   sources.py       curated per-board source registry (paper/spec PDF URLs) + resolve_sources
-  past_papers.py   PDF-grounded past-paper stage (two-pass: generate + verify against the fetched PDF)
+  past_papers.py   PDF-grounded past-paper stage (propose -> model-verify -> DETERMINISTIC evidence check)
   pipeline_v2.py   the pipeline: generate_interactive_notes + save_interactive_notes
-  render_v2.py     the interactive renderer (render_interactive_html) + block_defects / validate_interactives
-                   (the deterministic block-completeness checks the structural gate enforces)
+  render_v2.py     the interactive renderer (render_interactive_html) + block_defects / practice_set_defects
+                   / hook_block_defects / document_defects (the deterministic checks the gates enforce)
   extract_specs.py standalone CLI: official subject spec/CED PDF -> many TopicSpec JSONs (enumerate topics ->
-                   extract one grounded spec each; DRY RUN default; stamps every spec UNVERIFIED for review)
+                   extract one grounded spec each, held to spec_gate with a re-extract repair loop;
+                   DRY RUN default; auto-approves on evidence, else stamps UNVERIFIED with the reason)
   ground_specs.py  standalone CLI: verify + auto-correct curriculum codes vs official spec/CED PDFs
-  approve_specs.py standalone CLI: clear the UNVERIFIED marker on reviewed specs (fetch -> generate handoff;
-                   DRY RUN default; --apply writes) — the human-trust step notes.py gates on
+                   (an OPT-IN deeper model audit; no longer the approver)
+  approve_specs.py standalone CLI: MANUAL OVERRIDE (--force-approve) for a spec the curriculum gate
+                   declined — not part of any automated path
+  audit_citations.py standalone CLI: re-check SHIPPED citations in out/**/*.v2.json against the real
+                   PDFs. Read-only, ZERO model calls (both asserted statically by its smoke test)
   spotcheck.py     standalone CLI: deterministic 1-in-20 tutor spot-check bundle (surfaces each page's
                    advisory review_flags for human adjudication)
   notes.py         CLI entry point + batch runner (run_one -> TopicResult; selectors; skip-existing;
@@ -258,6 +336,16 @@ regress** (`_smoke_v2.py` asserts most):
   `BOARD_EXAM_TIPS[level]` plus any `BOARD_SUBJECT_EXAM_TIPS[(level, subject)]` overlay
   (so SAT Reading & Writing doesn't inherit SAT Math's Desmos/grid-in facts) — grounds the
   per-section exam pointers; keep them consistent with the real format.
+- **Marks are a BOARD fact, not a model judgement:** `marks_convention_for(level)`
+  (sibling of `exam_tips_for`) is the single source of truth for whether a level
+  mark-weights at all, what its mark scheme is CALLED, and how its steps are labelled —
+  read by the practice prompt, the deterministic gate AND the renderer, so the
+  instruction, the check and the student-facing label cannot disagree. It exists because
+  SAT numerics correctly carried `marks: null` and then labelled their schemes `M1`/`A1`
+  — Edexcel method marks on a College Board product — under a hardcoded "Mark scheme"
+  heading. SAT/AMC are paced by `time_estimate_s` instead. The JS `SCHEME_TITLE` map
+  duplicates the no-marks levels, so `_smoke_v2.py` pins that parity exactly as it pins
+  `BLOCK_TYPES` ↔ `renderBlock`.
 
 ## Tracing doctrine — every model call is traced, named, and tagged
 
@@ -336,13 +424,31 @@ not by convention (`tests/_smoke_tracing.py` asserts every clause):
   — never recall. Curated facts are hand-authored and tagged "validate against the
   official spec". This extends to **curriculum extraction** (`extract_specs.py`):
   objectives are pulled from the fetched spec PDF (never memory), the controlled
-  identity fields (board/level/id) are stamped deterministically not model-guessed,
-  the curated exam-format layer is left empty for a human, and every extracted spec is
-  marked UNVERIFIED. That marker is a **generation gate**: `notes.py` skips UNVERIFIED
-  specs (`batch.is_unverified`) so an un-reviewed extract can't ship notes. It is cleared
-  only by `approve_specs.py` — the explicit human-trust step AFTER `ground_specs.py` +
-  `git diff` review — never automatically (grounding is automated, so clearing it there
-  would collapse the gate). `_smoke_extract_specs.py` asserts the stamp and the gate token stay in sync.
+  identity fields (board/level/id) are stamped deterministically not model-guessed, and
+  every spec must clear the **curriculum gate** before it can generate.
+  **`UNVERIFIED` now means "the curriculum gate could not verify this against its source
+  PDF", not "no human has looked."** It is set by `extract_specs.stamp_extracted` (a caller
+  that has not run the gate gets it by default — an approval must be earned) and cleared
+  ONLY when, in one run, every code AND every objective's `evidence_quote` was located in
+  the PDF pages actually sent. It stays a hard **generation gate**: `notes.py` skips it
+  (`batch.is_unverified`), single-topic runs no longer auto-override it, and
+  `--include-unverified` now overrides a DETERMINISTIC check rather than the absence of a
+  human one — so it stamps a `SPEC UNGROUNDED` entry into `review_flags` for the spot-check
+  queue. `batch.set_unverified_reason` makes the marker self-describing, and cannot clear
+  the gate. `_smoke_extract_specs.py` asserts the stamp and the gate token stay in sync, and
+  that the stamp never instructs a human.
+- **Separation of powers, without a human.** The old gate's value was never "a person
+  looked" — it was that the thing PRODUCING a claim is not the thing ACCEPTING it. That
+  survives: the producer is a model, the acceptor (`spec_gate.py`) is a pure genai-free
+  function over fetched bytes that no model reasoning can influence. This is why the writer
+  never approves itself and why the whole trust boundary is offline-testable.
+- **Know which half of the evidence is load-bearing.** Measured on the real 238-page AP
+  Chemistry CED: the code check discriminates well for STRUCTURED codes (28/28 real ones
+  found; `SAP-9.Z`, `TRA-99.A` correctly absent) but a BARE NUMERIC code collides by chance
+  — `1.1` folds to `11`, found; so do `9.9` and `12.4`. Edexcel (`8.1`) and IGCSE (`6.7S`)
+  print exactly that. So the **evidence quote carries the proof** (40 contiguous verbatim
+  chars cannot collide); the code is a cheap filter. Do not "fix" this by demanding longer
+  codes — it would mark every Edexcel/IGCSE code absent and block those boards.
 - **Curriculum is self-describing.** Add a topic = drop a `curriculum/<id>.json`;
   no code change (hand-author it, or extract it with `extract_specs.py`). New board's
   exam strategy = a `BOARD_EXAM_TIPS[level]` entry (add a `BOARD_SUBJECT_EXAM_TIPS[(level,

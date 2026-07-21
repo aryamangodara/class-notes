@@ -1,0 +1,47 @@
+{
+  "topic_id": "ap-chem-9-11-electrolysis-and-faraday-s-law",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.11 Electrolysis and Faraday’s Law",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "9.11.A",
+      "statement": "Calculate the amount of charge flow based on changes in the amounts of reactants and products in an electrochemical cell.",
+      "tier": null,
+      "command_words": [
+        "Calculate"
+      ]
+    },
+    {
+      "code": "9.11.A.1",
+      "statement": "Faraday’s laws can be used to determine the stoichiometry of the redox reaction occurring in an electrochemical cell with respect to the following:\ni. Number of electrons transferred\nii. Mass of material deposited on or removed from an electrode (as in electroplating)\niii. Current\niv. Time elapsed\nv. Charge of ionic species\nEQN: I = q/t",
+      "tier": null,
+      "command_words": [
+        "determine"
+      ]
+    }
+  ],
+  "depth_profile": "This topic focuses on the quantitative application of Faraday's laws to electrolytic cells. Students are expected to relate the macroscopic measurements of an electrolysis experiment (current, time elapsed, mass of material deposited or removed) to the particulate-level stoichiometry of the redox reaction (number of electrons transferred, charge of ionic species). The core expectation is the ability to navigate between these quantities using the equation I = q/t and Faraday's constant.",
+  "assessment_notes": "Exam questions typically assess the mathematical routines required to solve electroplating or electrolysis stoichiometry problems (Suggested Skill 5.B). Students may be asked to calculate the current required to plate a specific mass of metal over a given time, determine the time needed to deposit a certain mass, or calculate the mass of product formed given a steady current. Questions may also be framed in an experimental context, requiring students to critique reasoning or identify sources of error in an electroplating setup.",
+  "reference_data": "I = q/t\nFaraday's constant, F = 96,485 coulombs / 1 mol e⁻\nI = current (amperes)\nq = charge (coulombs)\nt = time (seconds)",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.11.A",
+      "can_do": "I can calculate the amount of charge flow based on changes in the amounts of reactants and products in an electrochemical cell.",
+      "recap": ""
+    },
+    {
+      "code": "9.11.A.1",
+      "can_do": "I can use Faraday’s laws to determine the stoichiometry of a redox reaction with respect to the number of electrons transferred, mass of material deposited/removed, current, time elapsed, and charge of ionic species.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective 2025",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

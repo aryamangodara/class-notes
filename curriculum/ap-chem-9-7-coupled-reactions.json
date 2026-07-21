@@ -1,0 +1,34 @@
+{
+  "topic_id": "ap-chem-9-7-coupled-reactions",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 9: Thermodynamics and Electrochemistry",
+  "topic": "9.7 Coupled Reactions",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "9.7.A",
+      "statement": "Explain the relationship between external sources of energy or coupled reactions and their ability to drive thermodynamically unfavorable processes.",
+      "tier": null,
+      "command_words": [
+        "explain"
+      ]
+    }
+  ],
+  "depth_profile": "Students must understand that an external source of energy can be used to make a thermodynamically unfavorable process occur. Examples include using electrical energy to drive an electrolytic cell or charge a battery, and using light to drive the overall conversion of carbon dioxide to glucose in photosynthesis. Additionally, a desired product can be formed by coupling a thermodynamically unfavorable reaction that produces that product to a favorable reaction (e.g., the conversion of ATP to ADP in biological systems). Students should know that in a coupled system, the individual reactions share one or more common intermediates, and the sum of the individual reactions produces an overall reaction that achieves the desired outcome and has ΔG° < 0.",
+  "assessment_notes": "Students are assessed on their ability to explain the degree to which a model or representation describes the connection between particulate-level properties and macroscopic properties (Suggested Skill 4.D). Questions may require students to analyze models of coupled reactions or systems where external energy sources drive thermodynamically unfavorable processes.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "9.7.A",
+      "can_do": "I can explain the relationship between external sources of energy or coupled reactions and their ability to drive thermodynamically unfavorable processes.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

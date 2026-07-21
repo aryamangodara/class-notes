@@ -1,0 +1,44 @@
+{
+  "topic_id": "ap-chem-3-13-beer-lambert-law",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 3: Properties of Substances and Mixtures",
+  "topic": "3.13 Beer-Lambert Law",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "3.13.A",
+      "statement": "Explain the amount of light absorbed by a solution of molecules or ions in relationship to the concentration, path length, and molar absorptivity.",
+      "tier": null,
+      "command_words": [
+        "Explain"
+      ]
+    }
+  ],
+  "depth_profile": "The topic covers the Beer-Lambert law (A = εbc) and the direct proportionality between absorbance and the concentration of light-absorbing particles when path length and wavelength are held constant. Students must understand the physical meaning of molar absorptivity (ε), path length (b), and concentration (c). The curriculum emphasizes experimental application: selecting the optimum wavelength (wavelength of maximum absorbance) to ensure maximum sensitivity, using standard solutions to generate a calibration curve, and measuring molar absorptivity. A key focus is identifying and describing potential sources of experimental error in spectrophotometry setups.",
+  "assessment_notes": "Assessment frequently contextualizes this topic within laboratory scenarios. Students are expected to identify or describe potential sources of experimental error (e.g., how a fingerprint on a cuvette or an incorrect wavelength setting affects the measured absorbance and calculated concentration). Questions may require students to explain the relationship between variables in the Beer-Lambert law equation, interpret calibration curves, and understand how changes in experimental design impact the validity and accuracy of results. The command word 'Explain' is central to assessing the relationship between light absorbed and solution properties.",
+  "reference_data": "A = εbc\nA = absorbance\nε = molar absorptivity\nb = path length\nc = concentration",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "3.13.A",
+      "can_do": "Explain the amount of light absorbed by a solution of molecules or ions in relationship to the concentration, path length, and molar absorptivity.",
+      "recap": ""
+    },
+    {
+      "code": "3.13.A.1",
+      "can_do": "The Beer-Lambert law relates the absorption of light by a solution to three variables according to the equation:\nEQN: A = εbc.\nThe molar absorptivity, ε, describes how intensely a chemical species absorbs light of a specific wavelength. The path length, b, and concentration, c, are proportional to the number of light-absorbing particles in the light path.",
+      "recap": ""
+    },
+    {
+      "code": "3.13.A.2",
+      "can_do": "In most experiments the path length and wavelength of light are held constant. In such cases, the absorbance is proportional only to the concentration of absorbing molecules or ions. The spectrophotometer is typically set to the wavelength of maximum absorbance (optimum wavelength) for the species being analyzed to ensure the maximum sensitivity of measurement.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Course Framework V.1 (2024 College Board)",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}

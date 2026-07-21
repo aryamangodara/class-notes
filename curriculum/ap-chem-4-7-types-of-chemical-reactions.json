@@ -1,0 +1,59 @@
+{
+  "topic_id": "ap-chem-4-7-types-of-chemical-reactions",
+  "board": "AP (College Board)",
+  "subject": "Chemistry",
+  "level": "AP",
+  "unit": "Unit 4: Chemical Reactions",
+  "topic": "4.7 Types of Chemical Reactions",
+  "prerequisites": [],
+  "learning_objectives": [
+    {
+      "code": "4.7.A",
+      "statement": "Identify a reaction as acid-base, oxidation-reduction, or precipitation.",
+      "tier": null,
+      "command_words": [
+        "Identify"
+      ]
+    }
+  ],
+  "depth_profile": "Students must be able to classify chemical reactions into three main types: acid-base, oxidation-reduction (redox), and precipitation. For acid-base reactions, the focus is on the transfer of one or more protons (H+ ions) between species. For redox reactions, students must understand the transfer of electrons and use oxidation numbers to identify which species are oxidized and reduced. Combustion must be recognized as a subclass of redox reactions involving oxygen gas, specifically noting that complete combustion of hydrocarbons produces carbon dioxide and water. For precipitation reactions, students must understand the mixing of aqueous ions to form an insoluble or sparingly soluble compound. The scope of solubility rules is strictly limited: students must know that all sodium, potassium, ammonium, and nitrate salts are soluble in water. The AP Exam explicitly excludes the assessment of the terms 'reducing agent' and 'oxidizing agent'. Furthermore, rote memorization of any 'solubility rules' other than the four specified is explicitly excluded.",
+  "assessment_notes": "Students are expected to describe components of and quantitative information from models and representations that illustrate both particulate-level and macroscopic-level properties (Science Practice 1.B). A common pitfall on the AP Exam is that students often struggle with questions that require them to justify their identification of a particular type of reaction using an equation. Questions may present a reaction (or a particulate representation) and ask students to identify the reaction type and justify their claim with evidence, such as changes in oxidation states or the formation of a precipitate.",
+  "reference_data": "",
+  "exam_map": [],
+  "spec_checklist": [
+    {
+      "code": "4.7.A",
+      "can_do": "Identify a reaction as acid-base, oxidation-reduction, or precipitation.",
+      "recap": ""
+    },
+    {
+      "code": "4.7.A.1",
+      "can_do": "Acid-base reactions involve transfer of one or more protons (H+ ions) between chemical species.",
+      "recap": ""
+    },
+    {
+      "code": "4.7.A.2",
+      "can_do": "Oxidation-reduction (redox) reactions involve transfer of one or more electrons between chemical species, as indicated by changes in oxidation numbers of the involved species. Combustion is an important subclass of oxidation-reduction reactions, in which a species reacts with oxygen gas. In the case of hydrocarbons, carbon dioxide and water are products of complete combustion.",
+      "recap": ""
+    },
+    {
+      "code": "4.7.A.3",
+      "can_do": "In a redox reaction, electrons are transferred from the species that is oxidized to the species that is reduced.",
+      "recap": ""
+    },
+    {
+      "code": "4.7.A.4",
+      "can_do": "Oxidation numbers may be assigned to each of the atoms in the reactants and products; this is often an effective way to identify the oxidized and reduced species in a redox reaction.",
+      "recap": ""
+    },
+    {
+      "code": "4.7.A.5",
+      "can_do": "Precipitation reactions frequently involve mixing ions in aqueous solution to produce an insoluble or sparingly soluble ionic compound. All sodium, potassium, ammonium, and nitrate salts are soluble in water.",
+      "recap": ""
+    }
+  ],
+  "spec_source_citation": "AP Chemistry Course and Exam Description, Effective Fall 2024",
+  "past_papers": null,
+  "next_topic": "",
+  "source": "Auto-extracted from AP Chemistry Course and Exam Description (College Board) — Verified by human review"
+}
