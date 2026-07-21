@@ -73,6 +73,9 @@ class MCQOption(BaseModel):
 class MCQBlock(BaseModel):
     type: Literal["mcq"] = "mcq"
     tag: str = Field(default="Quick check", description="Small label, e.g. 'Quick check' or 'Q1 · basic · 2 marks'.")
+    difficulty: Literal["basic", "standard", "stretch"] = Field(default="standard",
+        description="Which rung of the practice ladder this question sits on. In the PRACTICE ladder "
+        "the set MUST span all three; a mid-teaching quick check is usually basic or standard.")
     question: str
     options: list[MCQOption] = Field(description="2-4 options with EXACTLY ONE correct=true.")
     targets_objective_codes: list[str] = Field(default_factory=list)
@@ -101,22 +104,34 @@ class DiagnosticWrong(BaseModel):
 
 
 class MarkStep(BaseModel):
-    label: str = Field(description="Scoring-point id, e.g. 'M1' / 'A1' (or AP points); should sum to `marks`.")
+    label: str = Field(description="Scoring-point id, e.g. 'M1' / 'A1' (or AP rubric points, or "
+        "'Step 1' on a board with no marks convention).")
+    marks: int = Field(default=1, description="Marks THIS step earns. Usually 1. Use 0 for a step that "
+        "only structures the working and earns no credit; use 2+ where the board awards a block of "
+        "marks for one point (e.g. B2). The steps must add up to the question's `marks`.")
     text: str
 
 
 class NumericBlock(BaseModel):
     type: Literal["numeric"] = "numeric"
     label: str = Field(description="e.g. 'Q2 · standard · 4 marks · calculator allowed'.")
-    difficulty: Literal["basic", "standard", "stretch"] = "standard"
-    marks: int | None = Field(default=None, description="Board convention (marks / AP points); mark_scheme sums to this.")
+    difficulty: Literal["basic", "standard", "stretch"] = Field(default="standard",
+        description="Which rung of the practice ladder this question sits on. In the PRACTICE ladder "
+        "the set MUST span all three.")
+    marks: int | None = Field(default=None, description="Board convention (marks / AP points); the "
+        "mark_scheme steps' `marks` must add up to this. NULL on a board that does not mark-weight "
+        "questions (SAT, AMC) - set `time_estimate_s` there instead, and never invent a mark total.")
+    time_estimate_s: int | None = Field(default=None, description="Seconds a prepared student should "
+        "need. Set this INSTEAD of `marks` on a board that does not mark-weight questions; leave "
+        "null wherever `marks` is set.")
     question: str
     answer: float = Field(description="The correct numeric value (sign included).")
     tolerance: float = Field(description="Absolute tolerance for a correct match (must be > 0).")
     unit: str = Field(default="")
     wrong_answers: list[DiagnosticWrong] = Field(default_factory=list,
-        description="Anticipated wrong values, each with targeted feedback. None may fall within "
-        "`tolerance` of `answer`.")
+        description="1-3 anticipated wrong values a student is genuinely likely to produce (sign flip, "
+        "wrong quantity, unconverted unit), each with targeted feedback naming THAT mistake. At least "
+        "one is REQUIRED. None may fall within `tolerance` of `answer`.")
     mark_scheme: list[MarkStep] = Field(default_factory=list)
     sanity_check: str = Field(default="")
     targets_objective_codes: list[str] = Field(default_factory=list)

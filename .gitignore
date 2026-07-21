@@ -1,5 +1,8 @@
 out/*
 !out/.gitkeep
+# Local mirror of server-generated notes (scp'd off the EC2 box). Generated output —
+# same rule as out/: never commit. ('out/*' above is root-anchored, so it misses this.)
+server/
 .env
 .secrets/
 __pycache__/

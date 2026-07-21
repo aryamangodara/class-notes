@@ -92,6 +92,62 @@ STAGES = frozenset({
 _LF = "uninit"           # "uninit" -> not yet built; None -> disabled; else the client
 _LF_LOCK = threading.Lock()
 _LF_WARNED = False
+_USAGE_WARNED = False
+
+
+def _usage_details(um) -> "tuple[dict, int]":
+    """Map Gemini ``usage_metadata`` -> Langfuse ``usage_details``, using the key names
+    Langfuse actually PRICES for Gemini. Pure + duck-typed, so the smoke test pins the
+    arithmetic offline.
+
+    Gemini reports billable tokens in FOUR buckets, and a call is only costed correctly
+    if all four are sent under the names Langfuse prices:
+
+      prompt_token_count         -> ``input``   (INCLUDES the cached prefix — see below)
+      cached_content_token_count -> priced separately at ~10% of the input rate
+      candidates_token_count     -> ``output``  (the VISIBLE answer ONLY)
+      thoughts_token_count       -> ``output_reasoning_tokens``: billed at the OUTPUT
+                                    rate, and NOT part of candidates_token_count
+
+    That last one is the trap this function exists for: on a thinking model the reasoning
+    tokens routinely run 2x the visible output (measured: 211% on gemini-3.1-pro-preview,
+    185% on gemini-3.5-flash), so sending only prompt+candidates under-reports the true
+    bill by roughly half. ``total_token_count`` == prompt + candidates + thoughts, which
+    is exactly the cross-check the residual below performs.
+
+    Key names are not free-form: Langfuse matches each one EXACTLY against the model
+    definition's per-usage-type prices (an unmatched key silently costs $0 — the same
+    hole), and it buckets a usage type as input/output by whether the NAME CONTAINS
+    "input"/"output". ``output_reasoning_tokens`` and ``thoughts_token_count`` are priced
+    identically on every model here, so the former is chosen: it costs the same AND rolls
+    the reasoning tokens into Langfuse's output-token totals, which is what makes those
+    totals reconcile against Vertex instead of reading ~1/3 low.
+
+    Returns ``(usage, residual)``. A non-zero residual means Gemini grew a NEW billable
+    token class that none of our keys claimed — i.e. the under-reporting hole has silently
+    reopened — so it is surfaced by the caller, never swallowed.
+    """
+    def n(attr: str) -> int:
+        try:
+            return int(getattr(um, attr, 0) or 0)
+        except (TypeError, ValueError):
+            return 0
+
+    prompt, cached = n("prompt_token_count"), n("cached_content_token_count")
+    output, thoughts = n("candidates_token_count"), n("thoughts_token_count")
+    tool = n("tool_use_prompt_token_count")
+    # Gemini counts the cached prefix INSIDE prompt_token_count but bills it at ~10%, and
+    # Langfuse prices `cached_content_token_count` as its own key — so `input` must carry
+    # only the UNCACHED remainder, or every cached token gets charged at the full rate.
+    usage = {"input": max(prompt - cached, 0) + tool, "output": output}
+    if cached:
+        usage["cached_content_token_count"] = cached
+    if thoughts:
+        usage["output_reasoning_tokens"] = thoughts
+    # Deliberately NO `total` key: Langfuse derives the total by summing these, and a model
+    # definition that also prices `total` would double-charge every call if we sent one.
+    total = n("total_token_count")
+    return usage, (total - sum(usage.values()) if total else 0)
 
 
 def trace_for(feature: str, stage: str, *, group: str, board: str = "", subject: str = "",
@@ -164,6 +220,13 @@ def _langfuse():
                     except Exception as exc:  # noqa: BLE001
                         print(f"    Langfuse cost tracking OFF (init failed: {exc})")
                         _LF = None
+                else:
+                    # Say so LOUDLY. A silently-untracked run is the same blind spot as an
+                    # untraced call: the spend still happens, it just never reaches the
+                    # cost dashboard (this is why `spec.ground` had zero observations —
+                    # ground_specs.py only ever ran from a .env with no Langfuse keys).
+                    print("    Langfuse cost tracking OFF (no LANGFUSE_PUBLIC_KEY/LANGFUSE_SECRET_KEY "
+                          "in .env) — this run's model spend will NOT be recorded anywhere")
     return _LF
 
 
@@ -188,8 +251,16 @@ def _log_generation(trace: dict, model, resp) -> None:
         um = getattr(resp, "usage_metadata", None)
         usage = None
         if um is not None:
-            usage = {"input": int(getattr(um, "prompt_token_count", 0) or 0),
-                     "output": int(getattr(um, "candidates_token_count", 0) or 0)}
+            usage, residual = _usage_details(um)
+            if residual:
+                # Google billed tokens none of our keys claimed -> a new token class.
+                # Loud once, because silence here is how the thinking-token hole hid.
+                global _USAGE_WARNED
+                if not _USAGE_WARNED:
+                    print(f"    Langfuse usage gap: {residual} token(s) of {model} unmapped "
+                          f"(usage_metadata grew a billable field — see helpers._usage_details); "
+                          f"cost is UNDER-reported until it is mapped")
+                    _USAGE_WARNED = True
         meta = trace["metadata"]
         with propagate_attributes(trace_name=trace["feature"], tags=list(trace["tags"]),
                                   metadata=meta, session_id=trace["group"]):

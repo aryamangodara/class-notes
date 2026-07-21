@@ -294,6 +294,10 @@ def structural_feedback_block(lines: list[str]) -> str:
     return (
         "\nSTRUCTURAL FIX — the previous draft produced interactive block(s) that fail "
         "deterministic completeness checks. FIX each so it renders and teaches correctly: "
-        "give EVERY MCQ option a distinct explanation, every worked example real steps, and "
-        "every numeric question a mark scheme and a positive tolerance:\n" + "\n".join(lines) + "\n"
+        "give EVERY MCQ option its OWN distinct explanation; every worked example real steps; "
+        "every numeric question a positive tolerance, 1-3 diagnostic wrong_answers with targeted "
+        "feedback, and a mark scheme whose per-step `marks` add up to the question's `marks`; and "
+        "NEVER emit an empty widget (flip_cards with no cards, a table with no rows, an accordion "
+        "with no items, a reveal with no answer) — fill it or drop the block:\n"
+        + "\n".join(lines) + "\n"
     )

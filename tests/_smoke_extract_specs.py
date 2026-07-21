@@ -63,29 +63,60 @@ stamped = ex.stamp_extracted(raw, topic_id="ap-chem-thing", board="AP (College B
 assert stamped["topic_id"] == "ap-chem-thing" and stamped["board"] == "AP (College Board)"
 assert stamped["level"] == "AP" and stamped["unit"] == "Unit 1" and stamped["topic"] == "Thing"
 assert stamped["exam_map"] == [] and stamped["past_papers"] is None and stamped["next_topic"] == "", \
-    "curated exam-format layer must never be auto-authored by extraction"
-assert "UNVERIFIED" in stamped["source"] and "ground_specs.py" in stamped["source"], "provenance flags the review gate"
+    "the exam-format layer must never be auto-authored by the model"
+#     Default (no `gaps` passed) = NOT approved. A caller that has not run the curriculum
+#     gate has not earned an approval, so the marker stays on by omission, never by luck.
+assert "UNVERIFIED" in stamped["source"], "an ungated stamp stays UNVERIFIED by default"
+#     The stamp must no longer instruct a HUMAN. This is the replacement for the old
+#     "names ground_specs.py + git diff" assertion: nothing blocks on a person now, so a
+#     provenance line telling someone to review a diff would be a lie in the git history.
+assert "approve_specs" not in stamped["source"], "the stamp must not name a removed human step"
+assert "git diff" not in stamped["source"], "nothing blocks on a human reading a diff"
 assert stamped["spec_source_citation"] == "AP Chem CED", "citation backfilled when blank"
 assert raw["board"] == "WRONG", "stamp_extracted does not mutate its input"
 spec = TopicSpec.model_validate(stamped)  # the guard that runs before every write
 assert spec.learning_objectives[0].code == "1.1", "extracted objective survives the round-trip"
-print("stamp_extracted OK (identity forced; curated layer cleared; UNVERIFIED; validates)")
+
+#     With NO gaps the curriculum gate approves in place — this is the autonomous path
+#     that replaced `approve_specs.py`, and the note must state the BASIS for the trust.
+_ok = ex.stamp_extracted(raw, topic_id="ap-chem-thing", board="AP (College Board)", subject="Chemistry",
+                         level="AP", unit="Unit 1", topic="Thing", citation="AP Chem CED",
+                         gaps=[], next_topic="Next Thing")
+assert "UNVERIFIED" not in _ok["source"], "a spec that passed the gate is approved in place"
+assert "verified against" in _ok["source"].lower(), "the approval states what it is based on"
+assert _ok["next_topic"] == "Next Thing", "next_topic is injected deterministically, not model-authored"
+
+#     Evidence quotes are verbatim COPYRIGHTED spec text and curriculum/ is git-tracked,
+#     so they must never survive the write (same rule as VerifiedPaper carrying no quote).
+_with_q = dict(raw, learning_objectives=[
+    {"code": "1.1", "statement": "define X", "tier": None, "command_words": ["define"],
+     "evidence_quote": "candidates should be able to define X as printed in the specification"}])
+_stripped = ex.stamp_extracted(_with_q, topic_id="t", board="AP (College Board)", subject="Chemistry",
+                               level="AP", unit="U", topic="T", citation="C", gaps=[])
+assert all("evidence_quote" not in lo for lo in _stripped["learning_objectives"]), \
+    "extraction-time evidence quotes never reach curriculum/"
+print("stamp_extracted OK (identity forced; gate verdict stamped; quotes stripped; validates)")
 
 # 4b. cross-module token sync: the generation-side provenance gate (batch.is_unverified)
-#     MUST recognise the exact marker extract_specs stamps, or extracted specs would
-#     silently ship. Guards against the token drifting between the two modules.
+#     MUST recognise the exact marker extract_specs stamps, or a spec that failed PDF
+#     grounding would silently ship. Guards against the token drifting between modules.
 import batch  # noqa: E402
 assert batch.is_unverified(NS(source=stamped["source"])), "batch.is_unverified must match the extract stamp"
+assert not batch.is_unverified(NS(source=_ok["source"])), "an auto-approved spec is not gated"
 assert not batch.is_unverified(NS(source=batch.clear_unverified_marker(stamped["source"]))), \
-    "clearing the marker (approve_specs) must flip the gate off"
-print("cross-module token sync OK (batch gate matches the extract stamp; approve clears it)")
+    "clearing the marker must flip the gate off"
+#     Rewriting the REASON must never clear the gate — that would silently downgrade a
+#     spec from "will not generate" to "ships ungrounded".
+assert batch.is_unverified(NS(source=batch.set_unverified_reason(stamped["source"], "anything"))), \
+    "a reason rewrite keeps the gate on"
+print("cross-module token sync OK (batch gate matches the stamp; approve clears; reason rewrite cannot)")
 
 # 5. prompt brace-safety: both extraction prompts str.format cleanly with their call-site keys.
 from pathlib import Path as _Path  # noqa: E402
 
 for _name, _keys in {
     "spec_enumerate.txt": ["board", "subject", "level"],
-    "spec_extract.txt": ["board", "subject", "level", "unit", "topic"],
+    "spec_extract.txt": ["board", "subject", "level", "unit", "topic", "spec_feedback"],
 }.items():
     _tmpl = _Path(_ROOT, "src", "prompts", _name).read_text(encoding="utf-8")
     try:

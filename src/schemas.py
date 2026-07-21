@@ -39,6 +39,14 @@ class LearningObjective(BaseModel):
         description="Optional depth tag, e.g. 'Core' or 'Supplement' (IGCSE) or an "
         "assessment objective. None when the board does not tier.",
     )
+    evidence_quote: str = Field(
+        default="",
+        description="EXTRACTION ONLY. One complete sentence copied CHARACTER-FOR-CHARACTER "
+        "from the attached specification page that states this objective (at least 12 words). "
+        "Machine-checked against the PDF's own text; an objective whose quote is not found "
+        "verbatim is re-extracted. Never paraphrase. Stripped before the spec is written, so "
+        "it never persists.",
+    )
     command_words: list[str] = Field(
         default_factory=list,
         description="Exam command verbs this objective is assessed with, e.g. "
@@ -89,8 +97,10 @@ class PaperCitationCandidate(BaseModel):
     marks: int | None = Field(default=None, description="Total marks for that question, or null if unclear.")
     summary: str = Field(description="What the question tests, in OUR OWN WORDS (plain text, NO HTML/markup); "
                          "tie it to this topic's objectives.")
-    evidence_quote: str = Field(description="A SHORT verbatim snippet copied from the PDF that anchors this "
-                                "citation (proves the question is really in this paper).")
+    evidence_quote: str = Field(description="ONE COMPLETE SENTENCE or question stem copied "
+                                "CHARACTER-FOR-CHARACTER from that question in the PDF (at least 12 words). "
+                                "Machine-checked against the PDF's own text verbatim; a citation whose quote "
+                                "is not found is DISCARDED. Never paraphrase, shorten, or tidy the typography.")
     topic_relevance: str = Field(description="Why this question tests THIS topic (one sentence).")
 
 

@@ -212,6 +212,10 @@ _JS = r"""
 var data = JSON.parse(document.getElementById('notes-data').textContent);
 var BLOCKS = new Map(); var BID = 0;
 var PROG = {total:new Set(), done:new Set(), sec:new Map(), correct:0, attempts:0};
+/* Level -> heading of the revealed answer box. A board with no marks convention has no
+   "mark scheme" to show. MIRRORS config.MARKS_CONVENTION (the no-marks levels only);
+   _smoke_v2 asserts the parity, the same way BLOCK_TYPES <-> renderBlock is pinned. */
+var SCHEME_TITLE = { 'SAT':'Worked solution', 'AMC 10':'Worked solution' };
 
 /* ---------- DOM helpers (model text -> textContent, never innerHTML) ---------- */
 function h(tag, attrs, kids){
@@ -408,7 +412,7 @@ function renderNumeric(b, secId){
   ]));
   box.appendChild(h('div',{class:'expl'}));
   var ms=h('div',{class:'markscheme'});
-  ms.appendChild(h('b',null,'Mark scheme'));
+  ms.appendChild(h('b',null,SCHEME_TITLE[data.level]||'Mark scheme'));
   var ol=h('ol');
   (b.mark_scheme||[]).forEach(function(m){ ol.appendChild(h('li',null,[h('b',null,m.label+' '), m.text])); });
   ms.appendChild(ol);
@@ -882,6 +886,13 @@ def _block_defects(b) -> list[str]:
         for i, o in enumerate(b.options, 1):
             if not (o.explanation or "").strip():
                 msgs.append(f"MCQ '{b.question[:40]}' option {i} ('{o.text[:24]}') has an empty explanation.")
+        if len(b.options) > 4:
+            msgs.append(f"MCQ '{b.question[:40]}' has {len(b.options)} options (2-4 allowed).")
+        # The redraft prompt already PROMISES a distinct explanation per option; nothing
+        # checked it, so the same sentence pasted onto every distractor passed the gate.
+        if len({(o.explanation or "").strip().lower() for o in b.options}) != len(b.options):
+            msgs.append(f"MCQ '{b.question[:40]}' reuses the same explanation on more than one option "
+                        f"- each option needs its own reason for being right or wrong.")
     elif t == "numeric":
         if b.tolerance is None or b.tolerance <= 0:
             msgs.append(f"numeric '{b.label}' has non-positive tolerance.")
@@ -890,10 +901,51 @@ def _block_defects(b) -> list[str]:
                 msgs.append(f"numeric '{b.label}' diagnostic {w.value} is within tolerance of the answer {b.answer}.")
         if not b.mark_scheme:
             msgs.append(f"numeric '{b.label}' has no mark scheme.")
+        # An EMPTY wrong_answers list emits zero defects from the loop above, so "no
+        # diagnostics at all" slipped the gate entirely: the student gets a bare "not it"
+        # with no idea which mistake they made. The list is the answer key's teaching half.
+        if not b.wrong_answers:
+            msgs.append(f"numeric '{b.label}' has no diagnostic wrong_answers - add 1-3 values a "
+                        f"student is actually likely to produce (sign flip, wrong quantity, "
+                        f"unconverted unit), each with a message naming THAT mistake.")
+        # The label advertises the marks; the revealed scheme must award them. Skips
+        # cleanly when marks is None (SAT/AMC do not mark-weight), and stays quiet when the
+        # scheme is empty so one fault is never reported twice.
+        if b.marks is not None and b.marks <= 0:
+            msgs.append(f"numeric '{b.label}' has marks={b.marks} - use a positive whole number, or "
+                        f"null on a board that does not mark-weight questions.")
+        elif b.marks is not None and b.mark_scheme:
+            awarded = sum(getattr(s, "marks", 1) for s in b.mark_scheme)
+            if awarded != b.marks:
+                msgs.append(f"numeric '{b.label}' is worth {b.marks} mark(s) but its mark scheme awards "
+                            f"{awarded} - make the per-step `marks` add up to {b.marks} (a step that "
+                            f"only structures the working carries marks: 0).")
     elif t == "step_reveal":
         # A worked example that reveals nothing is a broken promise to the reader.
         if not b.steps:
             msgs.append(f"step_reveal '{b.prompt[:40]}' has no steps to reveal.")
+    elif t == "flip_cards":
+        # An empty flip_cards block is WORSE than an absent one: it satisfies the
+        # define/state structural-evidence rule in coverage_gate while teaching nothing,
+        # so it can close a coverage gap with an empty grid.
+        if not b.cards:
+            msgs.append(f"flip_cards '{b.title or 'untitled'}' has no cards - add 3-6 front/back "
+                        f"recall cards with the marking-point words bolded, or drop the block.")
+    elif t == "table":
+        if not b.rows:
+            msgs.append(f"table '{b.caption[:40]}' has no rows - add the data rows it summarises, or "
+                        f"drop the block (an empty table renders as a bare header).")
+    elif t == "accordion":
+        if not b.items:
+            msgs.append("accordion has no items - add at least one summary/detail pair, or drop the block.")
+    elif t == "reveal":
+        # The hook is the FIRST thing on the page, and it is a reveal. One that reveals
+        # nothing renders a live 'Reveal the answer' button onto an empty box.
+        if not (b.question or "").strip():
+            msgs.append("reveal has an empty question - ask the curiosity question this lesson answers.")
+        if not (b.answer or "").strip():
+            msgs.append(f"reveal '{b.question[:40]}' has an empty answer - the reveal must pay off the "
+                        f"question with the underlying mechanism and its key equation or value.")
     elif t == "sim":
         scope = {i.key: i.default for i in b.inputs}
         scope.update({c.key: c.value for c in b.constants})
@@ -955,9 +1007,95 @@ def practice_block_defects(practice) -> "list[BlockDefect]":
     return out
 
 
+def hook_block_defects(hook) -> "list[BlockDefect]":
+    """Block defects in the HOOK only.
+
+    The hook belongs to NO section — it is produced by ``finalize_v2`` — so
+    ``defect_feedback_by_section`` (which keeps only ``kind == 'section'``) cannot route
+    it, and before this it reached the assemble-time guard having had ZERO regeneration
+    attempts. It is gated in the finalize stage's own loop instead, which is what makes
+    that section filter correct rather than lossy."""
+    if hook is None:
+        return []
+    return [BlockDefect("hook", -1, "hook", m) for m in _block_defects(hook)]
+
+
+_LADDER_DIFFICULTIES = ("basic", "standard", "stretch")
+
+
+def _is_method_mark_label(label: str) -> bool:
+    """True for a UK-board method/accuracy mark point ('M1', 'A1', 'B2') — a convention
+    that does not exist on a board which does not mark-weight questions."""
+    s = (label or "").strip()
+    return len(s) >= 2 and s[0].upper() in "MAB" and s[1:].isdigit()
+
+
+def practice_set_defects(practice, *, level: str = "") -> "list[BlockDefect]":
+    """Defects of the practice ladder AS A SET — the rules ``_block_defects`` cannot see
+    because they are properties of the whole collection (does it actually LADDER?) or of
+    the board convention (does this level mark-weight at all?).
+
+    These share the ``practice`` locus deliberately rather than inventing a 'document'
+    kind. The rule is: push every check down to the smallest locus SOME STAGE CAN
+    REGENERATE. The ladder is one artifact with one regenerating stage, so a set defect
+    routes through the same ``enforce_practice_structure_v2`` loop as a per-block one; a
+    document-locus defect, by contrast, could only ever hard-fail, because nothing
+    regenerates a whole document."""
+    from config import CONFIG, marks_convention_for
+    out: "list[BlockDefect]" = []
+    if not practice:
+        return out
+    where = "practice ladder"
+
+    # It must be a LADDER. `difficulty` DEFAULTS to 'standard', so a model that simply
+    # omits the field yields a set that silently reads as one flat rung — which is the
+    # ungated version of this defect, and why the check is on the SET, not the block.
+    if CONFIG.get("structural_gate_difficulty", False):
+        have = {getattr(b, "difficulty", "") for b in practice}
+        missing = [d for d in _LADDER_DIFFICULTIES if d not in have]
+        if missing:
+            out.append(BlockDefect("practice", -1, where,
+                f"the practice ladder has no {' and no '.join(missing)} question - set each "
+                f"question's `difficulty` so the {len(practice)} questions span basic -> standard "
+                f"-> stretch (about 1-2 basic, 2-3 standard, 1-2 stretch)."))
+
+    # The marks convention belongs to the BOARD, not the model: weighting a digital-SAT
+    # item invents an exam fact, and leaving an A-Level question unweighted drops one the
+    # student needs. An unknown level skips these rather than guessing.
+    conv = marks_convention_for(level) if level else None
+    if conv:
+        for b in practice:
+            if getattr(b, "type", "") != "numeric":
+                continue
+            label = getattr(b, "label", "") or "(unlabelled)"
+            if conv["weighted"] and b.marks is None:
+                out.append(BlockDefect("practice", -1, where,
+                    f"numeric '{label}' has no `marks` - {level} weights every question, so give the "
+                    f"whole number of {conv['plural']} it is worth and make the mark scheme add up to it."))
+            elif not conv["weighted"] and b.marks is not None:
+                out.append(BlockDefect("practice", -1, where,
+                    f"numeric '{label}' sets marks={b.marks}, but {level} does not mark-weight "
+                    f"questions - set `marks` to null and pace the question by time "
+                    f"({conv['pace']}) with `time_estimate_s` instead."))
+            elif not conv["weighted"] and any(
+                    _is_method_mark_label(getattr(s, "label", "")) for s in (b.mark_scheme or [])):
+                out.append(BlockDefect("practice", -1, where,
+                    f"numeric '{label}' labels its mark scheme M1/A1, but {level} has no method "
+                    f"marks - label the steps {conv['step_style']} instead."))
+    return out
+
+
+def document_defects(n: InteractiveNotes) -> "list[BlockDefect]":
+    """EVERY deterministic defect in the assembled document: per-block (``block_defects``)
+    plus the set-level rules that only exist over a whole collection. This is what the
+    assemble-time guard checks, so a rule enforced by a stage gate can never be weaker at
+    the door than it was inside the pipeline."""
+    return block_defects(n) + practice_set_defects(n.practice, level=n.level)
+
+
 def validate_interactives(n: InteractiveNotes) -> list[str]:
     """Deterministic checks over the interactive blocks as locus-prefixed strings;
-    empty list == clean. The structured form is ``block_defects`` (what the pipeline
+    empty list == clean. The structured form is ``document_defects`` (what the pipeline
     GATES on); this string view is the back-compat surface + the final assemble-time
     guard that no structurally-broken note is ever written."""
-    return [f"[{d.where}] {d.message}" for d in block_defects(n)]
+    return [f"[{d.where}] {d.message}" for d in document_defects(n)]

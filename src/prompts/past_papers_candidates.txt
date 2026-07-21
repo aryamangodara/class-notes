@@ -14,8 +14,12 @@ that genuinely assess THIS topic's learning objectives. For each one give:
 - marks: the total marks for that question as printed (or null if not shown)
 - summary: what the question tests, IN YOUR OWN WORDS, plain text only (no HTML, no
   markdown), tied to this topic's objectives
-- evidence_quote: a SHORT verbatim snippet copied from that question in the PDF that
-  proves it is really there
+- evidence_quote: ONE COMPLETE SENTENCE (or the whole question stem) copied
+  CHARACTER-FOR-CHARACTER from that question in the PDF - at least 12 words. Copy it
+  exactly as printed: do NOT paraphrase, shorten, re-order, tidy the typography, or
+  join fragments from different lines or columns. This snippet is checked against the
+  PDF's own text by an exact machine match, and a citation whose snippet is not found
+  VERBATIM is DISCARDED - so copy a long, unbroken run of real text.
 - topic_relevance: one sentence on why it tests THIS topic
 
 Rules:

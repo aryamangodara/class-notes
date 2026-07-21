@@ -64,11 +64,42 @@ CONFIG = {
     # explained, every worked example has steps, every numeric has a mark scheme).
     # Blocking FACTS, not model opinions — regenerate the owning section/practice
     # this many times, then hard-fail (StructuralError) rather than ship it broken.
-    "max_structure_retries": 1,
+    # 2 rather than 1: this now governs THREE loops (section / practice / hook), and the
+    # ladder rules are SET constraints — the model must get the whole collection right in
+    # one shot, a materially harder target than any per-block rule. A hard fail throws away
+    # the entire topic's spend and yields nothing, so one more attempt is nearly always
+    # cheaper than losing the run.
+    "max_structure_retries": 2,
     # Also require deterministic structural evidence per command word (prove ->
     # step_reveal, calculate -> numeric/sim). The define/state -> flip_cards tier is
     # higher-false-positive, so it is opt-in (default off).
     "structural_gate_recall": False,
+    # Require the practice ladder to SPAN basic/standard/stretch. OFF by default, for the
+    # same reason as structural_gate_recall: `difficulty` DEFAULTS to "standard", so a
+    # model that merely omits the new field yields a flat ladder that fails on EVERY
+    # topic — one bad draw away from a corpus-wide hard fail. Measured on the 12-note
+    # corpus, 6 of 12 would fail it today. Land the schema + prompt, regenerate with this
+    # off, re-measure, then flip it on.
+    "structural_gate_difficulty": False,
+    # CURRICULUM gate (spec_gate.py + extract_specs.py): the autonomous replacement for
+    # the human approve_specs step. Every code and every objective's evidence quote must
+    # be located in the spec PDF the extraction read; anything short of that re-extracts
+    # with the gaps injected, then stays UNVERIFIED (and so never generates notes).
+    # Mirrors max_coverage_retries: same fix-or-fail doctrine, applied to the curriculum.
+    "max_spec_repair_retries": 2,
+    # The deterministic backstop against silent under-extraction — deliberately set to 1,
+    # i.e. it only catches a spec that extracted NOTHING.
+    #
+    # DO NOT RAISE THIS WITHOUT CHECKING THE BOARD'S STRUCTURE. It was briefly 2, on the
+    # assumption that a one-objective topic meant a mis-sliced PDF. That is wrong for AP:
+    # the CED prints exactly ONE "LEARNING OBJECTIVE" per topic (e.g. 1.1.A) with several
+    # "ESSENTIAL KNOWLEDGE" points beneath it (1.1.A.1, .2, .3) — the EK statements are
+    # supporting detail belonging in `depth_profile`, NOT separate objectives. At 2 the
+    # gate flagged 53 CORRECT AP specs as failures, and the resulting re-extraction
+    # "fixed" them by promoting Essential Knowledge into learning_objectives, which is a
+    # regression dressed up as an improvement. A per-board floor would need the board's
+    # actual structure, curated the way BOARD_EXAM_TIPS is — not a global guess.
+    "min_objectives_per_topic": 1,
     # v2 past-paper stage: fetch real paper PDFs and cite questions verified against
     # them (two-pass). resources[] signposting is filled for every board; verified[]
     # only where a lawful paper PDF is fetchable (see sources.py).
@@ -209,6 +240,46 @@ def exam_tips_for(level: str, subject: str) -> list[str]:
     Keyed so, e.g., SAT Reading & Writing does not inherit SAT Math-only facts
     (Desmos, grid-ins). An absent subject => just the general tips for the level."""
     return BOARD_EXAM_TIPS.get(level, []) + BOARD_SUBJECT_EXAM_TIPS.get((level, subject), [])
+
+
+# How a board WEIGHTS a question — the convention a numeric block's `marks`, its
+# mark-scheme labels and the heading of its revealed answer box must all follow. Sibling
+# of BOARD_EXAM_TIPS/exam_tips_for: curated once per level rather than re-guessed per topic.
+#
+# This exists because the generator was importing one board's convention onto another. SAT
+# numerics correctly carried `marks: null` and then labelled their mark schemes 'M1'/'A1' —
+# Edexcel method marks on a College Board product — while the renderer titled the box
+# "Mark scheme" regardless. AMC, by luck, used 'Step 1'. Inventing an exam-format fact is
+# exactly what the grounding doctrine forbids, so the fact is curated here and the prompt,
+# the gate and the renderer all read it from this one place.
+#
+# SAT and AMC 10 genuinely have NO marks convention (an item is right or wrong and the
+# score is scaled), so they are paced by TIME instead — and those pace figures are copied
+# from the curated BOARD_EXAM_TIPS above, not recalled.
+MARKS_CONVENTION: dict[str, dict] = {
+    "A-Level": {"weighted": True, "plural": "marks", "scheme_title": "Mark scheme",
+                "step_style": "'M1' / 'A1'", "pace": ""},
+    "IGCSE": {"weighted": True, "plural": "marks", "scheme_title": "Mark scheme",
+              "step_style": "one scoring point per mark", "pace": ""},
+    "AP": {"weighted": True, "plural": "points", "scheme_title": "Scoring guidelines",
+           "step_style": "one rubric point per point", "pace": ""},
+    "SAT": {"weighted": False, "plural": "", "scheme_title": "Worked solution",
+            "step_style": "'Step 1', 'Step 2', ...", "pace": "about 75 seconds"},
+    "AMC 10": {"weighted": False, "plural": "", "scheme_title": "Worked solution",
+               "step_style": "'Step 1', 'Step 2', ...", "pace": "about 3 minutes"},
+}
+
+_DEFAULT_MARKS_CONVENTION = {"weighted": True, "plural": "marks", "scheme_title": "Mark scheme",
+                             "step_style": "one scoring point per mark", "pace": ""}
+
+
+def marks_convention_for(level: str) -> dict:
+    """Whether THIS level mark-weights a question, the noun it uses, what its mark scheme
+    is called, and how its steps are labelled. ONE source of truth for the practice prompt,
+    the deterministic marks gate and the renderer, so the instruction, the check and the
+    student-facing label can never disagree. An unknown level defaults to weighted (the
+    common case) rather than silently dropping the marks story."""
+    return MARKS_CONVENTION.get(level, _DEFAULT_MARKS_CONVENTION)
 
 
 # Board identity -> the controlled `level` vocabulary (the keys of BOARD_EXAM_TIPS and

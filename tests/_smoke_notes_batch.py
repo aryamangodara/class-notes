@@ -22,8 +22,12 @@ def spec(tid, board="AP (College Board)", subject="Chemistry", level="AP", sourc
     return NS(topic_id=tid, board=board, subject=subject, level=level, source=source)
 
 
-_STAMP = ("Auto-extracted from AP Chemistry CED — UNVERIFIED: run "
-          "`py -3 src/ground_specs.py ap-chem-x --apply` then review `git diff` before shipping.")
+# What extract_specs stamps on a spec the CURRICULUM GATE could not verify. The marker's
+# meaning changed with the removal of the human approval step — it no longer means "nobody
+# has looked", it means "codes/quotes could not be located in the official PDF" — but the
+# TOKEN is unchanged, because the gate it drives is the same one.
+_STAMP = ("Auto-extracted from AP Chemistry CED — UNVERIFIED: could not be verified against "
+          "the source PDF (2x code-absent (1.7.A.1, 1.7.A.2)). It will NOT generate notes.")
 
 # 1. is_unverified: the extract stamp trips it; curated/empty prose does not (case-sensitive).
 assert batch.is_unverified(NS(source=_STAMP)) is True
@@ -35,11 +39,24 @@ print("is_unverified OK (marker match; case-sensitive; curated/empty pass)")
 # 2. clear_unverified_marker: keeps origin, drops the clause, idempotent, flips is_unverified.
 cleared = batch.clear_unverified_marker(_STAMP)
 assert "UNVERIFIED" not in cleared and cleared.startswith("Auto-extracted from AP Chemistry CED")
-assert cleared.endswith("Verified by human review"), "review note appended"
+assert cleared.endswith("Verified against the source PDF"), "default note states the BASIS, not who looked"
+assert batch.clear_unverified_marker(_STAMP, note="Auto-approved: 7 objective(s) verified") \
+    .endswith("Auto-approved: 7 objective(s) verified"), "the caller injects the real note"
 assert batch.is_unverified(NS(source=cleared)) is False, "cleared source no longer gates"
 assert batch.clear_unverified_marker(cleared) == cleared, "idempotent on an already-clean source"
 assert batch.clear_unverified_marker("Hand-seeded for POC") == "Hand-seeded for POC", "no marker -> unchanged"
 print("clear_unverified_marker OK (origin kept; idempotent; flips is_unverified)")
+
+# 2b. set_unverified_reason: the marker is SELF-DESCRIBING, so `--list` and `git diff` say
+#     what failed. Critically it must preserve the token — rewriting a reason can never be
+#     a back door that downgrades "will not generate" into "ships ungrounded".
+_re = batch.set_unverified_reason(_STAMP, "1x quote-absent (8.4)")
+assert batch.is_unverified(NS(source=_re)), "a rewritten reason keeps the gate on"
+assert "quote-absent (8.4)" in _re and "code-absent" not in _re, "the reason is replaced, not appended"
+assert _re.startswith("Auto-extracted from AP Chemistry CED"), "the origin survives"
+assert batch.is_unverified(NS(source=batch.set_unverified_reason("Hand-seeded", "x"))), \
+    "a clean source can be gated by giving it a reason"
+print("set_unverified_reason OK (self-describing; cannot clear the gate)")
 
 # 3. select_specs: AND filters, case-insensitive, order-preserving, zero-match -> [].
 pool = [

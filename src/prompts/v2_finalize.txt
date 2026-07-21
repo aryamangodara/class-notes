@@ -27,5 +27,6 @@ Produce:
   SAME ORDER, each a 1-2 sentence "not sure?" refresher. Use an empty string for a
   statement that needs no recap.
 
+{structural_feedback}
 Ground everything in the sections and the contract; never write internal objective
 codes in student-facing text. Inline maths as \(...\). Return structured JSON.

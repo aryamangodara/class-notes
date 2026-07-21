@@ -55,13 +55,21 @@ UNVERIFIED_MARKER = "UNVERIFIED"
 
 
 def is_unverified(spec) -> bool:
-    """True for an auto-extracted spec not yet cleared by human review. Matches the
-    exact uppercase token `stamp_extracted` writes into `source` (extract_specs.py) —
-    case-sensitive, so a lowercase 'unverified' in curated prose never trips the gate."""
+    """True for a spec the CURRICULUM GATE could not verify against its source PDF.
+
+    The marker's meaning changed when the human approval step was removed: it used to mean
+    "no human has reviewed this", it now means "``spec_gate`` could not locate every code
+    and evidence quote in the official PDF this spec was extracted from, after
+    ``max_spec_repair_retries`` re-extractions". Either way it is the same hard gate —
+    ``notes.py`` refuses to generate from it.
+
+    Matches the exact uppercase token `stamp_extracted` writes into `source`
+    (extract_specs.py) — case-sensitive, so a lowercase 'unverified' in curated prose
+    never trips the gate."""
     return UNVERIFIED_MARKER in (getattr(spec, "source", "") or "")
 
 
-def clear_unverified_marker(source: str, *, note: str = "Verified by human review") -> str:
+def clear_unverified_marker(source: str, *, note: str = "Verified against the source PDF") -> str:
     """Drop the '— UNVERIFIED: …' clause a spec was stamped with, keeping the origin and
     appending `note`. Idempotent: a source without the marker is returned unchanged.
     Deterministic (the caller injects any date), so it is safe in the offline smoke."""
@@ -71,6 +79,19 @@ def clear_unverified_marker(source: str, *, note: str = "Verified by human revie
     head = s.split(UNVERIFIED_MARKER, 1)[0].rstrip()   # "Auto-extracted from X —"
     head = head.rstrip("—").rstrip()                   # "Auto-extracted from X"
     return f"{head} — {note}" if head else note
+
+
+def set_unverified_reason(source: str, reason: str) -> str:
+    """Rewrite the '— UNVERIFIED: …' clause with a machine-written reason, keeping the
+    origin, so `--list` and `git diff` say WHAT failed without opening a report file.
+
+    Preserves the exact token ``is_unverified`` matches, so rewriting a reason can NEVER
+    accidentally clear the gate — asserted in the smoke test, because that would be a
+    silent downgrade from 'will not generate' to 'ships ungrounded'."""
+    s = (source or "").strip()
+    head = s.split(UNVERIFIED_MARKER, 1)[0].rstrip().rstrip("—").rstrip() if UNVERIFIED_MARKER in s else s
+    clause = f"{UNVERIFIED_MARKER}: {reason}"
+    return f"{head} — {clause}" if head else clause
 
 
 # ---------------------------------------------------------------------------
@@ -106,7 +127,7 @@ def plan_batch(specs, existing_ids, *, force=False, include_unverified=False, li
         base = dict(topic_id=s.topic_id, board=getattr(s, "board", ""), subject=getattr(s, "subject", ""))
         if is_unverified(s) and not include_unverified:
             skipped.append(TopicResult(**base, outcome=OUTCOME_SKIPPED_UNVERIFIED,
-                                       detail="auto-extracted; run approve_specs after review (or --include-unverified)"))
+                                       detail="spec failed PDF grounding (or --include-unverified)"))
         elif s.topic_id in existing_ids and not force:
             skipped.append(TopicResult(**base, outcome=OUTCOME_SKIPPED_EXISTING,
                                        detail="output already exists (use --force to regenerate)"))

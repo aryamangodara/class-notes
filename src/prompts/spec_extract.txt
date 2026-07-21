@@ -14,6 +14,12 @@ Extract from the attached pages:
 - learning_objectives: the EXACT spec points for THIS topic — verbatim `code`s and
   `statement`s, with `tier` (e.g. Core / Supplement, or AS / A-Level) and
   `command_words` wherever the spec marks them. Quote codes exactly as printed.
+  Give EVERY objective an `evidence_quote`: one complete sentence copied
+  CHARACTER-FOR-CHARACTER from the attached page that states it, at least 12 words.
+  Copy exactly as printed — do NOT paraphrase, shorten, re-order or tidy the
+  typography. Each quote is checked against the PDF's own text by an exact machine
+  match, and an objective whose quote is not found VERBATIM is sent back to be
+  re-extracted, so copy a long unbroken run of real text.
 - depth_profile: how far THIS board takes THIS topic, INCLUDING anything the spec
   explicitly excludes or does not require (exclusions are as important as inclusions).
 - assessment_notes: how the topic is examined (papers, question styles, command
@@ -30,7 +36,7 @@ Rules:
   happens to share a page.
 - Set topic_id/board/subject/level/unit/topic to match the context above; the caller
   overrides them deterministically, so faithful objectives matter more than these.
-- Do NOT author the curated exam-format layer (exam_map, past_papers, next_topic) —
-  leave them empty. A human curates those.
-
+- Do NOT author the exam-format layer (exam_map, past_papers, next_topic) — leave them
+  empty. They are filled deterministically by the caller from separately-verified data.
+{spec_feedback}
 Return structured JSON matching the TopicSpec schema.

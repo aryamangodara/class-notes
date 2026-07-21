@@ -14,15 +14,16 @@ WORKED EXAMPLES ALREADY IN THE LESSON (do NOT reuse these scenarios — test tra
 {worked_examples}
 
 For each question:
-- Set `difficulty` (basic / standard / stretch) so the set forms a ladder: about 1-2
-  basic, 2-3 standard, 1-2 stretch. Put a label like "Q2 · standard · 4 marks" in the
-  numeric `label` (or the mcq `tag`).
-- Set `marks` by THIS board's convention (whole marks for A-Level/IGCSE; points for AP;
-  leave null for SAT or any board that does not mark-weight questions).
+- Set `difficulty` (basic / standard / stretch) on EVERY question, mcq and numeric alike.
+  The set MUST contain at least one basic, at least one standard and at least one stretch
+  — roughly 1-2 basic, 2-3 standard, 1-2 stretch. Mirror it in the human label (numeric
+  `label`, mcq `tag`), e.g. "Q2 · standard · 4 marks".
+- MARKS CONVENTION for this board: {marks_convention}
 - mcq: a question and 2-4 options with EXACTLY ONE correct=true and a distinct teaching
-  explanation on every option.
+  explanation on every option — no two options may share the same explanation text.
 - numeric: give the exact `answer` (sign included), an absolute `tolerance` (> 0), the
-  `unit`, a `mark_scheme` (M1 / A1 style points that sum to `marks`), a short
+  `unit`, a `mark_scheme` whose per-step `marks` add up to the question's `marks` (use
+  `marks: 0` for a step that only structures the working), a short
   `sanity_check`, and `wrong_answers` — the 1-3 mistakes a student is most likely to make
   (sign flip, wrong mass, wrong number of moles, forgetting to convert J -> kJ), each with
   its `value`, a small `tolerance`, and a targeted diagnostic `message`. NO wrong_answer
